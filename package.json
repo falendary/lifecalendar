@@ -1,0 +1,20 @@
+{
+  "name": "lifecalendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nohup node server.js &"
+  },
+  "author": "falendary",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "formidable": "^1.2.2",
+    "jquery": "^3.5.1",
+    "toastr": "^2.1.4"
+  }
+}
