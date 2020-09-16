@@ -62,3 +62,8 @@
 .display-block {
     display: block;
 }
+
+.disabled {
+    opacity: .6;
+    pointer-events: none;
+}
