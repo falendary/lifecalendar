@@ -276,6 +276,7 @@ function init(){
           squares = dataHelper.markLivedSquares(squares)
           
           dataService.setSquares(squares);
+          dataService.setEvents([]);
 
           initContainer.classList.remove('active')
           appContainer.classList.add('active');
