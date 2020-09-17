@@ -42,17 +42,59 @@ function syncEventsWithSquares() {
       var yearNumber = eventDate.getFullYear()
       var weekNumber = dataHelper.getWeekNumber(eventDate)
 
-     }
-
-     squares.forEach(function(square) {
+      squares.forEach(function(square) {
 
         if(square.year == yearNumber && square.week == weekNumber) {
           square.events.push(event)
         }
 
+      })
 
-    })
+     }
 
+     if (event.type == 3) {
+
+      var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+
+      var years = [];
+      var weeks = {};
+
+      dates.forEach(function(date){
+
+          var eventDate = new Date(date)
+
+          var year = new Date(eventDate).getFullYear();
+          var week = dataHelper.getWeekNumber(eventDate);
+
+          if (years.indexOf(year) === -1) {
+            years.push(year)
+          }
+
+          if (!weeks.hasOwnProperty(year)) {
+              weeks[year] = []
+          }
+          if (weeks[year].indexOf(week) === -1) {
+            weeks[year].push(week);
+          }
+
+      })
+
+      squares.forEach(function(square) {
+
+        if(years.indexOf(square.year) !== -1) {
+
+          if (weeks[square.year].indexOf(square.week) !== -1) {
+            square.events.push(event)
+          }
+
+        }
+
+      })
+
+
+     }
+
+     
   })
 
  
@@ -134,6 +176,8 @@ function addInterfaceEventListeners(){
 
     var eventNameInput = document.querySelector('.eventNameInput')
     var eventDateInput = document.querySelector('.eventDateInput')
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
 
@@ -159,8 +203,8 @@ function addInterfaceEventListeners(){
     }
 
     if (event.type == 3) {
-      event.date_from = new Date(eventDateInput.value)
-      event.date_to = new Date(eventDateInput.value)
+      targetEvent.date_from = new Date(eventDateFromInput.value)
+      targetEvent.date_to = new Date(eventDateToInput.value)
     }
 
     events.push(event)
@@ -168,6 +212,8 @@ function addInterfaceEventListeners(){
     dataService.setEvents(events)
 
     eventNameInput.value = '';
+    eventDateFromInput.value = null;
+    eventDateToInput.value = null;
     eventDateInput.value = null;
     eventTextInput.value = '';
 
@@ -186,6 +232,8 @@ function addInterfaceEventListeners(){
 
     var eventNameInput = document.querySelector('.eventNameInput')
     var eventDateInput = document.querySelector('.eventDateInput')
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
 
@@ -207,22 +255,29 @@ function addInterfaceEventListeners(){
     targetEvent.name = eventNameInput.value
     targetEvent.text = eventTextInput.value
 
-    if (event.type == 1) {
+    if (targetEvent.type == 1) {
       targetEvent.date = new Date(eventDateInput.value)
     }
 
-    if (event.type == 2) {
+    if (targetEvent.type == 2) {
       targetEvent.cron =  new Date(eventDateInput.value)
     }
 
-    if (event.type == 3) {
-      targetEvent.date_from = new Date(eventDateInput.value)
-      targetEvent.date_to = new Date(eventDateInput.value)
+    if (targetEvent.type == 3) {
+      targetEvent.date_from = new Date(eventDateFromInput.value)
+      targetEvent.date_to = new Date(eventDateToInput.value)
     }
+
+    console.log('eventDateFromInput', eventDateFromInput.value);
+    console.log('eventDateToInput', eventDateToInput.value);
+
+    console.log('targetEvent', targetEvent);
 
     dataService.setEvents(events)
 
     eventNameInput.value = '';
+    eventDateFromInput.value = null;
+    eventDateToInput.value = null;
     eventDateInput.value = null;
     eventTextInput.value = '';
 
@@ -273,7 +328,7 @@ function render(){
 
   console.time("render")
 
-  birthdayHolder.innerHTML =  'Birthday: ' + dataService.getBirthday();
+  birthdayHolder.innerHTML =  'День рождения: ' + dataService.getBirthday();
   calendarContainer.innerHTML =  calendarModule.render();
   eventsContainer.innerHTML =  eventsModule.render();
 

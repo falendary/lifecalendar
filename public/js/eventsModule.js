@@ -39,8 +39,26 @@ function EventsModule(dataService) {
 
     				})
 
+    				document.querySelector('.eventDateSingleHolder').classList.remove('active');
+    				document.querySelector('.eventDateRegularHolder').classList.remove('active');
+    				document.querySelector('.eventDateRangeHolder').classList.remove('active');
+
+    				if (sourceEvent.type == 1) {
+    					document.querySelector('.eventDateSingleHolder').classList.add('active')	
+    				}
+
+    				if (sourceEvent.type == 2) {
+    					document.querySelector('.eventDateRegularHolder').classList.add('active')
+    				}
+
+    				if (sourceEvent.type == 3) {
+    					document.querySelector('.eventDateRangeHolder').classList.add('active')
+    				}
+
     				var eventNameInput = document.querySelector('.eventNameInput')
 				    var eventDateInput = document.querySelector('.eventDateInput')
+				    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+				    var eventDateToInput = document.querySelector('.eventDateToInput')
 				    var eventTypeInput = document.querySelector('.eventTypeInput')
 				    var eventTextInput = document.querySelector('.eventTextInput')
 
@@ -50,6 +68,11 @@ function EventsModule(dataService) {
 
 				    if (sourceEvent.type == 1) {
 				    	eventDateInput.value = new Date(sourceEvent.date).toISOString().split('T')[0];
+				    }
+
+				    if (sourceEvent.type == 3) {
+				    	eventDateFromInput.value = new Date(sourceEvent.date_from).toISOString().split('T')[0];
+				    	eventDateToInput.value = new Date(sourceEvent.date_to).toISOString().split('T')[0];
 				    }
 
     				console.log('sourceEvent', sourceEvent);
@@ -80,6 +103,15 @@ function EventsModule(dataService) {
 
 			if (event.type == 1) {
 				var eventDate = new Date(event.date).toISOString().split('T')[0];
+			}
+
+			if (event.type == 3 && event.date_from) {
+
+				var eventDate = '';
+
+				eventDate = eventDate + new Date(event.date_from).toISOString().split('T')[0]
+				eventDate = eventDate + ' - '
+				eventDate = eventDate + new Date(event.date_to).toISOString().split('T')[0]
 			}
 
 			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
