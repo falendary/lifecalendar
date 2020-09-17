@@ -2,7 +2,7 @@ var appContainer = document.querySelector('.appContainer')
 var interfaceContainer = appContainer.querySelector('.interfaceContainer');
 var calendarContainer = appContainer.querySelector('.calendarContainer');
 var eventsContainer = appContainer.querySelector('.eventsContainer');
-var addEventDialogContainer = document.querySelector('.addEventDialogContainer')
+var eventDialogContainer = document.querySelector('.eventDialogContainer')
 
 var birthdayHolder = document.querySelector('.birthdayHolder')
 
@@ -65,6 +65,7 @@ function addInterfaceEventListeners(){
   var exportButton = document.querySelector('.exportButton')
   var addEventButtonDialog = document.querySelector('.addEventButtonDialog')
   var addEventButton = document.querySelector('.addEventButton')
+  var saveEventButton = document.querySelector('.saveEventButton')
   var closeEventButton = document.querySelector('.closeEventButton')
   var eventTypeInput = document.querySelector('.eventTypeInput')
 
@@ -98,7 +99,8 @@ function addInterfaceEventListeners(){
 
     event.preventDefault();
 
-    addEventDialogContainer.classList.add('active')
+    eventDialogContainer.classList.add('add-dialog')
+    eventDialogContainer.classList.add('active')
 
   })
 
@@ -110,13 +112,17 @@ function addInterfaceEventListeners(){
 
     var eventNameInput = document.querySelector('.eventNameInput')
     var eventDateInput = document.querySelector('.eventDateInput')
+    var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
 
     eventNameInput.value = '';
     eventDateInput.value = null;
+    eventTypeInput.value = null;
     eventTextInput.value = '';
 
-    addEventDialogContainer.classList.remove('active')
+    eventDialogContainer.classList.remove('add-dialog')
+    eventDialogContainer.classList.remove('edit-dialog')
+    eventDialogContainer.classList.remove('active')
 
   })
 
@@ -165,7 +171,62 @@ function addInterfaceEventListeners(){
     eventDateInput.value = null;
     eventTextInput.value = '';
 
-    addEventDialogContainer.classList.remove('active')
+    eventDialogContainer.classList.remove('active')
+    save();
+    syncEventsWithSquares();
+    render();
+
+  })
+
+  saveEventButton.addEventListener('click', function(event) {
+
+    console.log("save Event dialog")
+
+    event.preventDefault();
+
+    var eventNameInput = document.querySelector('.eventNameInput')
+    var eventDateInput = document.querySelector('.eventDateInput')
+    var eventTypeInput = document.querySelector('.eventTypeInput')
+    var eventTextInput = document.querySelector('.eventTextInput')
+
+    var events = dataService.getEvents()
+
+    var targetEvent;
+
+    var eventId = eventDialogContainer.dataset.id
+
+    events.forEach(function(item){
+
+      if (item.id == eventId) {
+        targetEvent = item;
+      }
+
+    })
+
+    targetEvent.type = parseInt(eventTypeInput.value, 10),
+    targetEvent.name = eventNameInput.value
+    targetEvent.text = eventTextInput.value
+
+    if (event.type == 1) {
+      targetEvent.date = new Date(eventDateInput.value)
+    }
+
+    if (event.type == 2) {
+      targetEvent.cron =  new Date(eventDateInput.value)
+    }
+
+    if (event.type == 3) {
+      targetEvent.date_from = new Date(eventDateInput.value)
+      targetEvent.date_to = new Date(eventDateInput.value)
+    }
+
+    dataService.setEvents(events)
+
+    eventNameInput.value = '';
+    eventDateInput.value = null;
+    eventTextInput.value = '';
+
+    eventDialogContainer.classList.remove('active')
     save();
     syncEventsWithSquares();
     render();
@@ -215,6 +276,8 @@ function render(){
   birthdayHolder.innerHTML =  'Birthday: ' + dataService.getBirthday();
   calendarContainer.innerHTML =  calendarModule.render();
   eventsContainer.innerHTML =  eventsModule.render();
+
+  eventsModule.addEventListeners();
 
   console.timeEnd("render")
 

@@ -128,7 +128,7 @@ body {
     font-size: 12px;
 }
 
-.add-event-dialog-container {
+.event-dialog-container {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -139,11 +139,11 @@ body {
     display: none;
 }
 
-.add-event-dialog-container.active {
+.event-dialog-container.active {
     display: block;
 }
 
-.add-event-dialog {
+.event-dialog {
     width: 360px;
     padding: 16px;
     border: 1px solid #000;
@@ -151,21 +151,35 @@ body {
     background: #fff;
 }
 
-.add-event-dialog input {
+.event-dialog input {
     width: 100%;
 }
 
-.add-event-dialog select {
+.event-dialog select {
     width: 100%;
 }
 
-.add-event-dialog textarea {
+.event-dialog textarea {
     width: 100%;
     resize: none;
     height: 80px;
 }
 
+.event-dialog-container.edit-dialog .add-event-button {
+    display: none
+}
+
+.event-dialog-container.add-dialog .save-event-button {
+    display: none
+}
+
+
 .add-event-button {
+    float: right;
+    display: block;
+}
+
+.save-event-button {
     float: right;
     display: block;
 }
