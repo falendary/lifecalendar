@@ -16,7 +16,9 @@ function EventsModule(dataService) {
 
 			var eventHtml = '<div class="event-item" data-id="'+event.id+'">';
 
-			var eventDate = new Date(event.date).toISOString().split('T')[0];
+			if (event.type == 1) {
+				var eventDate = new Date(event.date).toISOString().split('T')[0];
+			}
 
 			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
