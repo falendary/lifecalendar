@@ -25,17 +25,17 @@ function CalendarModule(dataService) {
 				classList.push('square-lived');
 			}
 
-			if(square.has_birthday_day) {
-				classList.push('square-birthday');
-				title = dataService.getBirthday();
+			if(square.events.length) {
+				classList.push('square-events-' + square.events.length);
 			}
 
 			squareHTML = squareHTML + '<div class="square '+ classList.join(' ') +'" data-id="'+square.id+'" title="'+title+'">'
 
+			if (square.events.length) {
+				squareHTML = squareHTML + square.events.length;
+			}
+
 			squareHTML = squareHTML + '</div>'
-
-
-	
 
 			result = result + squareHTML
 

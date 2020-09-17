@@ -67,3 +67,15 @@
     opacity: .6;
     pointer-events: none;
 }
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.float-left {
+    float: left;
+}
+
+.m-r-8 {
+    margin-right: 8px;
+}

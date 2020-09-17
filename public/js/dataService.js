@@ -31,6 +31,14 @@ function DataService() {
 		return data.squares
 	}
 
+	function setEvents(events) {
+		data.events = events
+	}
+
+	function getEvents(){
+		return data.events
+	}
+
 	return {
 
 		setData: setData,
@@ -40,7 +48,10 @@ function DataService() {
 		getBirthday: getBirthday,
 
 		setSquares: setSquares,
-		getSquares: getSquares
+		getSquares: getSquares,
+
+		setEvents: setEvents,
+		getEvents: getEvents
 
 	}
 

@@ -46,6 +46,8 @@
             <button class="save-button saveButton">Сохранить</button>
             <button class="export-button exportButton">Экспорт</button>
 
+            <button class="add-event-button-dialog addEventButtonDialog">Добавить событие</button>
+
         </div>
 
         <div class="app-left-section">
@@ -58,7 +60,10 @@
 
         <div class="app-right-section">
 
-            <div class="timeline-container timelineContainer">
+            <h2 class="text-center" style="margin: 8px">События</h2>
+
+            <div class="events-container eventsContainer">
+
                 
             </div>
 
@@ -66,7 +71,68 @@
 
     </div>
 
+    <div class="add-event-dialog-container addEventDialogContainer">
+        
+        <div class="add-event-dialog">
 
+            <div>
+                <label class="display-block">Название</label>
+                <input type="text" name="eventName" class="event-name-input eventNameInput">
+            </div>
+
+            <div class="m-t-8">
+                <label class="display-block">Тип</label>
+                <select type="date" name="eventType" class="event-type-input eventTypeInput">
+                    <option value="1">Событие</option>
+                    <option value="2">Регулярное Событие</option>
+                    <option value="3">Период</option>
+                </select>
+            </div>
+
+            <div class="event-date-single-holder active eventDateSingleHolder">
+
+                <div class="m-t-8">
+                    <label class="display-block">Дата</label>
+                    <input type="date" name="eventDate" class="event-date-input eventDateInput" >
+                </div>
+            </div>
+
+            <div class="event-date-regular-holder eventDateRegularHolder">
+
+                <div class="m-t-8">
+                    <label class="display-block">Выражение Cron</label>
+                    <input type="text" name="eventDate" class="event-date-cront-input eventDateCronInput" >
+                </div>
+            </div>
+
+            <div class="event-date-range-holder eventDateRangeHolder overflow-hidden">
+
+                <div class="m-t-8 float-left m-r-8" style="with: 49%" >
+                    <label class="display-block">От </label>
+                    <input type="date" name="eventDateFrom" class="event-date-from-input eventDateFromInput" >
+                </div>
+
+                <div class="m-t-8 float-left" style="with: 49%" >
+                    <label class="display-block">До </label>
+                    <input type="date" name="eventDateTo" class="event-date-to-input eventDateToInput" >
+                </div>
+
+            </div>
+
+            
+            <div class="m-t-8">
+                <label class="display-block">Текст</label>
+                <textarea name="eventText" class="event-text-input eventTextInput"></textarea>
+            </div>
+
+            <div class="overflow-hidden m-t-8">
+                <button class="close-event-button closeEventButton">Закрыть</button>
+                <button class="add-event-button addEventButton">Добавить</button>
+            </div>
+            
+        </div>
+
+    </div>
  
 </div>
 
@@ -79,6 +145,7 @@
 <script src="js/dataService.js"></script>
 <script src="js/dataHelper.js"></script>
 <script src="js/calendarModule.js"></script>
+<script src="js/eventsModule.js"></script>
 <script src="js/main.js"></script>
 
 </body>

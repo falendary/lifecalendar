@@ -62,7 +62,8 @@ function DataHelper() {
 					id: toMD5(currentYear + '_' + (w + 1)),
 					week: w + 1,
 					year: currentYear,
-					startDay: getDateOfWeek(w+1, currentYear)
+					startDay: getDateOfWeek(w+1, currentYear),
+					events: []
 				}
 
 				result.push(square)
@@ -73,28 +74,6 @@ function DataHelper() {
 		}
 
 		return result;
-
-	}
-
-	function markBirthdaySquare(squares, birthday){
-
-		var dateBirthday = new Date(birthday)
-
-		var pieces = birthday.split('-')
-		var year = parseInt(pieces[0])
-
-		var week = getWeekNumber(dateBirthday);
-
-		for (var i = 0; i < squares.length; i = i + 1) {
-
-			if (squares[i].year == year && squares[i].week == week) {
-				squares[i].has_birthday_day = true
-			}
-
-
-		}		
-
-		return squares
 
 	}
 
@@ -159,8 +138,8 @@ function DataHelper() {
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
-		markBirthdaySquare: markBirthdaySquare,
-		markLivedSquares: markLivedSquares
+		markLivedSquares: markLivedSquares,
+		getWeekNumber: getWeekNumber
 	}
 
 }
