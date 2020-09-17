@@ -30,6 +30,10 @@ function syncEventsWithSquares() {
   var squares = dataService.getSquares();
   var events = dataService.getEvents();
 
+  squares.forEach(function(square) {
+    square.events = []
+  })
+
   events.forEach(function(event){
 
      if (event.type == 1 || !event.type) {
@@ -43,11 +47,6 @@ function syncEventsWithSquares() {
      squares.forEach(function(square) {
 
         if(square.year == yearNumber && square.week == weekNumber) {
-
-          if (!square.events) {
-            square.events = []
-          }
-
           square.events.push(event)
         }
 
@@ -140,7 +139,7 @@ function addInterfaceEventListeners(){
 
     var event = {
       id: toMD5(events.length + 1),
-      type: parseInt(eventTypeInput, 10),
+      type: parseInt(eventTypeInput.value, 10),
       name: eventNameInput.value,
       text: eventTextInput.value
     }
@@ -168,6 +167,7 @@ function addInterfaceEventListeners(){
 
     addEventDialogContainer.classList.remove('active')
     save();
+    syncEventsWithSquares();
     render();
 
   })
