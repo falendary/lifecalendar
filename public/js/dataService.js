@@ -39,6 +39,14 @@ function DataService() {
 		return data.events
 	}
 
+	function setFilters(filters) {
+		data.filters = filters
+	}
+
+	function getFilters(){
+		return data.filters
+	}
+
 	return {
 
 		setData: setData,
@@ -51,7 +59,10 @@ function DataService() {
 		getSquares: getSquares,
 
 		setEvents: setEvents,
-		getEvents: getEvents
+		getEvents: getEvents,
+
+		setFilters: setFilters,
+		getFilters: getFilters
 
 	}
 

@@ -481,6 +481,61 @@ function addInterfaceEventListeners(){
 
   })
 
+  var birthday = dataService.getBirthday();
+  var birthdayDate = new Date(birthday)
+  var birthdayYear = birthdayDate.getFullYear();
+
+  var slider = document.querySelector('.yearSlider');
+
+  var startMin = birthdayYear + 16
+  var startMax = birthdayYear + 40
+
+  var filters = dataService.getFilters();
+
+  if (filters) {
+    startMin = filters.year_from;
+    startMax = filters.year_to;
+  }
+
+  noUiSlider.create(slider, {
+      start: [startMin, startMax],
+      connect: true,
+      tooltips: true,
+      step: 1,
+      range: {
+          'min': birthdayYear - 1,
+          'max': birthdayYear + 100
+      },
+      format: {
+        to: function (value) {
+            return parseInt(value, 10)
+        },
+         from: function (value) {
+            return value
+        }
+      }
+  });
+
+  slider.noUiSlider.on('change', function () {
+
+    console.log('change here', slider.noUiSlider.get());
+
+    var data = slider.noUiSlider.get()
+
+    var filters = dataService.getFilters();
+
+    if (!filters) {
+      filters = {}
+    }
+
+    filters.year_from = data[0]
+    filters.year_to = data[1]
+
+    dataService.setFilters(filters)
+    render();
+
+  });
+
 }
 
 function render(){
@@ -608,7 +663,6 @@ $(document).ready(function(){
   $('.eventColorInput').spectrum({
      allowEmpty: true
   });
-
 
   init();
 

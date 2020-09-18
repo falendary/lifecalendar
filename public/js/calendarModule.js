@@ -111,14 +111,40 @@ function CalendarModule(dataService) {
 
 		var result = '';
 
-		var squares = dataService.getSquares()
+		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
 
 		result = result + '<div class="calendar-holder">'
 
+
+
+		var filters = dataService.getFilters();
+
+		if(filters) {
+
+			squares = squares.filter(function(square){
+
+				var result = false;
+
+				if (filters.year_from && filters.year_to) {
+
+					if (square.year > filters.year_from && square.year < filters.year_to) {
+						result = true;
+					}
+
+				}
+
+				return result
+
+			})
+
+		}
+
 		var current_year = squares[0].year
 
-	
 		result = result + '<div class="year-hr">' + current_year + '</div>'
+
+
+		console.log('squares', squares);
 
 		squares.forEach(function(square){
 
