@@ -9,6 +9,8 @@
     <title>Lifecalendar</title>
 
     <link rel="stylesheet" type="text/css" href="css/lib/toastr.css">
+    <link rel="stylesheet" type="text/css" href="css/lib/spectrum.css">
+    <link rel="stylesheet" type="text/css" href="css/lib/nouislider.css">
     <link rel="stylesheet" type="text/css" href="css/fontawesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -16,6 +18,7 @@
 </head>
 
 <body>
+
 
 <div class="main-container">
 
@@ -41,12 +44,14 @@
 
         <div class="interface-container interfaceContainer">
 
-            <div class="birthday-holder birthdayHolder"></div>
-            
-            <button class="save-button saveButton">Сохранить</button>
-            <button class="export-button exportButton">Экспорт</button>
+            <button class="interface-button save-button saveButton">Сохранить</button>
+            <button class="interface-button export-button exportButton">Экспорт</button>
 
-            <button class="add-event-button-dialog addEventButtonDialog">Добавить событие</button>
+            <button class="interface-button add-event-button-dialog addEventButtonDialog">Добавить событие</button>
+
+            <button class="interface-button toggle-years-button-dialog toggleYearsButtonDialog">Скрыть года</button>
+
+            <div class="year-slider yearSlider"></div>
 
         </div>
 
@@ -75,9 +80,11 @@
         
         <div class="event-dialog">
 
-            <div>
+            <div class="position-relative">
                 <label class="display-block">Название</label>
                 <input type="text" name="eventName" class="event-name-input eventNameInput">
+
+                <div class="event-id-holder eventIdHolder"></div>
             </div>
 
             <div class="m-t-8">
@@ -100,9 +107,26 @@
             <div class="event-date-regular-holder eventDateRegularHolder">
 
                 <div class="m-t-8">
-                    <label class="display-block">Выражение Cron</label>
-                    <input type="text" name="eventDate" class="event-date-cront-input eventDateCronInput" >
+                    <label class="display-block">Начиная с </label>
+                    <input type="date" name="eventDateRegularStart" class="event-date-regular-start-input eventDateRegularStartInput" >
                 </div>
+                
+                <div class="m-t-8">
+                    <label class="display-block">Тип</label>
+                    <select type="date" name="eventDateRegularType" class="event-date-regular-type eventDateRegularType">
+                        <option value="1">Каждый день</option>
+                        <option value="2">Каждую неделю</option>
+                        <option value="3">Каждый месяц</option>
+                        <option value="4">Каждый год</option>
+                    </select>
+                </div>
+
+                <div class="m-t-8">
+                    <label class="display-block">До</label>
+                    <input type="date" name="eventDateRegularEnd" class="event-date-regular-end-input eventDateRegularEndInput">
+                </div>
+
+
             </div>
 
             <div class="event-date-range-holder eventDateRangeHolder overflow-hidden">
@@ -125,11 +149,19 @@
                 <textarea name="eventText" class="event-text-input eventTextInput"></textarea>
             </div>
 
-            <div class="overflow-hidden m-t-8">
+            <div class="m-t-8">
+                <label class="display-block">Цвет</label>
+                <input type='text' name="eventColor" class="event-color-input eventColorInput" >
+            </div>
+
+            <div class="overflow-hidden m-t-16">
                 <button class="close-event-button closeEventButton">Закрыть</button>
                 <button class="add-event-button addEventButton">Добавить</button>
 
                 <button class="save-event-button saveEventButton">Сохранить</button>
+
+                <button class="delete-event-button deleteEventButton m-r-8">Удалить</button>
+                
             </div>
             
         </div>
@@ -138,9 +170,12 @@
  
 </div>
 
+
 <script src="js/lib/crypto.js"></script>
 <script src="js/lib/jquery.js"></script>
 <script src="js/lib/toastr.js"></script>
+<script src="js/lib/spectrum.js"></script>
+<script src="js/lib/nouislider.js"></script>
 
 
 <script src="js/base.js"></script>

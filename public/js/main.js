@@ -25,6 +25,47 @@ function save(){
   localStorage.setItem('data', JSON.stringify(data));
 }
 
+function resetForm() {
+
+    var eventNameInput = document.querySelector('.eventNameInput')
+    var eventTypeInput = document.querySelector('.eventTypeInput')
+    var eventTextInput = document.querySelector('.eventTextInput')
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
+    var eventDateSingleHolder = document.querySelector('.eventDateSingleHolder');
+    var eventDateRangeHolder = document.querySelector('.eventDateRangeHolder');
+    var eventDateRegularHolder = document.querySelector('.eventDateRegularHolder');
+
+
+    eventNameInput.value = '';
+    eventTextInput.value = '';
+    eventTypeInput.value = null;
+
+    eventDateFromInput.value = null;
+
+    eventDateToInput.value = null;
+    eventDateInput.value = null;
+
+    eventDateRegularStartInput.value = null;
+    eventDateRegularEndInput.value = null;
+    eventDateRegularType.value = null;
+
+    eventDateSingleHolder.classList.remove('active');
+    eventDateRangeHolder.classList.remove('active');
+    eventDateRegularHolder.classList.remove('active');
+
+    eventDateSingleHolder.classList.add('active')
+
+}
+
 function syncEventsWithSquares() {
 
   var squares = dataService.getSquares();
@@ -36,23 +77,97 @@ function syncEventsWithSquares() {
 
   events.forEach(function(event){
 
+    
+
      if (event.type == 1 || !event.type) {
 
-      var eventDate = new Date(event.date)
-      var yearNumber = eventDate.getFullYear()
-      var weekNumber = dataHelper.getWeekNumber(eventDate)
+        var eventDate = new Date(event.date)
+        var yearNumber = eventDate.getFullYear()
+        var weekNumber = dataHelper.getWeekNumber(eventDate)
+
+        squares.forEach(function(square) {
+
+          if(square.year == yearNumber && square.week == weekNumber) {
+              var eventItem = Object.assign({}, event)
+
+              square.events.push(eventItem)
+          }
+
+        })
 
      }
 
-     squares.forEach(function(square) {
+     if (event.type == 2) {
 
-        if(square.year == yearNumber && square.week == weekNumber) {
-          square.events.push(event)
-        }
+        var subEvents = dataHelper.generateRegularEvents(event)
+        
+        subEvents.forEach(function(subEvent) {
+
+          var subEventDate = new Date(subEvent.date)
+          var subEventYearNumber = subEventDate.getFullYear()
+          var subEventWeekNumber = dataHelper.getWeekNumber(subEventDate)
+
+          squares.forEach(function(square) {
+
+            if(square.year == subEventYearNumber && square.week == subEventWeekNumber) {
+              square.events.push(subEvent)
+            }
+
+          })
+
+        })
+
+     }
+
+     if (event.type == 3) {
+
+        var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+
+        var years = [];
+        var weeks = {};
+
+        dates.forEach(function(date){
+
+            var eventDate = new Date(date)
+
+            var year = new Date(eventDate).getFullYear();
+            var week = dataHelper.getWeekNumber(eventDate);
+
+            if (years.indexOf(year) === -1) {
+              years.push(year)
+            }
+
+            if (!weeks.hasOwnProperty(year)) {
+                weeks[year] = []
+            }
+            if (weeks[year].indexOf(week) === -1) {
+              weeks[year].push(week);
+            }
+
+        })
+
+        squares.forEach(function(square) {
+
+          if(years.indexOf(square.year) !== -1) {
+
+            if (weeks[square.year].indexOf(square.week) !== -1) {
+
+              var eventItem = Object.assign({}, event)
+
+              square.events.push(eventItem)
 
 
-    })
 
+            }
+
+          }
+
+        })
+
+
+     }
+
+     
   })
 
  
@@ -68,7 +183,26 @@ function addInterfaceEventListeners(){
   var saveEventButton = document.querySelector('.saveEventButton')
   var closeEventButton = document.querySelector('.closeEventButton')
   var eventTypeInput = document.querySelector('.eventTypeInput')
+  var deleteEventButton = document.querySelector('.deleteEventButton')
+  var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
 
+  var showYears = true;
+
+  toggleYearsButtonDialog.addEventListener('click', function(event){
+
+    showYears = !showYears;
+
+
+    if (showYears) {
+      toggleYearsButtonDialog.innerHTML = 'Скрыть года'
+      calendarContainer.classList.remove('hide-years')
+    } else {
+      toggleYearsButtonDialog.innerHTML = 'Показать года'
+      calendarContainer.classList.add('hide-years')
+    }
+
+  })
+  
   saveButton.addEventListener('click', function(event){
 
     console.log("Save")
@@ -76,6 +210,8 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     save();
+
+    toastr.success('Сохранено')
 
   })
 
@@ -91,6 +227,8 @@ function addInterfaceEventListeners(){
 
     downloadFile(JSON.stringify(data), 'application/json',  'lifecalendar ' + date + '.json')
 
+    toastr.success('Успешно экспортировано')
+
   })
 
   addEventButtonDialog.addEventListener('click', function(event) {
@@ -99,6 +237,7 @@ function addInterfaceEventListeners(){
 
     event.preventDefault();
 
+    eventDialogContainer.classList.remove('edit-dialog')
     eventDialogContainer.classList.add('add-dialog')
     eventDialogContainer.classList.add('active')
 
@@ -133,9 +272,20 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     var eventNameInput = document.querySelector('.eventNameInput')
-    var eventDateInput = document.querySelector('.eventDateInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
+    
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
+    var eventColorInput = document.querySelector('.eventColorInput')
 
     var events = dataService.getEvents()
 
@@ -143,33 +293,36 @@ function addInterfaceEventListeners(){
       events = [];
     }
 
-    var event = {
-      id: toMD5(events.length + 1),
+    var targetEvent = {
+      id: toMD5(events.length + 1 + '_' + new Date().getTime()),
       type: parseInt(eventTypeInput.value, 10),
       name: eventNameInput.value,
-      text: eventTextInput.value
+      text: eventTextInput.value,
+      color: eventColorInput.value
     }
 
-    if (event.type == 1) {
-      event.date = new Date(eventDateInput.value)
+    if (targetEvent.type == 1) {
+      targetEvent.date = new Date(eventDateInput.value)
     }
 
-    if (event.type == 2) {
-      event.cron =  new Date(eventDateInput.value)
+    if (targetEvent.type == 2) {
+      targetEvent.date_from = new Date(eventDateRegularStartInput.value);
+      targetEvent.date_to = new Date(eventDateRegularEndInput.value);
+      targetEvent.date_type = eventDateRegularType.value;
     }
 
-    if (event.type == 3) {
-      event.date_from = new Date(eventDateInput.value)
-      event.date_to = new Date(eventDateInput.value)
+    if (targetEvent.type == 3) {
+      targetEvent.date_from = new Date(eventDateFromInput.value)
+      targetEvent.date_to = new Date(eventDateToInput.value)
     }
 
-    events.push(event)
+    events.push(targetEvent)
+
+    toastr.success('Событие добавлено')
 
     dataService.setEvents(events)
 
-    eventNameInput.value = '';
-    eventDateInput.value = null;
-    eventTextInput.value = '';
+    resetForm();
 
     eventDialogContainer.classList.remove('active')
     save();
@@ -185,9 +338,20 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     var eventNameInput = document.querySelector('.eventNameInput')
-    var eventDateInput = document.querySelector('.eventDateInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
+
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
+    var eventColorInput = document.querySelector('.eventColorInput')
 
     var events = dataService.getEvents()
 
@@ -206,25 +370,39 @@ function addInterfaceEventListeners(){
     targetEvent.type = parseInt(eventTypeInput.value, 10),
     targetEvent.name = eventNameInput.value
     targetEvent.text = eventTextInput.value
+    targetEvent.color = eventColorInput.value
 
-    if (event.type == 1) {
+    if (targetEvent.type == 1) {
       targetEvent.date = new Date(eventDateInput.value)
     }
 
-    if (event.type == 2) {
-      targetEvent.cron =  new Date(eventDateInput.value)
+    if (targetEvent.type == 2) {
+      targetEvent.date_from = new Date(eventDateRegularStartInput.value);
+      targetEvent.date_to = new Date(eventDateRegularEndInput.value);
+      targetEvent.date_type = eventDateRegularType.value;
+
+      console.log('eventDateRegularStartInput', eventDateRegularStartInput.value);
+      console.log('eventDateRegularEndInput', eventDateRegularEndInput.value);
+      console.log('eventDateRegularType', eventDateRegularType.value);
     }
 
-    if (event.type == 3) {
-      targetEvent.date_from = new Date(eventDateInput.value)
-      targetEvent.date_to = new Date(eventDateInput.value)
+    if (targetEvent.type == 3) {
+      targetEvent.date_from = new Date(eventDateFromInput.value)
+      targetEvent.date_to = new Date(eventDateToInput.value)
+
+      console.log('eventDateFromInput', eventDateFromInput.value);
+      console.log('eventDateToInput', eventDateToInput.value);
     }
+
+    
+
+    console.log('targetEvent', targetEvent);
 
     dataService.setEvents(events)
 
-    eventNameInput.value = '';
-    eventDateInput.value = null;
-    eventTextInput.value = '';
+    toastr.success('Событие обновлено')
+
+    resetForm();
 
     eventDialogContainer.classList.remove('active')
     save();
@@ -232,6 +410,42 @@ function addInterfaceEventListeners(){
     render();
 
   })
+
+  deleteEventButton.addEventListener('click', function(event) {
+
+    console.log("Close add Event dialog")
+
+    event.preventDefault();
+
+    var targetEvent;
+
+    var eventId = eventDialogContainer.dataset.id
+
+    var events = dataService.getEvents()
+
+    events = events.filter(function(item) {
+
+      if (item.id == eventId) {
+        return false
+      }
+
+      return true
+
+    })
+
+    dataService.setEvents(events);
+
+    toastr.success('Событие удалено')
+
+    resetForm();
+
+    eventDialogContainer.classList.remove('active')
+    syncEventsWithSquares();
+    render();
+
+
+  })
+
 
   eventTypeInput.addEventListener('change', function(event) {
 
@@ -267,16 +481,71 @@ function addInterfaceEventListeners(){
 
   })
 
+  var birthday = dataService.getBirthday();
+  var birthdayDate = new Date(birthday)
+  var birthdayYear = birthdayDate.getFullYear();
+
+  var slider = document.querySelector('.yearSlider');
+
+  var startMin = birthdayYear + 16
+  var startMax = birthdayYear + 40
+
+  var filters = dataService.getFilters();
+
+  if (filters) {
+    startMin = filters.year_from;
+    startMax = filters.year_to;
+  }
+
+  noUiSlider.create(slider, {
+      start: [startMin, startMax],
+      connect: true,
+      tooltips: true,
+      step: 1,
+      range: {
+          'min': birthdayYear - 1,
+          'max': birthdayYear + 100
+      },
+      format: {
+        to: function (value) {
+            return parseInt(value, 10)
+        },
+         from: function (value) {
+            return value
+        }
+      }
+  });
+
+  slider.noUiSlider.on('change', function () {
+
+    console.log('change here', slider.noUiSlider.get());
+
+    var data = slider.noUiSlider.get()
+
+    var filters = dataService.getFilters();
+
+    if (!filters) {
+      filters = {}
+    }
+
+    filters.year_from = data[0]
+    filters.year_to = data[1]
+
+    dataService.setFilters(filters)
+    render();
+
+  });
+
 }
 
 function render(){
 
   console.time("render")
 
-  birthdayHolder.innerHTML =  'Birthday: ' + dataService.getBirthday();
   calendarContainer.innerHTML =  calendarModule.render();
   eventsContainer.innerHTML =  eventsModule.render();
 
+  calendarModule.addEventListeners();
   eventsModule.addEventListeners();
 
   console.timeEnd("render")
@@ -287,7 +556,12 @@ function init(){
 
   var data = localStorage.getItem('data');
 
-  console.log('data', data);
+  document.body.addEventListener('click', function(event) {
+
+    console.log('here');
+
+    document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
+  })
 
   if (data) {
     dataService.setData(JSON.parse(data));
@@ -384,4 +658,12 @@ function init(){
   
 }
 
-init();
+$(document).ready(function(){
+
+  $('.eventColorInput').spectrum({
+     allowEmpty: true
+  });
+
+  init();
+
+})
