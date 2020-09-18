@@ -88,7 +88,9 @@ function syncEventsWithSquares() {
         squares.forEach(function(square) {
 
           if(square.year == yearNumber && square.week == weekNumber) {
-            square.events.push(event)
+              var eventItem = Object.assign({}, event)
+
+              square.events.push(eventItem)
           }
 
         })
@@ -149,7 +151,13 @@ function syncEventsWithSquares() {
           if(years.indexOf(square.year) !== -1) {
 
             if (weeks[square.year].indexOf(square.week) !== -1) {
-              square.events.push(event)
+
+              var eventItem = Object.assign({}, event)
+
+              square.events.push(eventItem)
+
+
+
             }
 
           }
@@ -175,7 +183,26 @@ function addInterfaceEventListeners(){
   var saveEventButton = document.querySelector('.saveEventButton')
   var closeEventButton = document.querySelector('.closeEventButton')
   var eventTypeInput = document.querySelector('.eventTypeInput')
+  var deleteEventButton = document.querySelector('.deleteEventButton')
+  var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
 
+  var showYears = true;
+
+  toggleYearsButtonDialog.addEventListener('click', function(event){
+
+    showYears = !showYears;
+
+
+    if (showYears) {
+      toggleYearsButtonDialog.innerHTML = 'Скрыть года'
+      calendarContainer.classList.remove('hide-years')
+    } else {
+      toggleYearsButtonDialog.innerHTML = 'Показать года'
+      calendarContainer.classList.add('hide-years')
+    }
+
+  })
+  
   saveButton.addEventListener('click', function(event){
 
     console.log("Save")
@@ -183,6 +210,8 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     save();
+
+    toastr.success('Сохранено')
 
   })
 
@@ -197,6 +226,8 @@ function addInterfaceEventListeners(){
     var date = new Date().toISOString().split('T')[0]
 
     downloadFile(JSON.stringify(data), 'application/json',  'lifecalendar ' + date + '.json')
+
+    toastr.success('Успешно экспортировано')
 
   })
 
@@ -243,6 +274,7 @@ function addInterfaceEventListeners(){
     var eventNameInput = document.querySelector('.eventNameInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
+    
 
     var eventDateInput = document.querySelector('.eventDateInput')
 
@@ -253,6 +285,7 @@ function addInterfaceEventListeners(){
     var eventDateRegularType = document.querySelector('.eventDateRegularType')
     var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
+    var eventColorInput = document.querySelector('.eventColorInput')
 
     var events = dataService.getEvents()
 
@@ -261,10 +294,11 @@ function addInterfaceEventListeners(){
     }
 
     var targetEvent = {
-      id: toMD5(events.length + 1),
+      id: toMD5(events.length + 1 + '_' + new Date().getTime()),
       type: parseInt(eventTypeInput.value, 10),
       name: eventNameInput.value,
-      text: eventTextInput.value
+      text: eventTextInput.value,
+      color: eventColorInput.value
     }
 
     if (targetEvent.type == 1) {
@@ -283,6 +317,8 @@ function addInterfaceEventListeners(){
     }
 
     events.push(targetEvent)
+
+    toastr.success('Событие добавлено')
 
     dataService.setEvents(events)
 
@@ -315,6 +351,8 @@ function addInterfaceEventListeners(){
     var eventDateRegularType = document.querySelector('.eventDateRegularType')
     var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
+    var eventColorInput = document.querySelector('.eventColorInput')
+
     var events = dataService.getEvents()
 
     var targetEvent;
@@ -332,6 +370,7 @@ function addInterfaceEventListeners(){
     targetEvent.type = parseInt(eventTypeInput.value, 10),
     targetEvent.name = eventNameInput.value
     targetEvent.text = eventTextInput.value
+    targetEvent.color = eventColorInput.value
 
     if (targetEvent.type == 1) {
       targetEvent.date = new Date(eventDateInput.value)
@@ -361,6 +400,8 @@ function addInterfaceEventListeners(){
 
     dataService.setEvents(events)
 
+    toastr.success('Событие обновлено')
+
     resetForm();
 
     eventDialogContainer.classList.remove('active')
@@ -369,6 +410,42 @@ function addInterfaceEventListeners(){
     render();
 
   })
+
+  deleteEventButton.addEventListener('click', function(event) {
+
+    console.log("Close add Event dialog")
+
+    event.preventDefault();
+
+    var targetEvent;
+
+    var eventId = eventDialogContainer.dataset.id
+
+    var events = dataService.getEvents()
+
+    events = events.filter(function(item) {
+
+      if (item.id == eventId) {
+        return false
+      }
+
+      return true
+
+    })
+
+    dataService.setEvents(events);
+
+    toastr.success('Событие удалено')
+
+    resetForm();
+
+    eventDialogContainer.classList.remove('active')
+    syncEventsWithSquares();
+    render();
+
+
+  })
+
 
   eventTypeInput.addEventListener('change', function(event) {
 
@@ -410,10 +487,10 @@ function render(){
 
   console.time("render")
 
-  birthdayHolder.innerHTML =  'День рождения: ' + dataService.getBirthday();
   calendarContainer.innerHTML =  calendarModule.render();
   eventsContainer.innerHTML =  eventsModule.render();
 
+  calendarModule.addEventListeners();
   eventsModule.addEventListeners();
 
   console.timeEnd("render")
@@ -423,6 +500,13 @@ function render(){
 function init(){
 
   var data = localStorage.getItem('data');
+
+  document.body.addEventListener('click', function(event) {
+
+    console.log('here');
+
+    document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
+  })
 
   if (data) {
     dataService.setData(JSON.parse(data));
@@ -519,4 +603,13 @@ function init(){
   
 }
 
-init();
+$(document).ready(function(){
+
+  $('.eventColorInput').spectrum({
+     allowEmpty: true
+  });
+
+
+  init();
+
+})

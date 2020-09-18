@@ -156,6 +156,7 @@ function DataHelper() {
 		var eventDateFromMonth = eventDateFrom.getMonth();
 		var eventDateFromYear = eventDateFrom.getFullYear();
 		var eventDateToYear = eventDateTo.getFullYear();
+		var eventDateToMonth = eventDateTo.getMonth();
 
 		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
 
@@ -169,6 +170,49 @@ function DataHelper() {
 
 		if (event.date_type == 3) { // monthly
 			// TODO monthly logic
+
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+
+				if (eventDateFromDate == dateDate) {
+
+					if (dateYear <= eventDateToYear ) {
+
+						if (dateYear == eventDateToYear) {
+
+							if (dateMonth <= eventDateToMonth) {
+								result = true;
+							}
+
+						} else {
+							result = true;
+						}
+
+						
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date;
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
 		}
 
 		if (event.date_type == 4) { // yearly
@@ -185,7 +229,7 @@ function DataHelper() {
 
 					if (eventDateFromMonth == dateMonth) {
 
-						if (dateYear < eventDateToYear) {
+						if (dateYear <= eventDateToYear) {
 							result = true;
 						}
 					}

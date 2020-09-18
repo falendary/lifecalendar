@@ -14,7 +14,6 @@ body {
 }
 
 
-
 .init-container {
     display: none;
     padding-top: 60px;
@@ -48,6 +47,9 @@ body {
 .calendar-container {
     padding-top: 80px;
 }
+.calendar-container.hide-years .year-hr {
+    display: none;
+}
 
 
 .interface-container {
@@ -57,7 +59,8 @@ body {
     top: 0;
     left: 0;
     background: #fff;
-    z-index: 1;
+    z-index: 2;
+    padding: 16px;
 }
 
 
@@ -77,16 +80,60 @@ body {
     float: left;
     margin: 6px;
     padding: 8px;
+    position: relative;
+    cursor: pointer;
+}
+
+.calendar-holder .square:hover {
+    opacity: .5;
 }
 
 .calendar-holder .square.square-lived {
     background: #363636;
+    color: #fff;
+}
+.calendar-holder .square.square-has-events {
+    color: #363636;
 }
 
-.calendar-holder .square.square-birthday {
-    background: aqua;
-    border: none;
+.calendar-holder .square .event-overlay-holder {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-1 {
+    height: 100%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-2 {
+   height: 50%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-3 {
+   height: 33%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-4 {
+   height: 25%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-5 {
+   height: 20%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-6 {
+   height: 16.5%; 
+}
+
+.square-events-count {
+    position: relative;
+    z-index: 1;
+}
+
+
 .year-hr {
     opacity: .7;
     padding-left: 60px;
@@ -173,6 +220,10 @@ body {
     display: none
 }
 
+.event-dialog-container.add-dialog .delete-event-button {
+    display: none
+}
+
 
 .add-event-button {
     float: right;
@@ -184,6 +235,11 @@ body {
     display: block;
 }
 
+.delete-event-button {
+    float: right;
+    display: block;
+}
+
 .close-event-button {
     float: left;
     display: block;
@@ -191,8 +247,25 @@ body {
 
 .event-item {
     padding: 8px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 34px;
 
 }
+
+.event-item-color {
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+
+.event-item:hover {
+    background: #ddd;
+}
+
 .event-item-date {
     font-size: 11px;
     color: #1f1f1f;
@@ -248,4 +321,39 @@ body {
     background: orange;
     border: 0;
     color: #fff;
+}
+
+.event-id-holder {
+    position: absolute;
+    top: 5px;
+    font-size: 10px;
+    color: grey;
+    right: 0;
+}
+
+.sp-colorize-container.sp-add-on {
+    width: 32px !important;
+}
+
+.interface-button {
+    background: #fff;
+    padding: 8px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.interface-button:hover {
+    opacity: .5;
+}
+
+.square-context-menu {
+    position: absolute;
+    min-width: 320px;
+    background: #fff;
+    border: 1px solid #000;
+    z-index: 2;
+}
+
+.square-context-menu {
+    padding: 16px;
 }

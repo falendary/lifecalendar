@@ -56,9 +56,12 @@ function EventsModule(dataService) {
     					document.querySelector('.eventDateRangeHolder').classList.add('active')
     				}
 
+    				var eventIdHolder = document.querySelector('.eventIdHolder')
+
     				var eventNameInput = document.querySelector('.eventNameInput')
 				    var eventTypeInput = document.querySelector('.eventTypeInput')
 				    var eventTextInput = document.querySelector('.eventTextInput')
+				    
 
 				    var eventDateInput = document.querySelector('.eventDateInput')
 
@@ -68,6 +71,8 @@ function EventsModule(dataService) {
 				    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
 				    var eventDateRegularType = document.querySelector('.eventDateRegularType')
 				    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
+				    eventIdHolder.innerHTML = eventId;
 
 				    eventNameInput.value = sourceEvent.name;
 				    eventTypeInput.value = sourceEvent.type;
@@ -186,6 +191,14 @@ function EventsModule(dataService) {
 				eventDate = eventDate + ' - '
 				eventDate = eventDate + new Date(event.date_to).toISOString().split('T')[0]
 			}
+
+			var eventColor = 'transparent';
+
+			if(event.color) {
+				eventColor = event.color;
+			}
+
+			eventHtml = eventHtml + '<div class="event-item-color" style="background: '+eventColor+'"></div>'
 
 			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
