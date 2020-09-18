@@ -25,6 +25,47 @@ function save(){
   localStorage.setItem('data', JSON.stringify(data));
 }
 
+function resetForm() {
+
+    var eventNameInput = document.querySelector('.eventNameInput')
+    var eventTypeInput = document.querySelector('.eventTypeInput')
+    var eventTextInput = document.querySelector('.eventTextInput')
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
+    var eventDateSingleHolder = document.querySelector('.eventDateSingleHolder');
+    var eventDateRangeHolder = document.querySelector('.eventDateRangeHolder');
+    var eventDateRegularHolder = document.querySelector('.eventDateRegularHolder');
+
+
+    eventNameInput.value = '';
+    eventTextInput.value = '';
+    eventTypeInput.value = null;
+
+    eventDateFromInput.value = null;
+
+    eventDateToInput.value = null;
+    eventDateInput.value = null;
+
+    eventDateRegularStartInput.value = null;
+    eventDateRegularEndInput.value = null;
+    eventDateRegularType.value = null;
+
+    eventDateSingleHolder.classList.remove('active');
+    eventDateRangeHolder.classList.remove('active');
+    eventDateRegularHolder.classList.remove('active');
+
+    eventDateSingleHolder.classList.add('active')
+
+}
+
 function syncEventsWithSquares() {
 
   var squares = dataService.getSquares();
@@ -36,60 +77,84 @@ function syncEventsWithSquares() {
 
   events.forEach(function(event){
 
+    
+
      if (event.type == 1 || !event.type) {
 
-      var eventDate = new Date(event.date)
-      var yearNumber = eventDate.getFullYear()
-      var weekNumber = dataHelper.getWeekNumber(eventDate)
+        var eventDate = new Date(event.date)
+        var yearNumber = eventDate.getFullYear()
+        var weekNumber = dataHelper.getWeekNumber(eventDate)
 
-      squares.forEach(function(square) {
+        squares.forEach(function(square) {
 
-        if(square.year == yearNumber && square.week == weekNumber) {
-          square.events.push(event)
-        }
+          if(square.year == yearNumber && square.week == weekNumber) {
+            square.events.push(event)
+          }
 
-      })
+        })
+
+     }
+
+     if (event.type == 2) {
+
+        var subEvents = dataHelper.generateRegularEvents(event)
+        
+        subEvents.forEach(function(subEvent) {
+
+          var subEventDate = new Date(subEvent.date)
+          var subEventYearNumber = subEventDate.getFullYear()
+          var subEventWeekNumber = dataHelper.getWeekNumber(subEventDate)
+
+          squares.forEach(function(square) {
+
+            if(square.year == subEventYearNumber && square.week == subEventWeekNumber) {
+              square.events.push(subEvent)
+            }
+
+          })
+
+        })
 
      }
 
      if (event.type == 3) {
 
-      var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+        var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
 
-      var years = [];
-      var weeks = {};
+        var years = [];
+        var weeks = {};
 
-      dates.forEach(function(date){
+        dates.forEach(function(date){
 
-          var eventDate = new Date(date)
+            var eventDate = new Date(date)
 
-          var year = new Date(eventDate).getFullYear();
-          var week = dataHelper.getWeekNumber(eventDate);
+            var year = new Date(eventDate).getFullYear();
+            var week = dataHelper.getWeekNumber(eventDate);
 
-          if (years.indexOf(year) === -1) {
-            years.push(year)
+            if (years.indexOf(year) === -1) {
+              years.push(year)
+            }
+
+            if (!weeks.hasOwnProperty(year)) {
+                weeks[year] = []
+            }
+            if (weeks[year].indexOf(week) === -1) {
+              weeks[year].push(week);
+            }
+
+        })
+
+        squares.forEach(function(square) {
+
+          if(years.indexOf(square.year) !== -1) {
+
+            if (weeks[square.year].indexOf(square.week) !== -1) {
+              square.events.push(event)
+            }
+
           }
 
-          if (!weeks.hasOwnProperty(year)) {
-              weeks[year] = []
-          }
-          if (weeks[year].indexOf(week) === -1) {
-            weeks[year].push(week);
-          }
-
-      })
-
-      squares.forEach(function(square) {
-
-        if(years.indexOf(square.year) !== -1) {
-
-          if (weeks[square.year].indexOf(square.week) !== -1) {
-            square.events.push(event)
-          }
-
-        }
-
-      })
+        })
 
 
      }
@@ -141,6 +206,7 @@ function addInterfaceEventListeners(){
 
     event.preventDefault();
 
+    eventDialogContainer.classList.remove('edit-dialog')
     eventDialogContainer.classList.add('add-dialog')
     eventDialogContainer.classList.add('active')
 
@@ -175,11 +241,18 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     var eventNameInput = document.querySelector('.eventNameInput')
-    var eventDateInput = document.querySelector('.eventDateInput')
-    var eventDateFromInput = document.querySelector('.eventDateFromInput')
-    var eventDateToInput = document.querySelector('.eventDateToInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
+
 
     var events = dataService.getEvents()
 
@@ -187,35 +260,33 @@ function addInterfaceEventListeners(){
       events = [];
     }
 
-    var event = {
+    var targetEvent = {
       id: toMD5(events.length + 1),
       type: parseInt(eventTypeInput.value, 10),
       name: eventNameInput.value,
       text: eventTextInput.value
     }
 
-    if (event.type == 1) {
-      event.date = new Date(eventDateInput.value)
+    if (targetEvent.type == 1) {
+      targetEvent.date = new Date(eventDateInput.value)
     }
 
-    if (event.type == 2) {
-      event.cron =  new Date(eventDateInput.value)
+    if (targetEvent.type == 2) {
+      targetEvent.date_from = new Date(eventDateRegularStartInput.value);
+      targetEvent.date_to = new Date(eventDateRegularEndInput.value);
+      targetEvent.date_type = eventDateRegularType.value;
     }
 
-    if (event.type == 3) {
+    if (targetEvent.type == 3) {
       targetEvent.date_from = new Date(eventDateFromInput.value)
       targetEvent.date_to = new Date(eventDateToInput.value)
     }
 
-    events.push(event)
+    events.push(targetEvent)
 
     dataService.setEvents(events)
 
-    eventNameInput.value = '';
-    eventDateFromInput.value = null;
-    eventDateToInput.value = null;
-    eventDateInput.value = null;
-    eventTextInput.value = '';
+    resetForm();
 
     eventDialogContainer.classList.remove('active')
     save();
@@ -231,11 +302,18 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     var eventNameInput = document.querySelector('.eventNameInput')
-    var eventDateInput = document.querySelector('.eventDateInput')
-    var eventDateFromInput = document.querySelector('.eventDateFromInput')
-    var eventDateToInput = document.querySelector('.eventDateToInput')
     var eventTypeInput = document.querySelector('.eventTypeInput')
     var eventTextInput = document.querySelector('.eventTextInput')
+
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
     var events = dataService.getEvents()
 
@@ -260,26 +338,30 @@ function addInterfaceEventListeners(){
     }
 
     if (targetEvent.type == 2) {
-      targetEvent.cron =  new Date(eventDateInput.value)
+      targetEvent.date_from = new Date(eventDateRegularStartInput.value);
+      targetEvent.date_to = new Date(eventDateRegularEndInput.value);
+      targetEvent.date_type = eventDateRegularType.value;
+
+      console.log('eventDateRegularStartInput', eventDateRegularStartInput.value);
+      console.log('eventDateRegularEndInput', eventDateRegularEndInput.value);
+      console.log('eventDateRegularType', eventDateRegularType.value);
     }
 
     if (targetEvent.type == 3) {
       targetEvent.date_from = new Date(eventDateFromInput.value)
       targetEvent.date_to = new Date(eventDateToInput.value)
+
+      console.log('eventDateFromInput', eventDateFromInput.value);
+      console.log('eventDateToInput', eventDateToInput.value);
     }
 
-    console.log('eventDateFromInput', eventDateFromInput.value);
-    console.log('eventDateToInput', eventDateToInput.value);
+    
 
     console.log('targetEvent', targetEvent);
 
     dataService.setEvents(events)
 
-    eventNameInput.value = '';
-    eventDateFromInput.value = null;
-    eventDateToInput.value = null;
-    eventDateInput.value = null;
-    eventTextInput.value = '';
+    resetForm();
 
     eventDialogContainer.classList.remove('active')
     save();
@@ -341,8 +423,6 @@ function render(){
 function init(){
 
   var data = localStorage.getItem('data');
-
-  console.log('data', data);
 
   if (data) {
     dataService.setData(JSON.parse(data));

@@ -145,12 +145,81 @@ function DataHelper() {
 	    return dateArray;
 	}
 
+	function generateRegularEvents(event) {
+
+		var subEvents = []
+
+		var eventDateFrom = new Date(event.date_from)
+		var eventDateTo = new Date(event.date_to)
+
+		var eventDateFromDate = eventDateFrom.getDate();
+		var eventDateFromMonth = eventDateFrom.getMonth();
+		var eventDateFromYear = eventDateFrom.getFullYear();
+		var eventDateToYear = eventDateTo.getFullYear();
+
+		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+
+		if (event.date_type == 1) { // daily
+			// TODO daily logic
+		}
+
+		if (event.date_type == 2) { // weekly
+			// TODO weekly logic
+		}
+
+		if (event.date_type == 3) { // monthly
+			// TODO monthly logic
+		}
+
+		if (event.date_type == 4) { // yearly
+
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+
+				if (eventDateFromDate == dateDate) {
+
+					if (eventDateFromMonth == dateMonth) {
+
+						if (dateYear < eventDateToYear) {
+							result = true;
+						}
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date;
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
+		}
+
+		return subEvents;
+
+	}
+
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
 		markLivedSquares: markLivedSquares,
 		getWeekNumber: getWeekNumber,
-		getDates: getDates
+		getDates: getDates,
+		generateRegularEvents: generateRegularEvents
 	}
 
 }

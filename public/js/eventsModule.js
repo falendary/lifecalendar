@@ -23,6 +23,7 @@ function EventsModule(dataService) {
 
 					var eventDialogContainer = document.querySelector('.eventDialogContainer')
 
+					eventDialogContainer.classList.remove('add-dialog')
 					eventDialogContainer.classList.add('edit-dialog')
     				eventDialogContainer.classList.add('active')
     				eventDialogContainer.dataset.id = eventId;
@@ -56,11 +57,17 @@ function EventsModule(dataService) {
     				}
 
     				var eventNameInput = document.querySelector('.eventNameInput')
-				    var eventDateInput = document.querySelector('.eventDateInput')
-				    var eventDateFromInput = document.querySelector('.eventDateFromInput')
-				    var eventDateToInput = document.querySelector('.eventDateToInput')
 				    var eventTypeInput = document.querySelector('.eventTypeInput')
 				    var eventTextInput = document.querySelector('.eventTextInput')
+
+				    var eventDateInput = document.querySelector('.eventDateInput')
+
+				    var eventDateFromInput = document.querySelector('.eventDateFromInput')
+				    var eventDateToInput = document.querySelector('.eventDateToInput')
+
+				    var eventDateRegularStartInput = document.querySelector('.eventDateRegularStartInput')
+				    var eventDateRegularType = document.querySelector('.eventDateRegularType')
+				    var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
 				    eventNameInput.value = sourceEvent.name;
 				    eventTypeInput.value = sourceEvent.type;
@@ -68,6 +75,12 @@ function EventsModule(dataService) {
 
 				    if (sourceEvent.type == 1) {
 				    	eventDateInput.value = new Date(sourceEvent.date).toISOString().split('T')[0];
+				    }
+
+				    if (sourceEvent.type == 2) {
+				    	eventDateRegularStartInput.value = new Date(sourceEvent.date_from).toISOString().split('T')[0];
+				    	eventDateRegularEndInput.value = new Date(sourceEvent.date_to).toISOString().split('T')[0];
+				    	eventDateRegularType.value = sourceEvent.date_type;
 				    }
 
 				    if (sourceEvent.type == 3) {
@@ -92,7 +105,43 @@ function EventsModule(dataService) {
 		var events = dataService.getEvents()
 
 		events = events.sort(function(a,b){
-		  return new Date(a.date) - new Date(b.date);
+
+			var date_a;
+			var date_b;
+
+			if (a.type == 1) {
+				date_a = a.date;
+			}
+
+			if (b.type == 1) {
+				date_b = b.date
+			}
+
+			if (a.type == 2 && a.hasOwnProperty('date_from')) {
+
+		  	  date_a = a.date_from;
+
+		    } 
+
+		    if (b.type === 2 && b.hasOwnProperty('date_from')) {
+
+		  	  date_b = b.date_from;
+
+		    } 
+
+		    if (a.type == 3 && a.hasOwnProperty('date_from')) {
+
+		  	  date_a = a.date_from;
+
+		    } 
+
+		    if (b.type === 3 && b.hasOwnProperty('date_from')) {
+
+		  	  date_b = b.date_from;
+
+		    } 
+
+		  return new Date(date_a) - new Date(date_b);
 		});
 
 		result = result + '<div class="events-holder">'
@@ -103,6 +152,30 @@ function EventsModule(dataService) {
 
 			if (event.type == 1) {
 				var eventDate = new Date(event.date).toISOString().split('T')[0];
+			}
+
+			if (event.type == 2 && event.date_from) {
+
+				var eventDate = '';
+
+				if (event.date_type == 1) {
+					eventDate = 'Каждый день'
+				}
+
+				if (event.date_type == 2) {
+					eventDate = 'Каждую неделю'
+				}
+
+				if (event.date_type == 3) {
+					eventDate = 'Каждый месяц'
+				}
+
+				if (event.date_type == 4) {
+					eventDate = 'Каждый год'
+				}
+
+				eventDate = eventDate + ' c '
+				eventDate = eventDate + new Date(event.date_from).toISOString().split('T')[0]
 			}
 
 			if (event.type == 3 && event.date_from) {

@@ -100,9 +100,26 @@
             <div class="event-date-regular-holder eventDateRegularHolder">
 
                 <div class="m-t-8">
-                    <label class="display-block">Выражение Cron</label>
-                    <input type="text" name="eventDate" class="event-date-cront-input eventDateCronInput" >
+                    <label class="display-block">Начиная с </label>
+                    <input type="date" name="eventDateRegularStart" class="event-date-regular-start-input eventDateRegularStartInput" >
                 </div>
+                
+                <div class="m-t-8">
+                    <label class="display-block">Тип</label>
+                    <select type="date" name="eventDateRegularType" class="event-date-regular-type eventDateRegularType">
+                        <option value="1">Каждый день</option>
+                        <option value="2">Каждую неделю</option>
+                        <option value="3">Каждый месяц</option>
+                        <option value="4">Каждый год</option>
+                    </select>
+                </div>
+
+                <div class="m-t-8">
+                    <label class="display-block">До</label>
+                    <input type="date" name="eventDateRegularEnd" class="event-date-regular-end-input eventDateRegularEndInput">
+                </div>
+
+
             </div>
 
             <div class="event-date-range-holder eventDateRangeHolder overflow-hidden">
