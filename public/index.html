@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/lib/toastr.css">
     <link rel="stylesheet" type="text/css" href="css/lib/spectrum.css">
     <link rel="stylesheet" type="text/css" href="css/lib/nouislider.css">
+
     <link rel="stylesheet" type="text/css" href="css/fontawesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -47,6 +48,8 @@
             <button class="interface-button save-button saveButton">Сохранить</button>
             <button class="interface-button export-button exportButton">Экспорт</button>
 
+            <button class="interface-button show-category-button-dialog showCategoryButtonDialog">Категории</button>
+
             <button class="interface-button add-event-button-dialog addEventButtonDialog">Добавить событие</button>
 
             <button class="interface-button toggle-years-button-dialog toggleYearsButtonDialog">Скрыть года</button>
@@ -65,7 +68,7 @@
 
         <div class="app-right-section">
 
-            <h2 class="text-center" style="margin: 8px">События</h2>
+            <h2 class="text-center eventsTitle" style="margin: 8px">События</h2>
 
             <div class="events-container eventsContainer">
 
@@ -150,8 +153,18 @@
             </div>
 
             <div class="m-t-8">
+
+                <label class="display-block">Категория</label>
+                <select multiple  class="category-select categorySelect"></select>
+                
+            </div>
+
+            <div class="m-t-8">
                 <label class="display-block">Цвет</label>
+                <div class="event-color-input-holder">
                 <input type='text' name="eventColor" class="event-color-input eventColorInput" >
+                </div>
+                <button class="clear-color-button clearColorButton">Сбросить</button>
             </div>
 
             <div class="overflow-hidden m-t-16">
@@ -167,6 +180,32 @@
         </div>
 
     </div>
+
+    <div class="category-container categoryContainer">
+
+        <div class="category-container-content">
+
+            <button class="category-close-button-dialog categoryCloseButtonDialog">x</button>
+
+            <h4 class="category-header">Список категорий</h4>
+
+            <div class="category-container-body categoryContainerBody">
+                
+            </div>
+
+            <div class="category-container-footer">
+
+                <button class="simple-button close-category-button closeCategoryButton">Закрыть</button>
+
+                <button class="simple-button add-category-button addCategoryButton">Добавить категорию</button>
+
+                <button class="simple-button save-categories-button saveCategoriesButton">Сохранить</button>
+                
+            </div>
+            
+        </div>
+        
+    </div>
  
 </div>
 
@@ -176,12 +215,14 @@
 <script src="js/lib/toastr.js"></script>
 <script src="js/lib/spectrum.js"></script>
 <script src="js/lib/nouislider.js"></script>
+<script src="js/lib/moment.js"></script>
 
 
 <script src="js/base.js"></script>
 <script src="js/dataService.js"></script>
 <script src="js/dataHelper.js"></script>
 <script src="js/calendarModule.js"></script>
+<script src="js/categoryModule.js"></script>
 <script src="js/eventsModule.js"></script>
 <script src="js/main.js"></script>
 

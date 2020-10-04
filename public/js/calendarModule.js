@@ -3,6 +3,7 @@ function CalendarModule(dataService) {
 	function addEventListeners(){
 
 		var items = document.querySelectorAll('.square')
+		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		for(var i = 0; i < items.length; i =i + 1) {
 
@@ -61,12 +62,21 @@ function CalendarModule(dataService) {
 				var contextMenuHtml = '';
 
 				contextMenuHtml = contextMenuHtml + '<div>';
-				
+
+				var squareDateStart = new Date(square.startDay).toISOString().split('T')[0];
+				var squareDateEnd = new Date(square.endDay).toISOString().split('T')[0];
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-header">'
+				contextMenuHtml = contextMenuHtml + squareDateStart + ' - ' + squareDateEnd + ' ' + '<span class="context-menu-week-holder">' + square.week +' неделя</span>'
+				contextMenuHtml = contextMenuHtml + '</div>'
+
+				console.log('squareItem', square);
+			
 				if (square.events.length) {
 
 					square.events.forEach(function(eventItem){
 
-						var eventHtml = '<div>';
+						var eventHtml = '<div class="context-menu-event" data-id="'+eventItem.id+'">';
 
 						console.log('eventItem', eventItem);
 
@@ -77,8 +87,36 @@ function CalendarModule(dataService) {
 						}
 
 						if (eventItem.type == 3) {
-							prefix = 'Период'
+
+							var dateFrom = new Date(eventItem.date_from).toISOString().split('T')[0];
+							var dateTo = new Date(eventItem.date_to).toISOString().split('T')[0];
+
+							prefix = '<span class="context-menu-period-label" title="'+ dateFrom +' - ' + dateTo + '">Период</span>'
 						}
+
+						var color = 'transparent';
+
+						if (eventItem.categories) {
+
+							console.log('eventItem', eventItem);
+
+							var categoryId = eventItem.categories[0]
+							if (categoriesAsObject.hasOwnProperty(categoryId)) {
+
+							var category = categoriesAsObject[categoryId]
+
+							if(category.color) {
+								color = category.color;
+							}
+						}
+
+						}
+
+						if(eventItem.color) {
+							color = eventItem.color;
+						}
+
+						eventHtml = eventHtml + "<div class='context-menu-event-color' style='background: "+color+"'></div>"
 
 						eventHtml = eventHtml + prefix + ' / ' + eventItem.name
 
@@ -112,10 +150,11 @@ function CalendarModule(dataService) {
 		var result = '';
 
 		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
+		var categoriesAsObject = dataService.getCategoriesAsObject();
+
+		var dataHelper = new DataHelper();
 
 		result = result + '<div class="calendar-holder">'
-
-
 
 		var filters = dataService.getFilters();
 
@@ -139,9 +178,14 @@ function CalendarModule(dataService) {
 
 		}
 
-		var current_year = squares[0].year
+		var firstSquareEndDayYear = new Date(squares[0].endDay).getFullYear()
+
+		var current_year = firstSquareEndDayYear; // need for year representing
 
 		result = result + '<div class="year-hr">' + current_year + '</div>'
+
+		var currentYear = new Date().getFullYear() // actual current year
+		var currentWeek = dataHelper.getWeekNumber(new Date()) // actual current week
 
 
 		console.log('squares', squares);
@@ -162,11 +206,15 @@ function CalendarModule(dataService) {
 				classList.push('square-has-events');
 			}
 
+			if (square.year == currentYear && square.week == currentWeek) {
+				classList.push('square-current-week')
+			}
+
 			// if(square.events.length) {
 			// 	classList.push('square-events-' + square.events.length);
 			// }
 
-			squareHTML = squareHTML + '<div class="square '+ classList.join(' ') +'" data-id="'+square.id+'" title="'+title+'">'
+			squareHTML = squareHTML + '<div class="square ' + classList.join(' ') +'" data-id="'+square.id+'" title="'+title+'">'
 
 			if (square.events.length) {
 				squareHTML = squareHTML + '<div class="square-events-count"> ' + square.events.length + '</div>';
@@ -179,6 +227,23 @@ function CalendarModule(dataService) {
 				square.events.forEach(function(event) {
 
 					var color = '#363636';
+
+					if (event.categories) {
+
+						var categoryId = event.categories[0]
+
+						if (categoriesAsObject.hasOwnProperty(categoryId)) {
+
+							var category = categoriesAsObject[categoryId]
+
+							if(category.color) {
+								color = category.color;
+							}
+
+						}
+
+					}
+
 					if (event.color) {
 						color = event.color;
 					}
@@ -195,13 +260,18 @@ function CalendarModule(dataService) {
 
 			squareHTML = squareHTML + '</div>'
 
+			var lastDayYear = new Date(square.endDay).getFullYear()
+
+
+			if (lastDayYear > current_year) {
+				
+				result = result + '<div class="year-hr">' + lastDayYear + '</div>'
+				current_year = lastDayYear
+			}
+
 			result = result + squareHTML
 
-			if (square.year > current_year) {
-
-				result = result + '<div class="year-hr">' + square.year + '</div>'
-				current_year = square.year
-			}
+			
 
 
 		})

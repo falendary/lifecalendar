@@ -53,7 +53,7 @@ body {
 
 
 .interface-container {
-    height: 80px;
+    height: 100px;
     width: calc(100% - 300px);
     position: fixed;
     top: 0;
@@ -67,6 +67,7 @@ body {
 
 .calendar-holder {
     width: 100%;
+    padding-left: 12px;
 }
 
 .calendar-holder::after {
@@ -95,6 +96,10 @@ body {
 }
 .calendar-holder .square.square-has-events {
     color: #363636;
+}
+
+.calendar-holder  .square.square-current-week {
+    border: 2px solid #000;
 }
 
 .calendar-holder .square .event-overlay-holder {
@@ -127,6 +132,10 @@ body {
 
 .calendar-holder .square .event-overlay.event-overlay-1-out-6 {
    height: 16.5%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-7 {
+   height: 14.2%; 
 }
 
 .square-events-count {
@@ -182,7 +191,7 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 3;
     background: rgba(255, 255, 255, .6);
     display: none;
 }
@@ -306,6 +315,11 @@ body {
     display: block;
 }
 
+.event-color-input-holder {
+    float: left;
+    margin-right: 8px;
+}
+
 .calendar-holder .square.square-events-1 {
     background: darkseagreen;
     border: 0;
@@ -375,4 +389,134 @@ body {
 }
 .noUi-connect {
     background: #ddd;
+}
+.noUi-tooltip {
+    font-size: 9px;
+}
+.noUi-handle.noUi-handle-upper {
+    width: 20px;
+}
+.noUi-handle.noUi-handle-lower {
+    width: 20px;
+}
+
+.noUi-handle:before {
+    left: 6px;
+}
+
+.noUi-handle:after {
+    left: 12px;
+}
+
+.context-menu-event {
+    position: relative;
+    padding-left: 26px;
+}
+
+
+.context-menu-event .context-menu-event-color {
+    position: absolute;
+    left: 5px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+}
+
+.context-menu-header {
+    font-size: 11px;
+    color: grey;
+    border-bottom: 1px solid #000;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.context-menu-week-holder {
+    float: right;
+}
+
+.context-menu-period-label {
+    border-bottom: 1px dotted #000;
+}
+
+.category-container {
+    display: none;
+}
+
+.category-container.active {
+    display: block;
+    position: absolute;
+    border: 1px solid #000;
+    background: #fff;
+    width: 90%;
+    min-height: 90%;
+    top: 40px;
+    z-index: 4;
+    left: 5%;
+}
+.category-container-content {
+    width: 100%;
+    height: 100%;
+}
+
+.category-close-button-dialog {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+
+.category-close-button-dialog:hover {
+    opacity: .6;
+}
+
+.category-header {
+    padding-left: 27px;
+    font-size: 20px;
+    margin: 16px;
+    padding-top: 8px;
+}
+
+.category-container-body {
+    padding: 0 16px;
+}
+
+.category-item {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    margin: 16px;
+}
+
+.category-item {
+    overflow: hidden;
+}
+
+.category-item label {
+    display: block;
+    font-size: 11px;
+    color: #000;
+}
+
+.category-color-input-holder {
+    float: left;
+    margin-right: 8px;
+}
+
+.category-name-input-holder {
+    float: left;
+    margin-right: 8px;
+}
+
+.category-delete-button {
+    margin-top: 14px;
+    float: left;
+}
+
+.category-container-footer {
+    height: 80px;
+    text-align: center;
+    width: 100%;
+    padding-top: 10px;
 }

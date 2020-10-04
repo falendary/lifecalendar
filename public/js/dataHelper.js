@@ -29,6 +29,8 @@ function DataHelper() {
 
 	function generateSquaresFromDate(date){
 
+		console.time('generateSquaresFromDate')
+
 		var result = []
 
 		var square = {}
@@ -40,8 +42,8 @@ function DataHelper() {
 		date_to.setFullYear(date_from_year + years)
 		date_to_year = date_to.getFullYear()
 
-		console.log('date_from', date_from);
-		console.log('date_to', date_to);
+		// console.log('date_from', date_from);
+		// console.log('date_to', date_to);
 
 		var weeks;
 		var currentYear;
@@ -58,11 +60,15 @@ function DataHelper() {
 
 			for (w = 0; w < weeks; w = w + 1) {
 
+				var startDay = getDateOfWeek(w+1, currentYear);
+				var endDay = moment(startDay).endOf('isoWeek').toDate();
+
 				square = {
 					id: toMD5(currentYear + '_' + (w + 1)),
 					week: w + 1,
 					year: currentYear,
-					startDay: getDateOfWeek(w+1, currentYear),
+					startDay: startDay,
+					endDay: endDay,
 					events: []
 				}
 
@@ -72,6 +78,8 @@ function DataHelper() {
 
 
 		}
+
+		console.timeEnd('generateSquaresFromDate')
 
 		return result;
 

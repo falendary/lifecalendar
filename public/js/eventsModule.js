@@ -4,8 +4,6 @@ function EventsModule(dataService) {
 
 		var items = document.querySelectorAll('.event-item')
 
-		console.log("EventsModule.addEventListeners items", items);
-
 		for(var i = 0; i < items.length; i =i + 1) {
 
 			items[i].addEventListener('click', function(event){
@@ -61,6 +59,7 @@ function EventsModule(dataService) {
     				var eventNameInput = document.querySelector('.eventNameInput')
 				    var eventTypeInput = document.querySelector('.eventTypeInput')
 				    var eventTextInput = document.querySelector('.eventTextInput')
+				    var eventColorInput = document.querySelector('.eventColorInput')
 				    
 
 				    var eventDateInput = document.querySelector('.eventDateInput')
@@ -77,6 +76,7 @@ function EventsModule(dataService) {
 				    eventNameInput.value = sourceEvent.name;
 				    eventTypeInput.value = sourceEvent.type;
 				    eventTextInput.value = sourceEvent.text;
+				    eventColorInput.value = sourceEvent.color;
 
 				    if (sourceEvent.type == 1) {
 				    	eventDateInput.value = new Date(sourceEvent.date).toISOString().split('T')[0];
@@ -93,6 +93,30 @@ function EventsModule(dataService) {
 				    	eventDateToInput.value = new Date(sourceEvent.date_to).toISOString().split('T')[0];
 				    }
 
+				    var categorySelect = document.querySelector('.categorySelect')
+
+				    var categorySelectOptions = categorySelect.querySelectorAll('option')
+
+				    categorySelectOptions.forEach(function(option) {
+
+				    	option.selected = false;
+
+				    	console.log('option', {option: option.value})
+
+				    	if (sourceEvent.categories) {
+				    		if (sourceEvent.categories.indexOf(option.value) !== -1) {
+				    			option.selected = true;
+				    		}
+				    	}
+
+				    	
+				    })
+
+				    $('.eventColorInput').spectrum({
+					     allowEmpty: true
+					  });
+
+
     				console.log('sourceEvent', sourceEvent);
 
 				}
@@ -108,6 +132,8 @@ function EventsModule(dataService) {
 		var result = '';
 
 		var events = dataService.getEvents()
+
+		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		events = events.sort(function(a,b){
 
@@ -193,6 +219,21 @@ function EventsModule(dataService) {
 			}
 
 			var eventColor = 'transparent';
+
+			if (event.categories) {
+				var categoryId = event.categories[0]
+
+				if (categoriesAsObject.hasOwnProperty(categoryId)) {
+
+					var category = categoriesAsObject[categoryId]
+
+					if(category.color) {
+						eventColor = category.color;
+					}
+
+				}
+
+			}
 
 			if(event.color) {
 				eventColor = event.color;

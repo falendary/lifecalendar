@@ -16,11 +16,7 @@ function DataService() {
 	}
 
 	function getBirthday(){
-
-		console.log('data', data);
-
 		return data.birthday;
-
 	}
 
 	function setSquares(squares) {
@@ -47,6 +43,41 @@ function DataService() {
 		return data.filters
 	}
 
+	function setCategories(categories) {
+		data.categories = categories;
+
+		data.categoriesObject = {}
+
+		data.categories.forEach(function(category){
+
+			data.categoriesObject[category.id] = category
+
+		})
+
+	}
+
+	function getCategories(){
+		return data.categories
+	}
+
+	function getCategoriesAsObject(){
+		return data.categoriesObject
+	}
+
+	function setCategory(id, category) {
+
+		data.categories = data.categories.map(function(categoryItem){
+
+			if (categoryItem == id) {
+				return category
+			}
+
+			return categoryItem
+
+		})
+
+	}
+
 	return {
 
 		setData: setData,
@@ -62,7 +93,12 @@ function DataService() {
 		getEvents: getEvents,
 
 		setFilters: setFilters,
-		getFilters: getFilters
+		getFilters: getFilters,
+
+		setCategories: setCategories,
+		getCategories: getCategories,
+		getCategoriesAsObject: getCategoriesAsObject,
+		setCategory:setCategory
 
 	}
 

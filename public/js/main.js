@@ -3,6 +3,8 @@ var interfaceContainer = appContainer.querySelector('.interfaceContainer');
 var calendarContainer = appContainer.querySelector('.calendarContainer');
 var eventsContainer = appContainer.querySelector('.eventsContainer');
 var eventDialogContainer = document.querySelector('.eventDialogContainer')
+var categoryContainerBody = document.querySelector('.categoryContainerBody')
+var categorySelect = document.querySelector('.categorySelect')
 
 var birthdayHolder = document.querySelector('.birthdayHolder')
 
@@ -11,6 +13,7 @@ var initContainer = document.querySelector('.initContainer')
 var dataService = new DataService();
 var dataHelper = new DataHelper();
 var calendarModule = CalendarModule(dataService)
+var categoryModule = CategoryModule(dataService)
 var eventsModule = EventsModule(dataService)
 
 EVENT_TYPES = {
@@ -20,9 +23,15 @@ EVENT_TYPES = {
 }
 
 function save(){
+
   var data = dataService.getData();
 
-  localStorage.setItem('data', JSON.stringify(data));
+  var preparedData = JSON.parse(JSON.stringify(data))
+
+  delete preparedData.squares;
+
+  localStorage.setItem('data', JSON.stringify(preparedData));
+
 }
 
 function resetForm() {
@@ -64,6 +73,16 @@ function resetForm() {
 
     eventDateSingleHolder.classList.add('active')
 
+    var categorySelect = document.querySelector('.categorySelect')
+
+    var categorySelectOptions = categorySelect.querySelectorAll('option')
+
+    categorySelectOptions.forEach(function(option) {
+
+      option.selected = false;
+      
+    })
+
 }
 
 function syncEventsWithSquares() {
@@ -75,11 +94,10 @@ function syncEventsWithSquares() {
     square.events = []
   })
 
+
   events.forEach(function(event){
 
-    
-
-     if (event.type == 1 || !event.type) {
+     if (event.type == 1 || !event.type) { // SINGLE
 
         var eventDate = new Date(event.date)
         var yearNumber = eventDate.getFullYear()
@@ -97,7 +115,7 @@ function syncEventsWithSquares() {
 
      }
 
-     if (event.type == 2) {
+     if (event.type == 2) { // REGULAR
 
         var subEvents = dataHelper.generateRegularEvents(event)
         
@@ -119,51 +137,56 @@ function syncEventsWithSquares() {
 
      }
 
-     if (event.type == 3) {
+     if (event.type == 3) { // RANGE
 
-        var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+        var eventFromDate = new Date(event.date_from)
+        var yearFromNumber = eventFromDate.getFullYear()
+        var weekFromNumber = dataHelper.getWeekNumber(eventFromDate)
 
-        var years = [];
-        var weeks = {};
-
-        dates.forEach(function(date){
-
-            var eventDate = new Date(date)
-
-            var year = new Date(eventDate).getFullYear();
-            var week = dataHelper.getWeekNumber(eventDate);
-
-            if (years.indexOf(year) === -1) {
-              years.push(year)
-            }
-
-            if (!weeks.hasOwnProperty(year)) {
-                weeks[year] = []
-            }
-            if (weeks[year].indexOf(week) === -1) {
-              weeks[year].push(week);
-            }
-
-        })
+        var eventToDate = new Date(event.date_to)
+        var yearToNumber = eventToDate.getFullYear()
+        var weekToNumber = dataHelper.getWeekNumber(eventToDate)
 
         squares.forEach(function(square) {
 
-          if(years.indexOf(square.year) !== -1) {
+          var eventItem = Object.assign({}, event)
 
-            if (weeks[square.year].indexOf(square.week) !== -1) {
+          if (yearFromNumber != yearToNumber) {
 
-              var eventItem = Object.assign({}, event)
+            if (square.year == yearFromNumber && square.week >= weekFromNumber) {
+
+                square.events.push(eventItem)
+
+            }
+
+            if (square.year > yearFromNumber && square.year < yearToNumber) {
+
+                square.events.push(eventItem)
+
+            }
+
+            if (square.year == yearToNumber && square.week <= weekToNumber) {
 
               square.events.push(eventItem)
 
+            }
 
+          }
+
+          if (yearFromNumber == yearToNumber) {
+
+            if (square.year >= yearFromNumber && square.year <= yearToNumber) {
+
+              if (square.week >= weekFromNumber && square.week <= weekToNumber) {
+                square.events.push(eventItem)
+
+              }
 
             }
 
           }
 
         })
-
 
      }
 
@@ -179,12 +202,19 @@ function addInterfaceEventListeners(){
   var saveButton = document.querySelector('.saveButton')
   var exportButton = document.querySelector('.exportButton')
   var addEventButtonDialog = document.querySelector('.addEventButtonDialog')
+  var showCategoryButtonDialog = document.querySelector('.showCategoryButtonDialog')
+  var categoryCloseButtonDialog = document.querySelector('.categoryCloseButtonDialog')
+  var addCategoryButton = document.querySelector('.categoryCloseButtonDialog')
   var addEventButton = document.querySelector('.addEventButton')
   var saveEventButton = document.querySelector('.saveEventButton')
+  var clearColorButton = document.querySelector('.clearColorButton')
   var closeEventButton = document.querySelector('.closeEventButton')
   var eventTypeInput = document.querySelector('.eventTypeInput')
   var deleteEventButton = document.querySelector('.deleteEventButton')
   var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
+  var addCategoryButton = document.querySelector('.addCategoryButton')
+  var closeCategoryButton = document.querySelector('.closeCategoryButton')
+  var saveCategoriesButton = document.querySelector('.saveCategoriesButton')
 
   var showYears = true;
 
@@ -215,6 +245,87 @@ function addInterfaceEventListeners(){
 
   })
 
+  showCategoryButtonDialog.addEventListener('click', function(event){
+
+    document.querySelector('.categoryContainer').classList.add('active');
+
+  })
+
+  categoryCloseButtonDialog.addEventListener('click', function(event){
+
+    document.querySelector('.categoryContainer').classList.remove('active');
+
+  })
+
+  closeCategoryButton.addEventListener('click', function(event){
+
+    document.querySelector('.categoryContainer').classList.remove('active');
+
+  })
+
+  saveCategoriesButton.addEventListener('click', function(event){
+
+    var categories = dataService.getCategories();
+
+    categories = categories.filter(function(category) {
+      return !category.isDeleted;
+    })
+
+    var categoriesElems = document.querySelectorAll('.categoryItem')
+
+    var newCategoriesData = [];
+
+    categoriesElems.forEach(function(categoryElem, index){
+
+      var result = {
+        name: categoryElem.querySelector('.categoryNameInput').value,
+        color: categoryElem.querySelector('.categoryColorInput').value
+      };
+
+      newCategoriesData.push(result);
+
+    })
+
+    categories = categories.map(function(category, index){
+
+      category.name = newCategoriesData[index].name
+      category.color = newCategoriesData[index].color
+
+      return category
+
+    })
+
+    dataService.setCategories(categories);
+    save();
+
+    toastr.success('Категории сохранены')
+
+    document.querySelector('.categoryContainer').classList.remove('active');
+
+  })
+
+  addCategoryButton.addEventListener('click', function(event){
+
+    event.preventDefault();
+
+    var categories = dataService.getCategories();
+
+    if(!categories) {
+      categories = []
+    }
+
+    categories.push({
+      id: toMD5(categories.length + 1 + '_' + new Date().getTime()),
+      name: "Новая категория",
+      color: "#ffffff"
+    })
+
+    save();
+
+    render();
+
+  })
+
   exportButton.addEventListener('click', function(event){
 
     console.log("Export")
@@ -225,7 +336,11 @@ function addInterfaceEventListeners(){
 
     var date = new Date().toISOString().split('T')[0]
 
-    downloadFile(JSON.stringify(data), 'application/json',  'lifecalendar ' + date + '.json')
+    var preparedData = JSON.parse(JSON.stringify(data))
+
+    delete preparedData.squares;
+
+    downloadFile(JSON.stringify(preparedData), 'application/json',  'lifecalendar ' + date + '.json')
 
     toastr.success('Успешно экспортировано')
 
@@ -240,6 +355,16 @@ function addInterfaceEventListeners(){
     eventDialogContainer.classList.remove('edit-dialog')
     eventDialogContainer.classList.add('add-dialog')
     eventDialogContainer.classList.add('active')
+
+    var categorySelect = document.querySelector('.categorySelect')
+
+    var categorySelectOptions = categorySelect.querySelectorAll('option')
+
+    categorySelectOptions.forEach(function(option) {
+
+      option.selected = false;
+      
+    })
 
   })
 
@@ -286,6 +411,7 @@ function addInterfaceEventListeners(){
     var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
     var eventColorInput = document.querySelector('.eventColorInput')
+    var categorySelect = $('.categorySelect')
 
     var events = dataService.getEvents()
 
@@ -298,7 +424,8 @@ function addInterfaceEventListeners(){
       type: parseInt(eventTypeInput.value, 10),
       name: eventNameInput.value,
       text: eventTextInput.value,
-      color: eventColorInput.value
+      color: eventColorInput.value,
+      categories: categorySelect.val()
     }
 
     if (targetEvent.type == 1) {
@@ -331,6 +458,15 @@ function addInterfaceEventListeners(){
 
   })
 
+  clearColorButton.addEventListener('click', function(event){
+
+     document.querySelector('.eventColorInput').value = null;
+     $('.eventColorInput').spectrum({
+        allowEmpty: true
+     });
+
+  })
+
   saveEventButton.addEventListener('click', function(event) {
 
     console.log("save Event dialog")
@@ -352,6 +488,7 @@ function addInterfaceEventListeners(){
     var eventDateRegularEndInput = document.querySelector('.eventDateRegularEndInput')
 
     var eventColorInput = document.querySelector('.eventColorInput')
+    var categorySelect = $('.categorySelect')
 
     var events = dataService.getEvents()
 
@@ -371,6 +508,7 @@ function addInterfaceEventListeners(){
     targetEvent.name = eventNameInput.value
     targetEvent.text = eventTextInput.value
     targetEvent.color = eventColorInput.value
+    targetEvent.categories = categorySelect.val()
 
     if (targetEvent.type == 1) {
       targetEvent.date = new Date(eventDateInput.value)
@@ -393,8 +531,6 @@ function addInterfaceEventListeners(){
       console.log('eventDateFromInput', eventDateFromInput.value);
       console.log('eventDateToInput', eventDateToInput.value);
     }
-
-    
 
     console.log('targetEvent', targetEvent);
 
@@ -518,8 +654,6 @@ function addInterfaceEventListeners(){
 
   slider.noUiSlider.on('change', function () {
 
-    console.log('change here', slider.noUiSlider.get());
-
     var data = slider.noUiSlider.get()
 
     var filters = dataService.getFilters();
@@ -544,11 +678,32 @@ function render(){
 
   calendarContainer.innerHTML =  calendarModule.render();
   eventsContainer.innerHTML =  eventsModule.render();
+  categoryContainerBody.innerHTML = categoryModule.render();
+
+  categorySelect.innerHTML = categoryModule.renderOptionsForSelect()
+
+
+
+  document.querySelector('.eventsTitle').title =  dataService.getEvents().length + " событий";
+
 
   calendarModule.addEventListeners();
   eventsModule.addEventListeners();
+  categoryModule.addEventListeners();
 
   console.timeEnd("render")
+
+}
+
+function generateSquares(){
+
+  var birthday = dataService.getBirthday();
+
+  var squares = dataHelper.generateSquaresFromDate(birthday)
+  squares = dataHelper.deleteSquaresBeforeBirthday(squares, birthday)
+  squares = dataHelper.markLivedSquares(squares)
+  
+  dataService.setSquares(squares);
 
 }
 
@@ -558,9 +713,8 @@ function init(){
 
   document.body.addEventListener('click', function(event) {
 
-    console.log('here');
-
     document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
+  
   })
 
   if (data) {
@@ -571,9 +725,7 @@ function init(){
     
     appContainer.classList.add('active');
 
-    var squares = dataService.getSquares();
-    squares = dataHelper.markLivedSquares(squares)
-    dataService.setSquares(squares);
+    generateSquares();
 
     addInterfaceEventListeners();
 
@@ -607,13 +759,10 @@ function init(){
 
           dataService.setBirthday(birthday);
 
-          var squares = dataHelper.generateSquaresFromDate(birthday)
+          generateSquares();
 
-          squares = dataHelper.deleteSquaresBeforeBirthday(squares, birthday)
-          squares = dataHelper.markLivedSquares(squares)
-          
-          dataService.setSquares(squares);
           dataService.setEvents([]);
+          dataService.setCategories([]);
 
           initContainer.classList.remove('active')
           appContainer.classList.add('active');
@@ -637,6 +786,8 @@ function init(){
 
             dataService.setData(result);
             save();
+
+            generateSquares();
 
             initContainer.classList.remove('active')
             appContainer.classList.add('active');
