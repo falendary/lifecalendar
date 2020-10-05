@@ -215,8 +215,24 @@ function addInterfaceEventListeners(){
   var addCategoryButton = document.querySelector('.addCategoryButton')
   var closeCategoryButton = document.querySelector('.closeCategoryButton')
   var saveCategoriesButton = document.querySelector('.saveCategoriesButton')
+  var eventsFilterInput = document.querySelector('.eventsFilterInput')
 
   var showYears = true;
+
+  eventsFilterInput.addEventListener('keyup', function(event){
+
+    event.preventDefault();
+
+    var filters = dataService.getFilters();
+
+    filters.eventSearchString = eventsFilterInput.value;
+
+    dataService.setFilters(filters);
+
+    renderRightSection();
+
+
+  })
 
   toggleYearsButtonDialog.addEventListener('click', function(event){
 
@@ -677,21 +693,26 @@ function render(){
   console.time("render")
 
   calendarContainer.innerHTML =  calendarModule.render();
-  eventsContainer.innerHTML =  eventsModule.render();
   categoryContainerBody.innerHTML = categoryModule.render();
-
   categorySelect.innerHTML = categoryModule.renderOptionsForSelect()
 
-
+  renderRightSection();
 
   document.querySelector('.eventsTitle').title =  dataService.getEvents().length + " событий";
 
 
   calendarModule.addEventListeners();
-  eventsModule.addEventListeners();
+  
   categoryModule.addEventListeners();
 
   console.timeEnd("render")
+
+}
+
+function renderRightSection() {
+
+  eventsContainer.innerHTML =  eventsModule.render();
+  eventsModule.addEventListeners();
 
 }
 

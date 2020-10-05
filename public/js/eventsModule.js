@@ -133,6 +133,16 @@ function EventsModule(dataService) {
 
 		var events = dataService.getEvents()
 
+		var filters = dataService.getFilters();
+
+		if (filters.eventSearchString && filters.eventSearchString.length > 3) {
+
+			events = events.filter(function(event){
+				return event.name.toLocaleLowerCase().indexOf(filters.eventSearchString.toLocaleLowerCase()) !== -1;
+			})
+
+		}
+
 		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		events = events.sort(function(a,b){

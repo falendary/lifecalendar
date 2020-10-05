@@ -138,6 +138,19 @@ body {
    height: 14.2%; 
 }
 
+.calendar-holder .square .event-overlay.event-overlay-1-out-8 {
+   height: 12.5%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-9 {
+   height: 11.1%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-10 {
+   height: 10%; 
+}
+
+
 .square-events-count {
     position: relative;
     z-index: 1;
@@ -519,4 +532,7 @@ body {
     text-align: center;
     width: 100%;
     padding-top: 10px;
+}
+.events-filter-input {
+    width: 100%;
 }
