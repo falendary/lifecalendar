@@ -29,6 +29,8 @@ function DataHelper() {
 
 	function generateSquaresFromDate(date){
 
+		console.time('generateSquaresFromDate')
+
 		var result = []
 
 		var square = {}
@@ -40,8 +42,8 @@ function DataHelper() {
 		date_to.setFullYear(date_from_year + years)
 		date_to_year = date_to.getFullYear()
 
-		console.log('date_from', date_from);
-		console.log('date_to', date_to);
+		// console.log('date_from', date_from);
+		// console.log('date_to', date_to);
 
 		var weeks;
 		var currentYear;
@@ -58,11 +60,15 @@ function DataHelper() {
 
 			for (w = 0; w < weeks; w = w + 1) {
 
+				var startDay = getDateOfWeek(w+1, currentYear);
+				var endDay = moment(startDay).endOf('isoWeek').toDate();
+
 				square = {
 					id: toMD5(currentYear + '_' + (w + 1)),
 					week: w + 1,
 					year: currentYear,
-					startDay: getDateOfWeek(w+1, currentYear),
+					startDay: startDay,
+					endDay: endDay,
 					events: []
 				}
 
@@ -72,6 +78,8 @@ function DataHelper() {
 
 
 		}
+
+		console.timeEnd('generateSquaresFromDate')
 
 		return result;
 
@@ -135,11 +143,135 @@ function DataHelper() {
 
 	}
 
+	function getDates(startDate, stopDate) {
+	    var dateArray = new Array();
+	    var currentDate = startDate;
+	    while (currentDate <= stopDate) {
+	        dateArray.push(new Date (currentDate));
+	        currentDate = currentDate.addDays(1);
+	    }
+	    return dateArray;
+	}
+
+	function generateRegularEvents(event) {
+
+		var subEvents = []
+
+		var eventDateFrom = new Date(event.date_from)
+		var eventDateTo = new Date(event.date_to)
+
+		var eventDateFromDate = eventDateFrom.getDate();
+		var eventDateFromMonth = eventDateFrom.getMonth();
+		var eventDateFromYear = eventDateFrom.getFullYear();
+		var eventDateToYear = eventDateTo.getFullYear();
+		var eventDateToMonth = eventDateTo.getMonth();
+
+		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
+
+		if (event.date_type == 1) { // daily
+			// TODO daily logic
+		}
+
+		if (event.date_type == 2) { // weekly
+			// TODO weekly logic
+		}
+
+		if (event.date_type == 3) { // monthly
+			// TODO monthly logic
+
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+
+				if (eventDateFromDate == dateDate) {
+
+					if (dateYear <= eventDateToYear ) {
+
+						if (dateYear == eventDateToYear) {
+
+							if (dateMonth <= eventDateToMonth) {
+								result = true;
+							}
+
+						} else {
+							result = true;
+						}
+
+						
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date;
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
+		}
+
+		if (event.date_type == 4) { // yearly
+
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+
+				if (eventDateFromDate == dateDate) {
+
+					if (eventDateFromMonth == dateMonth) {
+
+						if (dateYear <= eventDateToYear) {
+							result = true;
+						}
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date;
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
+		}
+
+		return subEvents;
+
+	}
+
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
 		markLivedSquares: markLivedSquares,
-		getWeekNumber: getWeekNumber
+		getWeekNumber: getWeekNumber,
+		getDates: getDates,
+		generateRegularEvents: generateRegularEvents
 	}
 
 }
