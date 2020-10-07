@@ -78,6 +78,14 @@ function DataService() {
 
 	}
 
+	function setRenderType(renderType) {
+		data.renderType = renderType
+	}
+
+	function getRenderType(){
+		return data.renderType;
+	}
+
 	return {
 
 		setData: setData,
@@ -98,7 +106,10 @@ function DataService() {
 		setCategories: setCategories,
 		getCategories: getCategories,
 		getCategoriesAsObject: getCategoriesAsObject,
-		setCategory:setCategory
+		setCategory:setCategory,
+
+		setRenderType: setRenderType,
+		getRenderType: getRenderType
 
 	}
 

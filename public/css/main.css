@@ -45,12 +45,20 @@ body {
 }
 
 .calendar-container {
-    padding-top: 80px;
+    padding-top: 100px;
+    position: relative;
 }
 .calendar-container.hide-years .year-hr {
     display: none;
 }
 
+.calendar-container.hide-months .month-title {
+    display: none;
+}
+
+.calendar-container.hide-months .month-square-container {
+    margin:  0;
+}
 
 .interface-container {
     height: 100px;
@@ -74,6 +82,82 @@ body {
     content: " ";
     clear: both;
 }
+
+.month-square-container {
+    float: left;
+    margin: 0 4px 12px; 
+}
+
+.calendar-holder .month-square-container .square {
+    margin: 2px;
+}
+
+
+.season-square-container {
+    float: left;
+    margin: 0 4px 12px; 
+    max-width: 210px;
+    min-height: 240px;
+}
+
+.calendar-holder .season-square-container .square {
+    margin: 2px;
+}
+
+
+.square-month-info {
+    text-align: center;
+}
+
+
+.square-month-info span {
+    display: inline-block;
+    background: #fff;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+}
+
+.square-month-info::after {
+    content: "";
+    display: block;
+    clear: both;
+    position: relative;
+    width: 80%;
+    height: 2px;
+    background: #ddd;
+    margin: 0 auto;
+    bottom: 10px;
+}
+
+.square-season-info {
+    text-align: center;
+    clear: both;
+}
+
+
+.square-season-info span {
+    display: inline-block;
+    background: #fff;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+}
+
+.square-season-info::after {
+    content: "";
+    display: block;
+    clear: both;
+    position: relative;
+    width: 80%;
+    height: 2px;
+    background: #ddd;
+    margin: 0 auto;
+    bottom: 10px;
+}
+
 
 .calendar-holder .square {
     width: 48px;
@@ -150,6 +234,14 @@ body {
    height: 10%; 
 }
 
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-11 {
+   height: 9.09%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-12 {
+   height: 8.3%; 
+}
 
 .square-events-count {
     position: relative;
@@ -368,10 +460,16 @@ body {
     padding: 8px;
     border: 1px solid #000;
     cursor: pointer;
+    outline: none;
 }
 
 .interface-button:hover {
     opacity: .5;
+}
+
+.interface-button.active {
+    background: coral;
+    color: #fff;
 }
 
 .square-context-menu {
@@ -536,3 +634,4 @@ body {
 .events-filter-input {
     width: 100%;
 }
+

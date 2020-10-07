@@ -7,24 +7,28 @@ function DataHelper() {
 	  return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 	}
 
-	function getDateOfWeek(w, y) {
-	    var d = (1 + (w - 1) * 7);
+	function getStartDayOfWeek(w, y) {
 
-	    return new Date(y, 0, d);
+		return new Date(moment()
+		.isoWeekYear(y)
+		.isoWeek(w)
+		.startOf('week'))
+
 	}
 
+	function getEndDayOfWeek(w, y) {
+
+		return new Date(moment()
+		.isoWeekYear(y)
+		.isoWeek(w)
+		.endOf('week'))
+
+	}
+
+
 	function getWeekNumber(d) {
-	    // Copy date so don't modify original
-	    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-	    // Set to nearest Thursday: current date + 4 - current day number
-	    // Make Sunday's day number 7
-	    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-	    // Get first day of year
-	    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-	    // Calculate full weeks to nearest Thursday
-	    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-	    // Return array of year and week number
-	    return weekNo;
+
+	    return moment(d).isoWeek();
 	}
 
 	function generateSquaresFromDate(date){
@@ -60,12 +64,20 @@ function DataHelper() {
 
 			for (w = 0; w < weeks; w = w + 1) {
 
-				var startDay = getDateOfWeek(w+1, currentYear);
-				var endDay = moment(startDay).endOf('isoWeek').toDate();
+				var startDay = getStartDayOfWeek(w+1, currentYear);
+				var endDay = getEndDayOfWeek(w+1, currentYear);
+				var month;
+
+				if (startDay.getFullYear() == currentYear) {
+					month = moment(startDay).month() + 1;
+				} else {
+					month = moment(endDay).month() + 1;
+				}
 
 				square = {
 					id: toMD5(currentYear + '_' + (w + 1)),
 					week: w + 1,
+					month: month,
 					year: currentYear,
 					startDay: startDay,
 					endDay: endDay,
@@ -165,6 +177,9 @@ function DataHelper() {
 		var eventDateFromYear = eventDateFrom.getFullYear();
 		var eventDateToYear = eventDateTo.getFullYear();
 		var eventDateToMonth = eventDateTo.getMonth();
+		var eventDateToWeek = getWeekNumber(eventDateTo)
+
+		var eventTosimpleWeekPattern = parseInt(eventDateToYear.toString() + eventDateToWeek.toString(), 10)
 
 		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
 
@@ -173,11 +188,55 @@ function DataHelper() {
 		}
 
 		if (event.date_type == 2) { // weekly
-			// TODO weekly logic
+
+			var weekCounter;
+		
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+				var dateWeek = getWeekNumber(date)
+
+				 // "2010"+"05" = "201005" = int("201005")
+				var dateSimpleWeekPattern = parseInt(dateYear.toString() + dateWeek.toString(), 10)
+
+				if (!weekCounter) {
+					weekCounter = dateSimpleWeekPattern
+					result = true;
+				}
+
+				if (weekCounter < eventTosimpleWeekPattern) {
+				
+					if (dateSimpleWeekPattern > weekCounter) {
+
+						weekCounter = dateSimpleWeekPattern;
+						result = true
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date;
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
+
 		}
 
 		if (event.date_type == 3) { // monthly
-			// TODO monthly logic
 
 			dates = dates.filter(function(date){
 
@@ -265,13 +324,36 @@ function DataHelper() {
 
 	}
 
+	function getSeasonNumberByMonthNumber(month) {
+
+		// var monthsTitles = ['Зима', 'Весна', 'Лето', 'Осень']
+
+		if ([12,1,2].indexOf(month) !== -1) {
+			return 1
+		}
+
+		if ([3,4,5].indexOf(month) !== -1) {
+			return 2
+		}
+
+		if ([6,7,8].indexOf(month) !== -1) {
+			return 3
+		}
+
+		if ([9,10,11].indexOf(month) !== -1) {
+			return 4
+		}
+
+	}
+
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
 		markLivedSquares: markLivedSquares,
 		getWeekNumber: getWeekNumber,
 		getDates: getDates,
-		generateRegularEvents: generateRegularEvents
+		generateRegularEvents: generateRegularEvents,
+		getSeasonNumberByMonthNumber
 	}
 
 }

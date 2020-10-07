@@ -106,6 +106,7 @@ function syncEventsWithSquares() {
         squares.forEach(function(square) {
 
           if(square.year == yearNumber && square.week == weekNumber) {
+
               var eventItem = Object.assign({}, event)
 
               square.events.push(eventItem)
@@ -193,9 +194,10 @@ function syncEventsWithSquares() {
      
   })
 
+  dataService.setSquares(squares);
  
-
 }
+
 
 function addInterfaceEventListeners(){
 
@@ -212,12 +214,86 @@ function addInterfaceEventListeners(){
   var eventTypeInput = document.querySelector('.eventTypeInput')
   var deleteEventButton = document.querySelector('.deleteEventButton')
   var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
+  var toggleMonthsButtonDialog = document.querySelector('.toggleMonthsButtonDialog')
+  var toggleSeasonsButtonDialog = document.querySelector('.toggleSeasonsButtonDialog')
   var addCategoryButton = document.querySelector('.addCategoryButton')
   var closeCategoryButton = document.querySelector('.closeCategoryButton')
   var saveCategoriesButton = document.querySelector('.saveCategoriesButton')
   var eventsFilterInput = document.querySelector('.eventsFilterInput')
 
-  var showYears = true;
+  var renderType = dataService.getRenderType();
+
+  toggleYearsButtonDialog.addEventListener('click', function(event){
+
+    toggleYearsButtonDialog.classList.remove('active')
+    toggleMonthsButtonDialog.classList.remove('active')
+    toggleSeasonsButtonDialog.classList.remove('active')
+
+    calendarContainer.classList.remove('group-by-years')
+    calendarContainer.classList.remove('group-by-seasons')
+    calendarContainer.classList.remove('group-by-months')
+
+    if (renderType == 'years') {
+      renderType = '';
+    } else {
+      renderType = 'years'
+      toggleYearsButtonDialog.classList.add('active');
+      calendarContainer.classList.add('group-by-years')
+    }
+
+    dataService.setRenderType(renderType);
+
+    render()
+
+  })
+
+  toggleSeasonsButtonDialog.addEventListener('click', function(event){
+
+    toggleYearsButtonDialog.classList.remove('active')
+    toggleMonthsButtonDialog.classList.remove('active')
+    toggleSeasonsButtonDialog.classList.remove('active')
+
+    calendarContainer.classList.remove('group-by-years')
+    calendarContainer.classList.remove('group-by-seasons')
+    calendarContainer.classList.remove('group-by-months')
+
+    if (renderType == 'seasons') {
+      renderType = '';
+    } else {
+      renderType = 'seasons'
+      toggleSeasonsButtonDialog.classList.add('active');
+      calendarContainer.classList.add('group-by-seasons')
+    }
+
+    dataService.setRenderType(renderType);
+
+    render()
+
+  })
+
+  toggleMonthsButtonDialog.addEventListener('click', function(event){
+
+    toggleYearsButtonDialog.classList.remove('active')
+    toggleMonthsButtonDialog.classList.remove('active')
+    toggleSeasonsButtonDialog.classList.remove('active')
+
+    calendarContainer.classList.remove('group-by-years')
+    calendarContainer.classList.remove('group-by-seasons')
+    calendarContainer.classList.remove('group-by-months')
+
+    if (renderType == 'months') {
+      renderType = '';
+    } else {
+      renderType = 'months'
+      toggleMonthsButtonDialog.classList.add('active');
+      calendarContainer.classList.add('group-by-months')
+    }
+
+    dataService.setRenderType(renderType);
+
+    render()
+
+  })
 
   eventsFilterInput.addEventListener('keyup', function(event){
 
@@ -231,21 +307,6 @@ function addInterfaceEventListeners(){
 
     renderRightSection();
 
-
-  })
-
-  toggleYearsButtonDialog.addEventListener('click', function(event){
-
-    showYears = !showYears;
-
-
-    if (showYears) {
-      toggleYearsButtonDialog.innerHTML = 'Скрыть года'
-      calendarContainer.classList.remove('hide-years')
-    } else {
-      toggleYearsButtonDialog.innerHTML = 'Показать года'
-      calendarContainer.classList.add('hide-years')
-    }
 
   })
   
@@ -692,7 +753,31 @@ function render(){
 
   console.time("render")
 
-  calendarContainer.innerHTML =  calendarModule.render();
+  // deprecated
+  // calendarContainer.innerHTML = calendarModule.render();
+  // calendarContainer.innerHTML = calendarContainer.innerHTML +  calendarModule.renderMonths();
+
+  var renderType = dataService.getRenderType();
+
+  console.log('renderType', renderType);
+
+  switch(renderType) {
+
+      case 'years':
+        calendarContainer.innerHTML = calendarModule.renderGroupByYears();
+        break;
+      case 'seasons':
+        calendarContainer.innerHTML = calendarModule.renderGroupBySeasons();
+        break;
+      case 'months':
+        calendarContainer.innerHTML = calendarModule.renderGroupByMonths();
+        break;
+      default:
+        calendarContainer.innerHTML = calendarModule.renderDefault();
+        break;
+  }
+
+
   categoryContainerBody.innerHTML = categoryModule.render();
   categorySelect.innerHTML = categoryModule.renderOptionsForSelect()
 
@@ -728,6 +813,32 @@ function generateSquares(){
 
 }
 
+function setInterfaceState(){
+
+  var renderType = dataService.getRenderType();
+
+  if (renderType) {
+
+    var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
+    var toggleSeasonsButtonDialog = document.querySelector('.toggleSeasonsButtonDialog')
+    var toggleMonthsButtonDialog = document.querySelector('.toggleMonthsButtonDialog')
+   
+    if (renderType == 'years') {
+      toggleYearsButtonDialog.classList.add('active');
+    }
+
+    if (renderType == 'seasons') {
+      toggleSeasonsButtonDialog.classList.add('active');
+    }
+
+    if (renderType == 'months') {
+      toggleMonthsButtonDialog.classList.add('active');
+    }
+
+  }
+
+}
+
 function init(){
 
   var data = localStorage.getItem('data');
@@ -740,6 +851,7 @@ function init(){
 
   if (data) {
     dataService.setData(JSON.parse(data));
+    setInterfaceState()
   }
 
   if (dataService.getBirthday()) {
@@ -812,6 +924,10 @@ function init(){
 
             initContainer.classList.remove('active')
             appContainer.classList.add('active');
+
+            setInterfaceState();
+
+
             addInterfaceEventListeners();
             syncEventsWithSquares();
             render();

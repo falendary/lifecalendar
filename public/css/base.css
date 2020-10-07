@@ -96,6 +96,11 @@
     background: #fff;
     border: 1px solid #000;
     cursor: pointer;
+    outline: none;
+}
+
+.simple-button:active {
+    outline: none;
 }
 
 .simple-button:hover {
