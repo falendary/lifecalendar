@@ -47,6 +47,10 @@ body {
 .calendar-container {
     padding-top: 100px;
     position: relative;
+    float: left;
+}
+.calendar-holder {
+    float: left;
 }
 .calendar-container.hide-years .year-hr {
     display: none;
@@ -170,6 +174,7 @@ body {
     cursor: pointer;
 }
 
+
 .calendar-holder .square:hover {
     opacity: .5;
 }
@@ -180,6 +185,50 @@ body {
 }
 .calendar-holder .square.square-has-events {
     color: #363636;
+}
+
+.calendar-holder .square.highlighted {
+    box-shadow: 0 0 8px rgb(255, 127, 80);
+    animation: pulse 2s infinite;
+    outline: 1px solid coral;
+}
+
+.square.square-lived.square-has-events.highlighted::after
+{
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: coral;
+    top: 0;
+    left: 0;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+      box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+      box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+  }
 }
 
 .calendar-holder  .square.square-current-week {

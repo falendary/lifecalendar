@@ -846,8 +846,11 @@ function init(){
   document.body.addEventListener('click', function(event) {
 
     document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
-  
+
+    document.querySelectorAll('.square').forEach(function(element){ element.classList.remove('highlighted')});
+    
   })
+
 
   if (data) {
     dataService.setData(JSON.parse(data));
