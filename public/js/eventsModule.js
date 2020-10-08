@@ -14,6 +14,7 @@ function EventsModule(dataService) {
 				event.stopPropagation();
 
 				document.querySelectorAll('.square').forEach(function(element){ element.classList.remove('highlighted')});
+    
 
 				console.log('dbclick event', event);
 				console.log('dbclick event', event.detail);
@@ -37,7 +38,7 @@ function EventsModule(dataService) {
 				console.log('eventId', eventId);
 				console.log('eventElem', eventElem);
 
-				if (event.detail == 2) {
+				if (event.detail > 1) {
 
 					var eventDialogContainer = document.querySelector('.eventDialogContainer')
 
@@ -126,52 +127,82 @@ function EventsModule(dataService) {
 					  });
 
 
-    				console.log('sourceEvent', sourceEvent);
+				}
+
+			})
+
+			items[i].querySelector('.event-item-search').addEventListener('click', function(event){
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				document.querySelectorAll('.square').forEach(function(element){ element.classList.remove('highlighted')});
+    
+
+				console.log('dbclick event', event);
+				console.log('dbclick event', event.detail);
+
+				var eventElem = event.target.parentElement.parentElement;
+
+				var eventId = eventElem.dataset.id
+
+				var events = dataService.getEvents()
+
+				var sourceEvent;
+
+				events.forEach(function(item) {
+
+					if (item.id == eventId) {
+						sourceEvent = item
+					}
+
+				})
+
+				console.log('eventId', eventId);
+				console.log('eventElem', eventElem);
+
+				var eventDate;
+				var year;
+				var week;
+
+				if (sourceEvent.type == 1) {
+					eventDate = new Date(sourceEvent.date)
+					year = eventDate.getFullYear()
+					week = dataHelper.getWeekNumber(eventDate)
+				}
+
+				if (sourceEvent.type == 2) {
+					eventDate = new Date(sourceEvent.date_from)
+					year = eventDate.getFullYear()
+					week = dataHelper.getWeekNumber(eventDate)
+				}
+
+				if (sourceEvent.type == 3) {
+					eventDate = new Date(sourceEvent.date_from)
+					year = eventDate.getFullYear()
+					week = dataHelper.getWeekNumber(eventDate)
+				}
+
+				console.log('year', year);
+				console.log('week', week);
+
+				var square = document.querySelector('.square[data-year="'+ year+'"][data-week="'+ week+'"]');
+
+				console.log("sourceEvent", sourceEvent);
+				console.log("square", square);
+
+				if (square) {
+
+					square.classList.add('highlighted')
+					window.scrollTo({top: square.offsetTop - 240, behavior: 'smooth'});
+					$(square).click();
 
 				} else {
-
-					var eventDate;
-					var year;
-					var week;
-
-					if (sourceEvent.type == 1) {
-						eventDate = new Date(sourceEvent.date)
-						year = eventDate.getFullYear()
-						week = dataHelper.getWeekNumber(eventDate)
-					}
-
-					if (sourceEvent.type == 2) {
-						eventDate = new Date(sourceEvent.date_from)
-						year = eventDate.getFullYear()
-						week = dataHelper.getWeekNumber(eventDate)
-					}
-
-					if (sourceEvent.type == 3) {
-						eventDate = new Date(sourceEvent.date_from)
-						year = eventDate.getFullYear()
-						week = dataHelper.getWeekNumber(eventDate)
-					}
-
-					console.log('year', year);
-					console.log('week', week);
-
-					var square = document.querySelector('.square[data-year="'+ year+'"][data-week="'+ week+'"]');
-
-					console.log("sourceEvent", sourceEvent);
-					console.log("square", square);
-
-					if (square) {
-
-						square.classList.add('highlighted')
-						window.scrollTo({top: square.offsetTop - 240, behavior: 'smooth'});
-						$(square).click();
-
-					} else {
-						toastr.error('Не найден квадратик')
-					}
-
-
+					toastr.error('Не найден квадратик')
 				}
+
+
+				
 
 			})
 
@@ -306,6 +337,7 @@ function EventsModule(dataService) {
 			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
+			eventHtml = eventHtml + '<div class="event-item-search"><i class="fa fa-search"></i></div>'
 
 			eventHtml = eventHtml + '</div>';
 

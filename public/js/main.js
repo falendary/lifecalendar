@@ -739,8 +739,8 @@ function addInterfaceEventListeners(){
       filters = {}
     }
 
-    filters.year_from = data[0]
-    filters.year_to = data[1]
+    filters.year_from = data[0] - 1
+    filters.year_to = data[1] + 1
 
     dataService.setFilters(filters)
     render();
@@ -816,6 +816,7 @@ function generateSquares(){
 function setInterfaceState(){
 
   var renderType = dataService.getRenderType();
+  var filters = dataService.getFilters();
 
   if (renderType) {
 
@@ -835,6 +836,14 @@ function setInterfaceState(){
       toggleMonthsButtonDialog.classList.add('active');
     }
 
+  }
+
+  if (filters && filters) {
+
+    var eventsFilterInput = document.querySelector('.eventsFilterInput')
+
+    eventsFilterInput.value = filters.eventSearchString
+    
   }
 
 }

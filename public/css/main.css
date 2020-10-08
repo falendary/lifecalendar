@@ -417,6 +417,27 @@ body {
 
 }
 
+.event-item:hover  .event-item-search{
+    display: block;
+}
+
+.event-item-search {
+    display: none;
+    position: absolute;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    
+    text-align: center;
+    top: 7px;
+    padding-top: 8px;
+
+}
+
+.event-item-search:hover {
+    background: #fff;
+}
+
 .event-item-color {
     position: absolute;
     left: 10px;
@@ -560,12 +581,23 @@ body {
     width: 20px;
 }
 
+.noUi-handle {
+    border-radius: 0;
+}
+
 .noUi-handle:before {
     left: 6px;
 }
 
 .noUi-handle:after {
     left: 12px;
+}
+
+.noUi-tooltip {
+    padding: 3px;
+}
+.noUi-target {
+    border-radius: 0;
 }
 
 .context-menu-event {
