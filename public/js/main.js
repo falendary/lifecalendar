@@ -220,6 +220,8 @@ function addInterfaceEventListeners(){
   var closeCategoryButton = document.querySelector('.closeCategoryButton')
   var saveCategoriesButton = document.querySelector('.saveCategoriesButton')
   var eventsFilterInput = document.querySelector('.eventsFilterInput')
+  var categoriesFilterInputAdd = document.querySelector('.categoriesFilterInputAdd')
+  var categoriesFilterInput = document.querySelector('.categoriesFilterInput')
 
   var renderType = dataService.getRenderType();
 
@@ -307,6 +309,46 @@ function addInterfaceEventListeners(){
 
     renderRightSection();
 
+
+  })
+
+  categoriesFilterInputAdd.addEventListener('click', function(event) {
+
+    event.preventDefault();
+
+    var categoriesFilterInput = document.querySelector('.categoriesFilterInput');
+
+    if (categoriesFilterInput.value) {
+
+      var filters = dataService.getFilters();
+
+      if (!filters.categories) {
+        filters.categories = []
+      }
+
+      filters.categories.push(categoriesFilterInput.value)
+
+      dataService.setFilters(filters);
+
+      categoriesFilterInput.value = '';
+
+      console.log('categoriesFilter', filters);
+
+      renderCategoriesFilterChips();
+
+      render()
+    }
+
+  })
+
+  categoriesFilterInput.addEventListener('keyup', function(event) {
+
+    if (event.keyCode === 13) {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Trigger the button element with a click
+      categoriesFilterInputAdd.click();
+    }
 
   })
   
@@ -794,6 +836,86 @@ function render(){
 
 }
 
+function renderCategoriesFilterChips(){
+
+  var filters = JSON.parse(JSON.stringify(dataService.getFilters()));
+
+  var container = document.querySelector('.categoriesFilterHolder')
+  var categoriesFilterChips = document.querySelector('.categoriesFilterChips');
+
+  if (filters.categories && filters.categories.length) {
+
+    container.classList.remove('empty');
+
+    var result = '';
+
+    var categories = dataService.getCategories();
+
+    filters.categories.forEach(function(category){
+
+      var categoryItem;
+
+      categories.forEach(function(item){
+
+        if(item.name.toLocaleLowerCase() == category.toLocaleLowerCase()) {
+          categoryItem = item
+        }
+
+      })
+
+      if (!categoryItem) {
+        categoryItem = {color: "transparent"}
+      }
+
+      var categoryHTML = '<div class="category-filter-chip" style="background: '+ categoryItem.color +'" data-category-name="'+category+'">'
+
+      categoryHTML = categoryHTML + '<span>' + category + '</span>';
+      categoryHTML = categoryHTML + '<button class="category-filter-chip-remove categoryFilterChipRemove"><i class="fa fa-close"></i></button>'
+
+      categoryHTML = categoryHTML + '</div>'
+
+      result = result + categoryHTML;
+
+    })
+
+    categoriesFilterChips.innerHTML = result;
+
+    var deleteButtons = document.querySelectorAll('.categoryFilterChipRemove')
+
+    deleteButtons.forEach(function(deleteButton){
+
+      deleteButton.addEventListener('click', function(event){
+
+        event.preventDefault();
+
+        console.log('hello');
+
+        var category = event.target.parentElement.dataset.categoryName
+
+        var filters = dataService.getFilters();
+
+        var index = filters.categories.indexOf(category)
+
+        filters.categories.splice(index, 1)
+
+        console.log('filters', filters);
+
+        dataService.setFilters(filters);
+
+        renderCategoriesFilterChips();
+        render();
+
+      })
+
+    })
+
+  } else {
+    container.classList.add('empty')
+    categoriesFilterChips.innerHTML = '';
+  }
+
+}
+
 function renderRightSection() {
 
   eventsContainer.innerHTML =  eventsModule.render();
@@ -843,6 +965,12 @@ function setInterfaceState(){
     var eventsFilterInput = document.querySelector('.eventsFilterInput')
 
     eventsFilterInput.value = filters.eventSearchString
+
+    if (filters.categories) {
+      
+      renderCategoriesFilterChips()
+
+    }
     
   }
 

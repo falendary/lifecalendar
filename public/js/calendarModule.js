@@ -229,21 +229,36 @@ function CalendarModule(dataService) {
 
 	}
 
-	function renderDefault(){
-
-		var result = '';
+	function _filterBeforeRender(dataService) {
 
 		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
-		var categoriesAsObject = dataService.getCategoriesAsObject();
-
-		var dataHelper = new DataHelper();
-
-		result = result + '<div class="calendar-holder">'
 
 		var filters = dataService.getFilters();
 
 		if(filters) {
 
+			var categories = dataService.getCategories();
+
+			var categoriesFiltersAsIds = []
+
+			if (filters.categories) {
+
+				filters.categories.forEach(function(filterCategory) {
+
+					categories.forEach(function(category) {
+
+						if(filterCategory.toLocaleLowerCase() == category.name.toLocaleLowerCase()) {
+							categoriesFiltersAsIds.push(category.id)
+						}
+
+					})
+
+				})
+
+
+			}
+
+			// filter by years
 			squares = squares.filter(function(square){
 
 				var result = false;
@@ -260,7 +275,57 @@ function CalendarModule(dataService) {
 
 			})
 
+			// filter by categories
+
+			if (categoriesFiltersAsIds.length) {
+
+				squares = squares.filter(function(square){
+
+					var result = false;
+
+					if (square.events) {
+
+						square.events.forEach(function(eventItem){
+
+							if (eventItem.categories) {
+
+								eventItem.categories.forEach(function(eventItemCategory) {
+
+									if (categoriesFiltersAsIds.indexOf(eventItemCategory) !== -1) {
+										result = true;
+									}
+
+								})
+
+							}
+
+						})
+
+					}
+
+					return result
+
+				})
+
+			}
+
 		}
+
+		return squares
+
+	}
+
+	function renderDefault(){
+
+		var result = '';
+
+		var squares = _filterBeforeRender(dataService);
+
+		var categoriesAsObject = dataService.getCategoriesAsObject();
+
+		var dataHelper = new DataHelper();
+
+		result = result + '<div class="calendar-holder">'
 
 		var currentYear = new Date().getFullYear() // actual current year
 		var currentWeek = dataHelper.getWeekNumber(new Date()) // actual current week
@@ -289,34 +354,13 @@ function CalendarModule(dataService) {
 
 		var result = '';
 
-		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
+		var squares = _filterBeforeRender(dataService);
+
 		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		var dataHelper = new DataHelper();
 
 		result = result + '<div class="calendar-holder">'
-
-		var filters = dataService.getFilters();
-
-		if(filters) {
-
-			squares = squares.filter(function(square){
-
-				var result = false;
-
-				if (filters.year_from && filters.year_to) {
-
-					if (square.year > filters.year_from && square.year < filters.year_to) {
-						result = true;
-					}
-
-				}
-
-				return result
-
-			})
-
-		}
 
 		var firstSquareEndDayYear = new Date(squares[0].endDay).getFullYear()
 
@@ -364,34 +408,12 @@ function CalendarModule(dataService) {
 
 		var result = '';
 
-		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
+		var squares = _filterBeforeRender(dataService);
 		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		var dataHelper = new DataHelper();
 
 		result = result + '<div class="calendar-holder">'
-
-		var filters = dataService.getFilters();
-
-		if(filters) {
-
-			squares = squares.filter(function(square){
-
-				var result = false;
-
-				if (filters.year_from && filters.year_to) {
-
-					if (square.year > filters.year_from && square.year < filters.year_to) {
-						result = true;
-					}
-
-				}
-
-				return result
-
-			})
-
-		}
 
 		var current_season = dataHelper.getSeasonNumberByMonthNumber(squares[0].month)
 		var current_year = squares[0].year
@@ -449,34 +471,13 @@ function CalendarModule(dataService) {
 
 		var result = '';
 
-		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
+		var squares = _filterBeforeRender(dataService);
+
 		var categoriesAsObject = dataService.getCategoriesAsObject();
 
 		var dataHelper = new DataHelper();
 
 		result = result + '<div class="calendar-holder">'
-
-		var filters = dataService.getFilters();
-
-		if(filters) {
-
-			squares = squares.filter(function(square){
-
-				var result = false;
-
-				if (filters.year_from && filters.year_to) {
-
-					if (square.year > filters.year_from && square.year < filters.year_to) {
-						result = true;
-					}
-
-				}
-
-				return result
-
-			})
-
-		}
 
 		var current_month = squares[0].month;
 		var prevSquare = squares[0];
@@ -567,8 +568,6 @@ function CalendarModule(dataService) {
 
 		var current_year = firstSquareEndDayYear; // need for year representing
 		var current_month = squares[0].month;
-
-
 
 		result = result + '<div class="year-hr">' + current_year + '</div>'
 

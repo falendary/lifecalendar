@@ -142,7 +142,11 @@ function EventsModule(dataService) {
 				console.log('dbclick event', event);
 				console.log('dbclick event', event.detail);
 
-				var eventElem = event.target.parentElement.parentElement;
+				var eventElem = event.target.parentElement;
+
+				if (!eventElem.classList.contains('event-item')) {
+					eventElem = eventElem.parentElement;
+				}
 
 				var eventId = eventElem.dataset.id
 
@@ -220,8 +224,25 @@ function EventsModule(dataService) {
 
 		if (filters.eventSearchString && filters.eventSearchString.length > 3) {
 
+			var searchString = filters.eventSearchString.toLocaleLowerCase()
+
 			events = events.filter(function(event){
-				return event.name.toLocaleLowerCase().indexOf(filters.eventSearchString.toLocaleLowerCase()) !== -1;
+
+				var result = false
+
+				var nameLowerCase = event.name.toLocaleLowerCase()
+				var textLowerCase = event.text.toLocaleLowerCase();
+
+				if (nameLowerCase.indexOf(searchString) !== -1) {
+					result = true
+				} 
+
+				if (textLowerCase.indexOf(searchString) !== -1) {
+					result = true
+				} 
+				
+				return result;
+
 			})
 
 		}
