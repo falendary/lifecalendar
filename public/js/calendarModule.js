@@ -78,7 +78,182 @@ function CalendarModule(dataService) {
 
 						var eventHtml = '<div class="context-menu-event" data-id="'+eventItem.id+'">';
 
-						console.log('eventItem', eventItem);
+						var prefix = '';
+
+						if (eventItem.date) {
+							prefix = new Date(eventItem.date).toISOString().split('T')[0];
+						}
+
+						if (eventItem.type == 3) {
+
+							var dateFrom = new Date(eventItem.date_from).toISOString().split('T')[0];
+							var dateTo = new Date(eventItem.date_to).toISOString().split('T')[0];
+
+							prefix = '<span class="context-menu-period-label" title="'+ dateFrom +' - ' + dateTo + '">Период</span>'
+						}
+
+						var color = 'transparent';
+
+						if (eventItem.categories) {
+
+							console.log('eventItem', eventItem);
+
+							var categoryId = eventItem.categories[0]
+							if (categoriesAsObject.hasOwnProperty(categoryId)) {
+
+							var category = categoriesAsObject[categoryId]
+
+							if(category.color) {
+								color = category.color;
+							}
+						}
+
+						}
+
+						if(eventItem.color) {
+							color = eventItem.color;
+						}
+
+						eventHtml = eventHtml + "<div class='context-menu-event-color' style='background: "+color+"'></div>"
+
+						eventHtml = eventHtml + prefix + ' / ' + eventItem.name
+
+						eventHtml = eventHtml + '</div>'
+
+						contextMenuHtml = contextMenuHtml + eventHtml
+
+
+
+					})
+
+
+				} else {
+					contextMenuHtml = contextMenuHtml + 'Не было никаких событий';
+				}
+
+
+				contextMenuHtml = contextMenuHtml + '</div>';
+
+
+				node.innerHTML = contextMenuHtml
+
+			})
+
+		}
+
+	}
+
+	function addYearsEventListeners(){
+
+		var items = document.querySelectorAll('.year-square')
+		var categoriesAsObject = dataService.getCategoriesAsObject();
+
+		for(var i = 0; i < items.length; i =i + 1) {
+
+			items[i].addEventListener('click', function(event){
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				var squareElem;
+
+				if (event.target.classList.contains('year-square')) {
+					squareElem = event.target	
+				}
+
+				if (event.target.parentElement.classList.contains('year-square')) {
+					squareElem = event.target.parentElement;
+				}
+
+				if (event.target.parentElement.parentElement.classList.contains('year-square')) {
+					squareElem = event.target.parentElement.parentElement;
+				}
+
+				var squareId = squareElem.dataset.id
+
+				document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
+
+				var node = document.createElement("DIV");   
+				node.classList.add('square-context-menu')    
+				node.classList.add('squareContextMenu')    
+
+				document.body.appendChild(node)
+
+				var top = squareElem.getBoundingClientRect().y
+				var left = squareElem.getBoundingClientRect().x
+				var height = squareElem.getBoundingClientRect().height;
+				var width = squareElem.getBoundingClientRect().width;
+
+				node.style.top = squareElem.offsetTop + height - 24 + 'px';
+				node.style.left = squareElem.offsetLeft + width - 24 +  'px';
+
+				var square;
+
+				var squares = dataService.getYearSquares();
+
+				squares.forEach(function(squareItem){
+
+					if(squareItem.id == squareId) {
+						square = squareItem;
+					}
+
+				})
+
+				var contextMenuHtml = '';
+
+				contextMenuHtml = contextMenuHtml + '<div>';
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-header">'
+				contextMenuHtml = contextMenuHtml + square.year + ' год ' + square.events.length + ' событий.'
+				contextMenuHtml = contextMenuHtml + '</div>'
+
+				console.log('square', square);
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-events-categories">'
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-title">Категории</div>'
+
+				if (square.eventsByCategories.length) {
+
+					square.eventsByCategories.forEach(function(categoryItem){
+
+						var eventHtml = '<div class="context-menu-event">';
+
+						var color = 'transparent';
+
+		
+						if(categoryItem.color) {
+							color = categoryItem.color;
+						}
+
+						eventHtml = eventHtml + "<div class='context-menu-event-color' style='background: "+color+"'></div>"
+
+						eventHtml = eventHtml + categoryItem.name + ': ' + categoryItem.events.length + ' событий'
+
+						eventHtml = eventHtml + '</div>'
+
+						contextMenuHtml = contextMenuHtml + eventHtml
+
+
+
+					})
+
+
+				} else {
+					contextMenuHtml = contextMenuHtml + 'Не было никаких событий';
+				}
+
+				contextMenuHtml = contextMenuHtml + '</div>';
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-events-events">'
+
+				contextMenuHtml = contextMenuHtml + '<div class="context-menu-title">События</div>'
+
+				if (square.events.length) {
+
+					square.events.forEach(function(eventItem){
+
+						var eventHtml = '<div class="context-menu-event" data-id="'+eventItem.id+'">';
 
 						var prefix = '';
 
@@ -133,6 +308,7 @@ function CalendarModule(dataService) {
 					contextMenuHtml = contextMenuHtml + 'Не было никаких событий';
 				}
 
+				contextMenuHtml = contextMenuHtml + '</div>';
 
 				contextMenuHtml = contextMenuHtml + '</div>';
 
@@ -544,6 +720,7 @@ function CalendarModule(dataService) {
 		for (var y = yearFrom; y < yearTo; y = y + 1) {
 
 			squares.push({
+				id: toMD5(y + '_years'),
 				year: y,
 				events: []
 			})
@@ -569,7 +746,54 @@ function CalendarModule(dataService) {
 
 		})
 
+		var categories = dataService.getCategories();
 
+		squares.forEach(function(square) {
+
+			square.eventsByCategories = []
+
+			var unknownCategory = {
+				name: "Разное",
+				color: '#ddd',
+				events: []
+			}
+
+			categories.forEach(function(category){
+
+				var resultCategory = {
+					name: category.name,
+					color: category.color,
+					events: []
+				}
+
+				square.events.forEach(function(squareEvent){
+
+					if (squareEvent.categories && squareEvent.categories.length) {
+
+						if (category.id == squareEvent.categories[0]) {
+							resultCategory.events.push(squareEvent)
+						}
+
+					} else {
+						unknownCategory.events.push(squareEvent);
+					}
+
+				})
+
+				if (resultCategory.events.length) {
+					square.eventsByCategories.push(resultCategory)
+				}
+
+			})
+
+			if (unknownCategory.events.length) {
+				square.eventsByCategories.push(unknownCategory)
+			}
+
+
+		})
+
+		dataService.setYearSquares(squares)
 
 		squares.forEach(function(square) {
 
@@ -583,7 +807,7 @@ function CalendarModule(dataService) {
 				classList.push('year-square-current')
 			}
 
-			var squareHTML = '<div class="year-square ' + classList.join(' ') + '">'
+			var squareHTML = '<div class="year-square ' + classList.join(' ') + '" data-id="' + square.id +'">'
 
 			if (square.events.length) {
 				squareHTML = squareHTML + '<div class="square-events-count">' + square.events.length + '</div>';
@@ -610,7 +834,8 @@ function CalendarModule(dataService) {
 
 		addEventListeners: addEventListeners,
 
-		renderAsYears: renderAsYears
+		renderAsYears: renderAsYears,
+		addYearsEventListeners: addYearsEventListeners
 	}
 
 }

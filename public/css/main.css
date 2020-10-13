@@ -559,7 +559,7 @@ body {
     min-width: 320px;
     background: #fff;
     border: 1px solid #000;
-    z-index: 2;
+    z-index: 4;
 }
 
 .square-context-menu {
@@ -867,4 +867,16 @@ button.categories-filter-input-add {
 
 button.categories-filter-input-add:hover {
     opacity: .6;
+}
+
+.context-menu-events-categories {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 16px;
+}
+.context-menu-title {
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: coral;
+    opacity: .8;
 }

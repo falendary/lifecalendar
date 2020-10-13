@@ -27,6 +27,14 @@ function DataService() {
 		return data.squares
 	}
 
+	function setYearSquares(yearSquares) {
+		data.yearSquares = yearSquares
+	}
+
+	function getYearSquares(){
+		return data.yearSquares
+	}
+
 	function setEvents(events) {
 		data.events = events
 	}
@@ -96,6 +104,9 @@ function DataService() {
 
 		setSquares: setSquares,
 		getSquares: getSquares,
+
+		setYearSquares: setYearSquares,
+		getYearSquares: getYearSquares,
 
 		setEvents: setEvents,
 		getEvents: getEvents,

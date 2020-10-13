@@ -475,6 +475,7 @@ function addInterfaceEventListeners(){
     yearsRenderContainer.classList.add('active');
 
     yearsRenderBody.innerHTML = calendarModule.renderAsYears()
+    calendarModule.addYearsEventListeners()
 
   })
 
