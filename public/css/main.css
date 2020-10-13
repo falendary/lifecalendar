@@ -293,8 +293,20 @@ body {
 }
 
 .square-events-count {
-    position: relative;
     z-index: 1;
+    background: #fff;
+    display: inline-block;
+    border-radius: 50%;
+    min-width: 12px;
+    min-height: 12px;
+    font-size: 11px;
+    position: absolute;
+    font-weight: bold;
+    height: 18px;
+    width: 18px;
+    overflow: hidden;
+    text-align: center;
+    padding-top: 2px;
 }
 
 
@@ -632,6 +644,69 @@ body {
 .context-menu-period-label {
     border-bottom: 1px dotted #000;
 }
+
+
+/*Years page start here */
+.years-render-container {
+    display: none
+}
+
+.years-render-container.active {
+    display: block;
+    position: fixed;
+    border: 1px solid #000;
+    background: #fff;
+    width: 100%;
+    min-height: 100%;
+    top: 0;
+    z-index: 4;
+    left: 0;
+    padding: 36px 16px;
+}
+.years-close-button-dialog {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.years-close-button-dialog:hover {
+    opacity: .6;
+}
+
+.years-render-container .year-square {
+    width: 64px;
+    height: 64px;
+    border: 1px solid #000;
+    float: left;
+    margin: 6px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+}
+
+.year-square.year-square-lived {
+    background: lightgreen;
+}
+
+.year-square.year-square-current {
+    background: coral;
+}
+
+.year-square-year-number {
+    position: absolute;
+    bottom: 4px;
+    font-size: 10px;
+    right: 4px;
+    background: #fff;
+    padding: 1px 3px;
+    border-radius: 5px;
+}
+
+
+/* Years page ends here*/
 
 .category-container {
     display: none;

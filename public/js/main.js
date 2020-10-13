@@ -222,6 +222,8 @@ function addInterfaceEventListeners(){
   var eventsFilterInput = document.querySelector('.eventsFilterInput')
   var categoriesFilterInputAdd = document.querySelector('.categoriesFilterInputAdd')
   var categoriesFilterInput = document.querySelector('.categoriesFilterInput')
+  var showInYearsButton = document.querySelector('.showInYearsButton')
+  var yearsCloseButtonDialog = document.querySelector('.yearsCloseButtonDialog')
 
   var renderType = dataService.getRenderType();
 
@@ -462,6 +464,28 @@ function addInterfaceEventListeners(){
     downloadFile(JSON.stringify(preparedData), 'application/json',  'lifecalendar ' + date + '.json')
 
     toastr.success('Успешно экспортировано')
+
+  })
+
+  showInYearsButton.addEventListener('click', function(event){
+
+    var yearsRenderContainer = document.querySelector('.yearsRenderContainer')
+    var yearsRenderBody = document.querySelector('.yearsRenderBody')
+
+    yearsRenderContainer.classList.add('active');
+
+    yearsRenderBody.innerHTML = calendarModule.renderAsYears()
+
+  })
+
+  yearsCloseButtonDialog.addEventListener('click', function(event){
+
+    var yearsRenderContainer = document.querySelector('.yearsRenderContainer')
+    var yearsRenderBody = document.querySelector('.yearsRenderBody')
+
+    yearsRenderContainer.classList.remove('active');
+
+    yearsRenderBody.innerHTML = '';
 
   })
 

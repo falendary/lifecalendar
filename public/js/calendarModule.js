@@ -529,229 +529,75 @@ function CalendarModule(dataService) {
 
 	}
 
-	// deprecated below
-	
-	function render(){
+	function renderAsYears(){
 
 		var result = '';
 
-		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
-		var categoriesAsObject = dataService.getCategoriesAsObject();
+		var events = JSON.parse(JSON.stringify(dataService.getEvents()));
+		var birthday = dataService.getBirthday()
+		var yearFrom = new Date(birthday).getFullYear()
+		var yearTo = yearFrom + 100;
+		var currentYear = new Date().getFullYear();
 
-		var dataHelper = new DataHelper();
+		var squares = [];
 
-		result = result + '<div class="calendar-holder">'
+		for (var y = yearFrom; y < yearTo; y = y + 1) {
 
-		var filters = dataService.getFilters();
-
-		if(filters) {
-
-			squares = squares.filter(function(square){
-
-				var result = false;
-
-				if (filters.year_from && filters.year_to) {
-
-					if (square.year > filters.year_from && square.year < filters.year_to) {
-						result = true;
-					}
-
-				}
-
-				return result
-
+			squares.push({
+				year: y,
+				events: []
 			})
 
 		}
 
-		var firstSquareEndDayYear = new Date(squares[0].endDay).getFullYear()
-
-		var current_year = firstSquareEndDayYear; // need for year representing
-		var current_month = squares[0].month;
-
-		result = result + '<div class="year-hr">' + current_year + '</div>'
-
-		result = result + '<div class="month-square-container">'
-
-		var currentYear = new Date().getFullYear() // actual current year
-		var currentWeek = dataHelper.getWeekNumber(new Date()) // actual current week
-
-
-		console.log('squares', squares);
-
+		var eventYear
 		squares.forEach(function(square){
 
-			var squareHTML = '';
+			events.forEach(function(event){
 
-			var title = new Date(square.startDay).toISOString().split('T')[0];
-
-			var classList = []
-
-			if(square.lived) {
-				classList.push('square-lived');
-			}
-
-			if (square.events.length){
-				classList.push('square-has-events');
-			}
-
-			if (square.year == currentYear && square.week == currentWeek) {
-				classList.push('square-current-week')
-			}
-
-			// if(square.events.length) {
-			// 	classList.push('square-events-' + square.events.length);
-			// }
-
-			squareHTML = squareHTML + '<div class="square ' + classList.join(' ') +'" data-year="' + square.year + '" data-week="' + square.week + '" data-id="'+square.id+'" title="'+title+'">'
-
-			if (square.events.length) {
-				squareHTML = squareHTML + '<div class="square-events-count"> ' + square.events.length + '</div>';
-			}
-
-			if (square.events.length) {
-
-				squareHTML = squareHTML + '<div class="event-overlay-holder">'
-				
-				square.events.forEach(function(event) {
-
-					var color = '#363636';
-
-					if (event.categories) {
-
-						var categoryId = event.categories[0]
-
-						if (categoriesAsObject.hasOwnProperty(categoryId)) {
-
-							var category = categoriesAsObject[categoryId]
-
-							if(category.color) {
-								color = category.color;
-							}
-
-						}
-
-					}
-
-					if (event.color) {
-						color = event.color;
-					}
-
-					var size = square.events.length
-
-					squareHTML = squareHTML + '<div class="event-overlay event-overlay-1-out-'+size+'" style="background: '+ color + '; border-color: '+color+'"></div>'
-
-				})
-
-				squareHTML = squareHTML + '</div>';
-
-			}
-
-			squareHTML = squareHTML + '</div>'
-
-			var lastDayYear = new Date(square.endDay).getFullYear()
-
-
-			if (current_month != square.month) {
-				current_month = square.month
-
-				if (lastDayYear > current_year) {
-				
-					result = result + '</div><div class="year-hr">' + lastDayYear + '</div><div class="month-square-container">'
-					current_year = lastDayYear
+				if (event.type == 1) { 
+					eventYear = new Date(event.date).getFullYear();
 				} else {
-
-
-				result = result + '</div><div class="month-square-container">'
-
+					eventYear = new Date(event.date_from).getFullYear();
 				}
+
+				if (square.year == eventYear) {
+					square.events.push(event);
+				}
+
+			})
+
+		})
+
+
+
+		squares.forEach(function(square) {
+
+			var classList = [];
+
+			if (square.year < currentYear) {
+				classList.push('year-square-lived')
 			}
+
+			if (square.year == currentYear) {
+				classList.push('year-square-current')
+			}
+
+			var squareHTML = '<div class="year-square ' + classList.join(' ') + '">'
+
+			if (square.events.length) {
+				squareHTML = squareHTML + '<div class="square-events-count">' + square.events.length + '</div>';
+			}
+
+			squareHTML = squareHTML + '<div class="year-square-year-number">' + square.year + '</div>'
+
+			squareHTML = squareHTML + '</div>';
 
 			result = result + squareHTML
 
-			
-
-
 		})
 
-		result = result + '</div>'
-
-		return result;
-
-	}
-
-	function renderMonths(){
-
-		var result = '';
-
-		// TODO mae generation of month once at app start
-		var dataHelper = new DataHelper();
-
-		var filters = dataService.getFilters();
-		var birthday = dataService.getBirthday();
-
-		var startYear
-		var endYear;
-
-		if(filters) {
-
-			startYear = filters.year_from + 1
-			endYear = filters.year_to - 1
-
-		} else {
-
-			startYear = birthday;
-			endYear = birthday + 100
-
-		}
-
-		var monthsTitles = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
-
-		var months = []
-
-		console.log('startYear', startYear)
-		console.log('endYear', endYear)
-
-		for (var y = startYear; y < endYear; y = y + 1) {
-
-			for(var m = 0; m < monthsTitles.length; m = m + 1) {
-
-				var firstDayOfMonth = new Date(y, m, 4); // start from 4 day of month, maybe suspicious
-				var lastDayOfMonth = new Date(y, m + 1, 0);
-
-				months.push({
-					startWeek: dataHelper.getWeekNumber(firstDayOfMonth),
-					endWeek: dataHelper.getWeekNumber(lastDayOfMonth),
-					name: monthsTitles[m],
-					year: y
-				})
-
-			}
-
-		}
-
-		months.forEach(function(month){
-
-			var squareStart = document.querySelector('.square[data-year="'+ month.year+'"][data-week="'+ (month.startWeek + 1)+'"]');
-			var squareEnd = document.querySelector('.square[data-year="'+ month.year+'"][data-week="'+ month.endWeek+'"]');
-
-			console.log('month', month);
-
-			var offsetTop = squareStart.offsetTop + 48 + 6;
-			var offsetLeft = squareStart.offsetLeft + 2
-
-			var monthHTML = '<div class="month-title" style="top: ' + offsetTop + 'px; left: ' + offsetLeft + 'px">'
-
-			monthHTML = monthHTML + month.name + ' ' + month.year
-
-			monthHTML = monthHTML + "</div>"
-
-			result = result + monthHTML;
-
-		})
-
-
-		return result;
+		return result
 
 	}
 
@@ -762,10 +608,9 @@ function CalendarModule(dataService) {
 		renderGroupByMonths: renderGroupByMonths,
 		renderDefault: renderDefault,
 
-		// deprecated
-		render: render,
-		renderMonths: renderMonths,
-		addEventListeners: addEventListeners
+		addEventListeners: addEventListeners,
+
+		renderAsYears: renderAsYears
 	}
 
 }
