@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/week-detail.css">
 
 </head>
 
@@ -87,11 +88,19 @@
 
         <div class="app-right-section">
 
-            <h2 class="text-center eventsTitle" style="margin: 8px">События</h2>
-
             <div class="p-8">
                 <input type="text" placeholder="Поиск" name="eventsFilter" class="events-filter-input eventsFilterInput">
             </div>
+
+            <h2 class="text-center eventsTitle nearEvents">Ближайшие события</h2>
+
+            <div>
+                
+            </div>
+
+            <h2 class="text-center eventsTitle historicalEvents" style="margin: 8px">Исторические События</h2>
+
+           
 
             <div class="events-container eventsContainer">
 
@@ -239,6 +248,14 @@
         </div>
         
     </div>
+
+    <div class="week-detail-dialog-container weekDetailDialogContainer">
+        
+        <div class="week-detail-dialog weekDetailDialog">
+
+        </div>
+
+    </div>
  
 </div>
 
@@ -257,6 +274,8 @@
 <script src="js/calendarModule.js"></script>
 <script src="js/categoryModule.js"></script>
 <script src="js/eventsModule.js"></script>
+<script src="js/dayDetailModule.js"></script>
+<script src="js/weekDetailModule.js"></script>
 <script src="js/main.js"></script>
 
 </body>

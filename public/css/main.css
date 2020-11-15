@@ -880,3 +880,22 @@ button.categories-filter-input-add:hover {
     color: coral;
     opacity: .8;
 }
+
+.show-week-detail {
+    font-size: 10px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0 2px;
+    color: #000;
+    display: inline-block;
+}
+
+.show-week-detail:hover {
+    opacity: .6;
+}
+
+

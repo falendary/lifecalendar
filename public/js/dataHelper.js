@@ -12,7 +12,7 @@ function DataHelper() {
 		return new Date(moment()
 		.isoWeekYear(y)
 		.isoWeek(w)
-		.startOf('week'))
+		.startOf('isoWeek'))
 
 	}
 
@@ -21,7 +21,7 @@ function DataHelper() {
 		return new Date(moment()
 		.isoWeekYear(y)
 		.isoWeek(w)
-		.endOf('week'))
+		.endOf('isoWeek'))
 
 	}
 
@@ -178,8 +178,15 @@ function DataHelper() {
 		var eventDateToYear = eventDateTo.getFullYear();
 		var eventDateToMonth = eventDateTo.getMonth();
 		var eventDateToWeek = getWeekNumber(eventDateTo)
+		var eventDateToWeekPad;
 
-		var eventTosimpleWeekPattern = parseInt(eventDateToYear.toString() + eventDateToWeek.toString(), 10)
+		if (eventDateToWeek < 10) {
+			eventDateToWeekPad = '0' + eventDateToWeek
+		} else {
+			eventDateToWeekPad = eventDateToWeek
+		}
+
+		var eventTosimpleWeekPattern = parseInt(eventDateToYear.toString() + eventDateToWeekPad.toString(), 10)
 
 		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
 
@@ -199,6 +206,14 @@ function DataHelper() {
 				var dateMonth = date.getMonth();
 				var dateYear = date.getFullYear();
 				var dateWeek = getWeekNumber(date)
+
+				if (dateWeek == 53 && dateMonth == 0) {
+					dateWeek = 1
+				}
+
+				if (dateWeek < 10) {
+					dateWeek = '0' + dateWeek 
+				}
 
 				 // "2010"+"05" = "201005" = int("201005")
 				var dateSimpleWeekPattern = parseInt(dateYear.toString() + dateWeek.toString(), 10)

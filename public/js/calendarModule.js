@@ -67,12 +67,15 @@ function CalendarModule(dataService) {
 				var squareDateEnd = new Date(square.endDay).toISOString().split('T')[0];
 
 				contextMenuHtml = contextMenuHtml + '<div class="context-menu-header">'
+				contextMenuHtml = contextMenuHtml + '<a href="#/week/'+square.id+'" class="show-week-detail">Показать</a>'
 				contextMenuHtml = contextMenuHtml + squareDateStart + ' - ' + squareDateEnd + ' ' + '<span class="context-menu-week-holder">' + square.week +' неделя</span>'
 				contextMenuHtml = contextMenuHtml + '</div>'
 
 				console.log('squareItem', square);
 			
 				if (square.events.length) {
+
+
 
 					square.events.forEach(function(eventItem){
 

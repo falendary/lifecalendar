@@ -16,6 +16,9 @@ var calendarModule = CalendarModule(dataService)
 var categoryModule = CategoryModule(dataService)
 var eventsModule = EventsModule(dataService)
 
+var weekDetailModule = WeekDetailModule(dataService)
+var dayDetailModule = DayDetailModule(dataService)
+
 EVENT_TYPES = {
   SINGLE: 1,
   REGULAR: 2,
@@ -29,6 +32,7 @@ function save(){
   var preparedData = JSON.parse(JSON.stringify(data))
 
   delete preparedData.squares;
+  delete preparedData.yearSquares;
 
   localStorage.setItem('data', JSON.stringify(preparedData));
 
@@ -460,6 +464,7 @@ function addInterfaceEventListeners(){
     var preparedData = JSON.parse(JSON.stringify(data))
 
     delete preparedData.squares;
+    delete preparedData.yearSquares;
 
     downloadFile(JSON.stringify(preparedData), 'application/json',  'lifecalendar ' + date + '.json')
 
@@ -1001,6 +1006,41 @@ function setInterfaceState(){
 
 }
 
+function initRouter(){
+
+  location.hash = '#/'; // TODO refactor later
+
+  var currentLocation = location.hash;
+
+  window.addEventListener("hashchange", function(event){
+
+    currentLocation = location.hash
+
+    console.log('currentLocation', currentLocation);
+
+    if (currentLocation.indexOf('/week') !== -1) {
+
+      var squareId = currentLocation.split('week/')[1];
+
+      var container = document.querySelector('.weekDetailDialogContainer');
+      var dialogContent = document.querySelector('.weekDetailDialog')
+
+      dialogContent.innerHTML = weekDetailModule.render(squareId)
+      weekDetailModule.addEventListeners();
+
+      container.classList.add('active');
+
+      console.log('squareId', squareId);
+
+    } else if (location.hash != '#/') {
+      location.hash = '#/';
+    }
+
+
+  }, false);
+
+}
+
 function init(){
 
   var data = localStorage.getItem('data');
@@ -1107,6 +1147,8 @@ function init(){
     )
 
   }
+
+  initRouter();
 
   
 }
