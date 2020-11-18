@@ -1,0 +1,299 @@
+.day-detail-dialog-container {
+    display: none;
+}
+
+.day-detail-dialog-container.active {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+
+.close-day-detail-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.close-day-detail-button:hover {
+    opacity: .6;
+}
+
+.day-pattern-settings-button {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    padding: 1px 6px;
+    font-size: 13px;
+}
+
+.day-pattern-settings-button:hover {
+    opacity: .6;
+}
+
+.day-detail-save {
+    position: absolute;
+    left: 8px;
+    top: 36px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    padding: 1px 6px;
+}
+
+.day-detail-save:hover {
+    opacity: .6;
+}
+
+.day-detail-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.day-detail-events-section {
+    min-width: 320px;
+    max-width: 320px;
+}
+.day-detail-chart-section {
+    display: flex;
+    flex-grow: 1;
+}
+
+.day-detail-actions-section {
+    min-width: 300px;
+    border-right: 1px solid #ddd;
+}
+
+.day-detail-header {
+    height: 80px;
+}
+
+.chart-holder {
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+.add-day-action-label {
+    display: block;
+}
+
+.add-day-action-holder {
+    padding: 8px;
+    border-top: 1px solid #ddd;
+
+}
+
+
+.add-day-action-input-container {
+    margin: 8px 0;
+}
+
+.add-day-action-input-container .sp-original-input-container {
+    width: 100%;
+}
+
+button.add-day-action-button {
+    display: block;
+    margin: 8px auto;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+button.add-day-action-button:hover {
+    opacity: .6;
+}
+
+.day-detail-action {
+    margin: 8px;
+}
+
+.day-detail-action-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+}
+
+button.day-detail-action-delete {
+    float: right;
+    background: white;
+    border: 1px solid #000;
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    cursor: pointer;
+}
+button.day-detail-action-delete:hover {
+    opacity: .6;
+}
+
+.day-detail-block-wrapper {
+    margin: 0 auto;
+    display: block;
+    width: 400px;
+    
+    overflow: hidden;
+    
+}
+
+.day-detail-left-block {
+    float: left;
+    text-align: center;
+    width: 50px;
+    height: 80px;
+}
+.day-detail-center-block {
+    float: left;
+    width: 300px;
+    padding-top: 12px;
+}
+.day-detail-right-block {
+    width: 50px;
+    text-align: center;
+    float: left;
+    height: 80px;
+}
+.day-detail-change-day-link {
+    text-decoration: none;
+    padding-top: 24px;
+    display: block;
+    color: #000;
+    cursor: pointer;
+    height: 80px;
+    font-size: 14px;
+}
+.day-detail-change-day-link:hover {
+    background: #ddd;
+}
+
+.day-detail-current-date-title {
+    font-size: 20px;
+    text-align: center;
+}
+
+.day-detail-current-date-day-title {
+    font-size: 18px;
+    text-transform: capitalize;
+    text-align: center;
+    color: #777;
+}
+
+/* Day Pattern Settings Below*/
+
+.close-day-pattern-settings-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.close-day-pattern-settings-button:hover {
+    opacity: .6;
+}
+
+.day-pattern-settings-dialog-container {
+    display: none;
+}
+
+.day-pattern-settings-dialog-container.active {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.day-pattern-body {
+    display: block;
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 24px;
+}
+
+.add-day-pattern-holder {
+    width: 300px;
+    margin: 16px auto;
+    border-top: 1px solid #ddd;
+    padding: 8px 40px;
+}
+.add-day-pattern-label {
+    display: block;
+}
+.day-pattern-add-new {
+    display: block;
+    margin: 8px auto;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.day-pattern-add-new:hover {
+    opacity: .6;
+}
+.day-pattern-settings-items-holder {
+    text-align: center;
+    margin: 8px;
+}
+
+.day-pattern-item-date {
+    color: #777;
+}
+
+.day-pattern-item-delete {
+    margin-left: 8px;
+    background: white;
+    border: 1px solid #000;
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    top: -2px;
+}
+
+.day-pattern-item-title {
+    color: #000;
+    text-decoration: none;
+}
+
+.day-pattern-item-delete:hover {
+    opacity: .6;
+}
+
+
+.day-pattern-detail-holder {
+    width: 1024px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.edit-day-pattern-close-pattern {
+    color: #000;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 1px 4px;
+}

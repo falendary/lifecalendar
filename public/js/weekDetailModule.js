@@ -109,8 +109,12 @@ function WeekDetailModule(dataService) {
 			var daySquareHTML = '<div class="day-square">';
 
 			var prettyDate = new Date(daySquare.date).toISOString().split('T')[0];
+			var datePieces = prettyDate.split('-')
+			var year = datePieces[0]
+			var month = datePieces[1]
+			var day = datePieces[2]
 
-			daySquareHTML = daySquareHTML + '<div class="day-square-date">' + getDayName(daySquare.date) + ' <span class="day-square-date-right">' + prettyDate + '</span></div>'
+			daySquareHTML = daySquareHTML + '<div class="day-square-date"><a class="show-day-detail" href="#/view/'+year+'/'+month+'/'+day+'">Просмотр дня</a>' + prettyDate + ' <span class="day-square-date-right">' + getDayName(daySquare.date) + '</span></div>'
 
 			if (daySquare.events.length) {
 

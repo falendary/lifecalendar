@@ -91,9 +91,21 @@
 .float-left {
     float: left;
 }
+.float-right {
+    float: right;
+}
 
 .m-r-8 {
     margin-right: 8px;
+}
+
+.m-t-8 {
+    margin-top: 8px;
+}
+
+.m-auto {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .simple-button {

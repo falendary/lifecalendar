@@ -1,0 +1,155 @@
+.event-dialog-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background: rgba(255, 255, 255, .6);
+    display: none;
+}
+
+.event-dialog-container.active {
+    display: block;
+}
+
+.event-dialog {
+    width: 360px;
+    padding: 16px;
+    border: 1px solid #000;
+    margin: 60px auto;
+    background: #fff;
+}
+
+.event-dialog input {
+    width: 100%;
+}
+
+.event-dialog select {
+    width: 100%;
+}
+
+.event-dialog textarea {
+    width: 100%;
+    resize: none;
+    height: 80px;
+}
+
+.event-dialog-container.edit-dialog .add-event-button {
+    display: none
+}
+
+.event-dialog-container.add-dialog .save-event-button {
+    display: none
+}
+
+.event-dialog-container.add-dialog .delete-event-button {
+    display: none
+}
+
+
+.add-event-button {
+    float: right;
+    display: block;
+}
+
+.save-event-button {
+    float: right;
+    display: block;
+}
+
+.delete-event-button {
+    float: right;
+    display: block;
+}
+
+.close-event-button {
+    float: left;
+    display: block;
+}
+
+.event-item {
+    padding: 8px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 34px;
+
+}
+
+.event-item:hover  .event-item-search{
+    display: block;
+}
+
+.event-item-search {
+    display: none;
+    position: absolute;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    
+    text-align: center;
+    top: 7px;
+    padding-top: 8px;
+
+}
+
+.event-item-search:hover {
+    background: #fff;
+}
+
+.event-item-color {
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+
+.event-item:hover {
+    background: #ddd;
+}
+
+.event-item-date {
+    font-size: 11px;
+    color: #1f1f1f;
+}
+.event-item-text {
+    padding-left: 16px;
+    font-size: 11px;
+}
+
+.eventsContainer {
+    padding-left: 16px;
+}
+
+
+.event-date-single-holder {
+    display: none;
+}
+
+.event-date-single-holder.active {
+    display: block;
+}
+
+.event-date-range-holder {
+    display: none;
+}
+
+
+.event-date-range-holder.active {
+    display: block;
+}
+
+.event-date-regular-holder  {
+    display: none;
+}
+
+.event-date-regular-holder.active {
+    display: block;
+}
+
+.event-color-input-holder {
+    float: left;
+    margin-right: 8px;
+}

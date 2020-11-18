@@ -1,5 +1,11 @@
 function EventsModule(dataService) {
 
+	var EVENT_TYPES = {
+	  SINGLE: 1,
+	  REGULAR: 2,
+	  RANGE: 3
+	}
+
 	function addEventListeners() {
 
 		var items = document.querySelectorAll('.event-item')

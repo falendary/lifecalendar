@@ -1,0 +1,160 @@
+.category-container {
+    display: none;
+}
+
+.category-container.active {
+    display: block;
+    position: absolute;
+    border: 1px solid #000;
+    background: #fff;
+    width: 90%;
+    min-height: 90%;
+    top: 40px;
+    z-index: 4;
+    left: 5%;
+}
+.category-container-content {
+    width: 100%;
+    height: 100%;
+}
+
+.category-close-button-dialog {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+
+.category-close-button-dialog:hover {
+    opacity: .6;
+}
+
+.category-header {
+    padding-left: 27px;
+    font-size: 20px;
+    margin: 16px;
+    padding-top: 8px;
+}
+
+.category-container-body {
+    padding: 0 16px;
+}
+
+.category-item {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    margin: 16px;
+}
+
+.category-item {
+    overflow: hidden;
+}
+
+.category-item label {
+    display: block;
+    font-size: 11px;
+    color: #000;
+}
+
+.category-color-input-holder {
+    float: left;
+    margin-right: 8px;
+}
+
+.category-name-input-holder {
+    float: left;
+    margin-right: 8px;
+}
+
+.category-delete-button {
+    margin-top: 14px;
+    float: left;
+}
+
+.category-container-footer {
+    height: 80px;
+    text-align: center;
+    width: 100%;
+    padding-top: 10px;
+}
+.events-filter-input {
+    width: 100%;
+}
+
+.categories-filter-holder {
+    position: absolute;
+    display: inline-block;
+    top: 3px;
+    margin-left: 8px;
+}
+.categories-filter-holder.empty {
+    top: 31px;
+}
+
+.categories-filter-holder label {
+    display: block;
+    font-size: 10px;
+}
+
+.categories-filter-chips {
+    overflow: hidden;
+    width: 300px;
+}
+
+.category-filter-chip {
+    float: left;
+    border: 1px solid #000;
+    margin: 2px;
+    padding: 4px;
+    font-size: 10px;
+}
+button.category-filter-chip-remove {
+    border: 0;
+    font-size: 8px;
+    margin-left: 4px;
+    padding: 0;
+    padding-left: 1px;
+    cursor: pointer;
+    border-radius: 6px;
+    height: 14px;
+    width: 14px;
+    overflow: hidden;
+    line-height: 1;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+button.category-filter-chip-remove:hover {
+    background: #000;
+    color: #fff;
+}
+
+.categories-filter-input-container {
+    position: relative;
+    padding: 2px;
+}
+
+input.categories-filter-input {
+    height: 16px;
+    font-size: 11px;
+    float: left;
+    border: 1px solid #000;
+    border-right: 0;
+}
+
+button.categories-filter-input-add {
+    height: 16px;
+    font-size: 10px;
+    position: absolute;
+    border: 1px solid #000;
+    background: #ddd;
+    border-radius: 0;
+    cursor: pointer;
+} 
+
+button.categories-filter-input-add:hover {
+    opacity: .6;
+}

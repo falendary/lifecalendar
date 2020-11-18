@@ -94,6 +94,33 @@ function DataService() {
 		return data.renderType;
 	}
 
+	function setDayPatterns(dayPatterns) {
+		data.dayPatterns = dayPatterns
+	}
+
+	function getDayPatterns(){
+		return data.dayPatterns
+	}
+
+	function setDayDetail(day, dayData) {
+
+		if (!data.days) {
+			data.days = {}
+		}
+
+		data.days[day] = dayData;
+
+	}
+
+	function getDayDetail(day) {
+
+		if (data.days && data.days[day]) {
+			return data.days[day]
+		}
+
+		return null;
+	}
+
 	return {
 
 		setData: setData,
@@ -120,7 +147,15 @@ function DataService() {
 		setCategory:setCategory,
 
 		setRenderType: setRenderType,
-		getRenderType: getRenderType
+		getRenderType: getRenderType,
+
+		// Day Module
+		setDayPatterns: setDayPatterns,
+		getDayPatterns: getDayPatterns,
+
+		setDayDetail: setDayDetail,
+		getDayDetail: getDayDetail
+
 
 	}
 

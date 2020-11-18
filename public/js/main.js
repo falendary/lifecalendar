@@ -11,13 +11,14 @@ var birthdayHolder = document.querySelector('.birthdayHolder')
 var initContainer = document.querySelector('.initContainer')
 
 var dataService = new DataService();
+var eventService = new EventService();
 var dataHelper = new DataHelper();
-var calendarModule = CalendarModule(dataService)
-var categoryModule = CategoryModule(dataService)
-var eventsModule = EventsModule(dataService)
+var calendarModule = CalendarModule(dataService, eventService)
+var categoryModule = CategoryModule(dataService, eventService)
+var eventsModule = EventsModule(dataService, eventService)
 
-var weekDetailModule = WeekDetailModule(dataService)
-var dayDetailModule = DayDetailModule(dataService)
+var weekDetailModule = WeekDetailModule(dataService, eventService)
+var dayDetailModule = DayDetailModule(dataService, eventService)
 
 EVENT_TYPES = {
   SINGLE: 1,
@@ -202,6 +203,63 @@ function syncEventsWithSquares() {
  
 }
 
+function addEventListenersToYearsSlider(){
+
+  var birthday = dataService.getBirthday();
+  var birthdayDate = new Date(birthday)
+  var birthdayYear = birthdayDate.getFullYear();
+
+  var slider = document.querySelector('.yearSlider');
+
+  var startMin = birthdayYear + 16
+  var startMax = birthdayYear + 40
+
+  var filters = dataService.getFilters();
+
+  if (filters) {
+    startMin = filters.year_from;
+    startMax = filters.year_to;
+  }
+
+  noUiSlider.create(slider, {
+      start: [startMin, startMax],
+      connect: true,
+      tooltips: true,
+      step: 1,
+      range: {
+          'min': birthdayYear - 1,
+          'max': birthdayYear + 100
+      },
+      format: {
+        to: function (value) {
+            return parseInt(value, 10)
+        },
+         from: function (value) {
+            return value
+        }
+      }
+  });
+
+  slider.noUiSlider.on('change', function () {
+
+    var data = slider.noUiSlider.get()
+
+    var filters = dataService.getFilters();
+
+    if (!filters) {
+      filters = {}
+    }
+
+    filters.year_from = data[0] - 1
+    filters.year_to = data[1] + 1
+
+    dataService.setFilters(filters)
+    render();
+
+  });
+
+}
+
 
 function addInterfaceEventListeners(){
 
@@ -228,6 +286,7 @@ function addInterfaceEventListeners(){
   var categoriesFilterInput = document.querySelector('.categoriesFilterInput')
   var showInYearsButton = document.querySelector('.showInYearsButton')
   var yearsCloseButtonDialog = document.querySelector('.yearsCloseButtonDialog')
+  var showDayButtonDialog = document.querySelector('.showDayButtonDialog')
 
   var renderType = dataService.getRenderType();
 
@@ -364,7 +423,7 @@ function addInterfaceEventListeners(){
 
     event.preventDefault();
 
-    save();
+    eventService.dispatchEvent('SAVE')
 
     toastr.success('Сохранено')
 
@@ -766,58 +825,19 @@ function addInterfaceEventListeners(){
 
   })
 
-  var birthday = dataService.getBirthday();
-  var birthdayDate = new Date(birthday)
-  var birthdayYear = birthdayDate.getFullYear();
+  showDayButtonDialog.addEventListener('click', function(event){
 
-  var slider = document.querySelector('.yearSlider');
+    var prettyDate = new Date(new Date()).toISOString().split('T')[0];
+    var datePieces = prettyDate.split('-')
+    var year = datePieces[0]
+    var month = datePieces[1]
+    var day = datePieces[2]
 
-  var startMin = birthdayYear + 16
-  var startMax = birthdayYear + 40
+    location.hash = '#/view/' + year + '/' + month + '/' + day
 
-  var filters = dataService.getFilters();
+  })
 
-  if (filters) {
-    startMin = filters.year_from;
-    startMax = filters.year_to;
-  }
-
-  noUiSlider.create(slider, {
-      start: [startMin, startMax],
-      connect: true,
-      tooltips: true,
-      step: 1,
-      range: {
-          'min': birthdayYear - 1,
-          'max': birthdayYear + 100
-      },
-      format: {
-        to: function (value) {
-            return parseInt(value, 10)
-        },
-         from: function (value) {
-            return value
-        }
-      }
-  });
-
-  slider.noUiSlider.on('change', function () {
-
-    var data = slider.noUiSlider.get()
-
-    var filters = dataService.getFilters();
-
-    if (!filters) {
-      filters = {}
-    }
-
-    filters.year_from = data[0] - 1
-    filters.year_to = data[1] + 1
-
-    dataService.setFilters(filters)
-    render();
-
-  });
+  addEventListenersToYearsSlider();
 
 }
 
@@ -1006,21 +1026,21 @@ function setInterfaceState(){
 
 }
 
-function initRouter(){
+function handleRoute(){
 
-  location.hash = '#/'; // TODO refactor later
+    var dialogs = document.querySelectorAll('.dialog');
 
-  var currentLocation = location.hash;
+    dialogs.forEach(function(dialog){
+      dialog.classList.remove('active')
+    })
 
-  window.addEventListener("hashchange", function(event){
-
-    currentLocation = location.hash
+    var currentLocation = location.hash
 
     console.log('currentLocation', currentLocation);
 
-    if (currentLocation.indexOf('/week') !== -1) {
+    if (currentLocation.indexOf('/week/') !== -1) {
 
-      var squareId = currentLocation.split('week/')[1];
+      var squareId = currentLocation.split('/week/')[1];
 
       var container = document.querySelector('.weekDetailDialogContainer');
       var dialogContent = document.querySelector('.weekDetailDialog')
@@ -1032,12 +1052,61 @@ function initRouter(){
 
       console.log('squareId', squareId);
 
+    } else if (currentLocation.indexOf('/view/') !== -1) {
+
+      var path = currentLocation.split('/view/')[1];
+      var pieces = path.split('/');
+
+      var year = pieces[0]
+      var month = pieces[1]
+      var day = pieces[2]
+
+      var container = document.querySelector('.dayDetailDialogContainer');
+      var dialogContent = document.querySelector('.dayDetailDialog')
+
+      var dayDate = year + '-' + month + '-' + day;
+
+      dayDetailModule.init(dayDate, dialogContent, container)
+
+      container.classList.add('active');
+
+    } else if(currentLocation.indexOf('/settings/day-pattern') !== -1) {
+
+      console.log("Day pattern settings")
+
+      var container = document.querySelector('.dayPatternSettingsDialogContainer');
+      var dialogContent = document.querySelector('.dayPatternSettingsDetailDialog')
+
+      dayDetailModule.initDayPattern(dialogContent, container)
+
+      container.classList.add('active');
+
     } else if (location.hash != '#/') {
       location.hash = '#/';
     }
 
+}
+
+function initRouter(){
+
+  handleRoute();
+
+  window.addEventListener("hashchange", function(event){
+
+    handleRoute()
 
   }, false);
+
+}
+
+function initEventListeners(){
+
+  eventService.addEventListener('SAVE', function(){
+
+    save();
+
+  })
+
 
 }
 
@@ -1149,6 +1218,7 @@ function init(){
   }
 
   initRouter();
+  initEventListeners();
 
   
 }
