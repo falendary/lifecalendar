@@ -8,10 +8,36 @@ function DayDetailModule(dataService, eventService) {
 	function renderChart(dayDate){
 
 		var dayDetail = dataService.getDayDetail(dayDate);
+		var dataHelper = new DataHelper();
+
+		var pattern = dataHelper.getPatternForDay(dayDate, dataService.getDayPatterns())
 
 		var ctx = document.getElementById('dayChart');
 
 		var actions = []
+
+		if (pattern) {
+
+			pattern.actions.forEach(function(action){
+
+				if (action.exclude_weekend) {
+
+					var dayOfWeek = new Date(dayDate).getDay()
+					
+					if (dayOfWeek == 0 || dayOfWeek == 6) { // 0 sunday, 6 saturday
+						// do nothning
+					} else {
+						actions.push(action);
+					}
+
+				} else {
+
+					actions.push(action);
+
+				}
+			})
+
+		}
 
 		if (dayDetail) {
 
@@ -23,13 +49,17 @@ function DayDetailModule(dataService, eventService) {
 
 		}
 
+		var total = 1440; // in minutes
 
 		var dataset = actions.map(function(action){
 
 			var durationInMin = action.hours * 60 + action.minutes
 
+			total = total - durationInMin;
+
 			return durationInMin
 		})
+
 
 		var colors = actions.map(function(action){
 			return action.color
@@ -39,8 +69,11 @@ function DayDetailModule(dataService, eventService) {
 			return action.name
 		})
 
-		console.log('actions', actions);
-		console.log('dataset', dataset);
+		if (total) {
+			colors.push("#dddddd")
+			dataset.push(total)
+			labels.push("Свободное время")
+		}
 
 		var myPieChart = new Chart(ctx, {
 		    type: 'doughnut',
@@ -54,17 +87,50 @@ function DayDetailModule(dataService, eventService) {
 		    options: {
 		    	layout: {
             		padding: {
-            			left: 50,
+            			left: 100,
             			top: 50,
-            			right: 50,
+            			right: 100,
             			bottom: 50
             		}
             	},
+            	legend: {
+            		display: false
+            	},
+            	tooltips: {
+		            callbacks: {
+		                label: function(tooltipItem, data) {
+
+		                	console.log('tooltipItem', tooltipItem);
+		                	console.log('data', data);
+
+		                    var label = data.labels[tooltipItem.index] || '';
+
+		                    if (label) {
+		                        label += ': ';
+		                    }
+
+		                    var hours;
+		                    var minutes;
+
+		                    var hours = Math.floor(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] / 60)
+		                    var minutes = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] - hours * 60
+
+		                    if (hours) {
+		                    	label += hours + ' ' + dataHelper.toHours(hours) + ' '
+		                    }
+
+		                    if (minutes) {
+		                    	label += minutes + ' минут'
+		                    }
+		                    return label;
+		                }
+		            }
+		        },
 		    	plugins: {
 		    		labels: [
 					    {
 					      render: 'label',
-					      position: 'outside'
+					      position: 'outside',
 					    },
 					    {
 					      render: 'percentage'
@@ -239,33 +305,9 @@ function DayDetailModule(dataService, eventService) {
 
 				var eventHtml = '<div class="event-item" data-id="'+event.id+'">';
 
-				var eventColor = 'transparent';
-
-				if (event.categories) {
-					var categoryId = event.categories[0]
-
-					if (categoriesAsObject.hasOwnProperty(categoryId)) {
-
-						var category = categoriesAsObject[categoryId]
-
-						if(category.color) {
-							eventColor = category.color;
-						}
-
-					}
-
-				}
-
-				if(event.color) {
-					eventColor = event.color;
-				}
-
-				eventHtml = eventHtml + '<div class="event-item-color" style="background: '+eventColor+'"></div>'
-
 				eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
 				eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
-				eventHtml = eventHtml + '<div class="event-item-search"><i class="fa fa-search"></i></div>'
-
+			
 				eventHtml = eventHtml + '</div>';
 
 				result = result + eventHtml
@@ -692,7 +734,7 @@ function DayDetailModule(dataService, eventService) {
 		// Name 
 		result = result + '<div class="edit-day-pattern-input-container">'
 
-		result = result + '<label class="edit-day-pattern-label">Название</label>'
+		result = result + '<span class="edit-day-pattern-label">Название</label>'
 		result = result + '<input value="'+pattern.name+'" class="edit-day-pattern-input edit-day-pattern-input-name addDayPatternInputName width-100">'
 
 		result = result + '</div>'
@@ -714,6 +756,108 @@ function DayDetailModule(dataService, eventService) {
 		result = result + '</div>'
 
 
+		result = result + '<h3 class="text-center">Действия</h3>'
+
+		// Pattern action
+
+		if (pattern.actions.length) {
+		pattern.actions.forEach(function(action) {
+
+			var actionHTML = '';
+
+			actionHTML = actionHTML + '<div class="day-pattern-action-holder">'
+
+			actionHTML = actionHTML + '<div style="background: ' + action.color + '"class="day-pattern-action-color-box"></div>'
+
+			// Name 
+			actionHTML = actionHTML + '<div class="display-inline-block">'
+			actionHTML = actionHTML + '<div>'
+
+			actionHTML = actionHTML + '<span>Название: </span>'
+			actionHTML = actionHTML + '<b>' + action.name + '</b>'
+
+			actionHTML = actionHTML + '</div>'
+
+			// Duration
+
+			actionHTML = actionHTML + '<div>'
+
+			actionHTML = actionHTML + '<span>Длительность: </span>'
+			actionHTML = actionHTML + action.hours + ' часов '
+			actionHTML = actionHTML + action.minutes + ' минут '
+
+			actionHTML = actionHTML + '</div>'
+
+			actionHTML = actionHTML + '<div>'
+
+			actionHTML = actionHTML + '<span>Работает в выходные: </span>'
+			if (action.exclude_weekend) {
+				actionHTML = actionHTML + ' нет'
+			} else {
+				actionHTML = actionHTML + ' да '
+			}
+
+			actionHTML = actionHTML + '</div>'
+
+
+			actionHTML = actionHTML + '</div>'
+
+			actionHTML = actionHTML + '<button data-id="'+ action.id + '" class="day-pattern-action-delete dayPatternActionDelete" title="Удалить"><i class="fa fa-close"></i></button>'
+
+
+			actionHTML = actionHTML + '</div>'
+
+			result = result + actionHTML
+
+		})
+
+		} else {
+			result = result + '<div class="text-center">Действий нет</div>'
+		}	
+
+		result = result + '<h3 class="text-center">Новое действие</h3>'
+
+		result = result + '<div class="add-day-pattern-action-holder m-t-8">'
+
+			// Name 
+		result = result + '<div class="day-pattern-action-input-container">'
+
+		result = result + '<label class="day-pattern-action-label">Название</label>'
+		result = result + '<input class="day-pattern-action-input day-pattern-action-input-name dayPatternActionInputName width-100">'
+
+		result = result + '</div>'
+
+		// Duration
+
+		result = result + '<div class="day-pattern-action-input-container">'
+
+		result = result + '<label class="day-pattern-action-label">Длительность</label>'
+		result = result + '<input class="day-pattern-action-input m-r-8 day-pattern-action-input-hours dayPatternActionInputHours" placeholder="Часов">'
+		result = result + '<input class="day-pattern-action-input day-pattern-action-input-minutes dayPatternActionInputMinutes" placeholder="Минут">'
+
+		result = result + '</div>'
+
+
+		// Color
+
+		result = result + '<div class="day-pattern-action-input-container">'
+
+		result = result + '<label class="day-pattern-action-label">Цвет</label>'
+		result = result + '<input class="day-pattern-action-input day-pattern-action-input-color dayPatternActionInputColor width-100">'
+
+		result = result + '</div>'
+
+		// exclude_weekend 
+		result = result + '<div class="day-pattern-action-input-container">'
+
+		result = result + '<label class="day-pattern-action-label">Исключить в выходные</label>'
+		result = result + '<input type="checkbox" type="date" class="day-pattern-action-input day-pattern-action-input-exclude-weekend dayPatternActionInputExcludeWeekend">'
+
+		result = result + '</div>'
+
+		result = result + '<button class="simple-button m-t-8 addDayPatternActionButton">Добавить действие</button>'
+
+
 		result = result + '<div class="overflow-hidden width-100 m-t-8">'
 		result = result + '<button class="simple-button float-right display-blockedit-day-pattern-save-pattern editDayPatternSavePattern">Сохранить</button>'
 		result = result + '<a href="#/settings/day-pattern/" class="simple-button float-left display-block edit-day-pattern-close-pattern editDayPatternClosePattern">Закрыть</a>'
@@ -726,6 +870,105 @@ function DayDetailModule(dataService, eventService) {
 	}
 
 	function addEventListenersDayPatternDetailSettings(){
+
+		var addDayPatternActionButton = document.querySelector('.addDayPatternActionButton')
+		var editDayPatternSavePattern = document.querySelector('.editDayPatternSavePattern')
+		var dayPatternActionDelete = document.querySelectorAll('.dayPatternActionDelete')
+
+
+		$('.dayPatternActionInputColor').spectrum({
+	       allowEmpty: true
+	    });
+
+		addDayPatternActionButton.addEventListener('click', function(event){
+
+			console.log("Here?");
+
+			var dayPatternActionInputName = document.querySelector('.dayPatternActionInputName')
+			var dayPatternActionInputHours = document.querySelector('.dayPatternActionInputHours')
+			var dayPatternActionInputMinutes = document.querySelector('.dayPatternActionInputMinutes')
+			var dayPatternActionInputColor = document.querySelector('.dayPatternActionInputColor')
+			var dayPatternActionInputExcludeWeekend = document.querySelector('.dayPatternActionInputExcludeWeekend')
+
+			var patterns = dataService.getDayPatterns();
+
+			var pattern;
+
+			patterns.forEach(function(patternItem) {
+				if(patternItem.id == _patternId) {
+					pattern = patternItem;
+				}
+			})
+
+			var action = {
+				id: toMD5('action_' + pattern.actions.length + 1 + '_' + new Date().getTime()),
+				name: dayPatternActionInputName.value,
+				hours: 0,
+				minutes: 0,
+				color: dayPatternActionInputColor.value,
+				exclude_weekend: dayPatternActionInputExcludeWeekend.value
+			}
+
+			if (parseInt(dayPatternActionInputHours.value, 10)) {
+				action.hours =  parseInt(dayPatternActionInputHours.value, 10)
+			}
+
+			if (parseInt(dayPatternActionInputMinutes.value, 10)) {
+				action.minutes =  parseInt(dayPatternActionInputMinutes.value, 10)
+			}
+
+			pattern.actions.push(action);
+
+			dataService.setDayPattern(pattern)
+
+			_redrawDayPatternDetailDialog();
+
+
+		})
+
+		editDayPatternSavePattern.addEventListener('click', function(event){
+
+			location.hash = '#/settings/day-pattern';
+
+			eventService.dispatchEvent('SAVE');
+
+			toastr.success('Сохранено')
+
+		})
+
+		dayPatternActionDelete.forEach(function(item) {
+
+			item.addEventListener('click', function(event){
+
+				var id = event.target.dataset.id
+
+				if (!id) {
+					id = event.target.parentElement.dataset.id
+				}
+
+				console.log('id', id);
+
+				var patterns = dataService.getDayPatterns();
+
+				var pattern;
+
+				patterns.forEach(function(patternItem) {
+					if(patternItem.id == _patternId) {
+						pattern = patternItem;
+					}
+				})
+
+				pattern.actions = pattern.actions.filter(function(action){
+					return action.id != id
+				})
+
+				dataService.setDayPattern(pattern)
+				_redrawDayPatternDetailDialog();
+
+
+			})
+
+		})
 
 	}
 

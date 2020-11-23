@@ -98,6 +98,18 @@ function DataService() {
 		data.dayPatterns = dayPatterns
 	}
 
+	function setDayPattern(pattern) {
+
+		data.dayPatterns = data.dayPatterns.map(function(item){
+
+			if (item.id == pattern.id) {
+				return pattern;
+			}
+
+			return item
+		})
+	}
+
 	function getDayPatterns(){
 		return data.dayPatterns
 	}
@@ -152,6 +164,7 @@ function DataService() {
 		// Day Module
 		setDayPatterns: setDayPatterns,
 		getDayPatterns: getDayPatterns,
+		setDayPattern: setDayPattern,
 
 		setDayDetail: setDayDetail,
 		getDayDetail: getDayDetail

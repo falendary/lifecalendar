@@ -84,8 +84,8 @@
 }
 
 .chart-holder {
-    width: 500px;
-    height: 500px;
+    width: 650px;
+    height: 650px;
     margin: 0 auto;
 }
 
@@ -296,4 +296,34 @@ button.day-detail-action-delete:hover {
     text-decoration: none;
     font-size: 13px;
     padding: 1px 4px;
+}
+
+.day-pattern-action-label {
+    display: block;
+}
+
+.day-pattern-action-color-box {
+    position: absolute;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    top: 10px;
+}
+
+.day-pattern-action-holder {
+    position: relative;
+    padding-left: 20px;
+}
+
+.day-pattern-action-delete {
+    position: relative;
+    top: -12px;
+    margin-left: 8px;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #000;
+}
+
+.day-pattern-action-delete:hover {
+    opacity: .6;
 }

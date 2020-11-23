@@ -361,6 +361,54 @@ function DataHelper() {
 
 	}
 
+
+	function getPatternForDay(dayDate, patterns) {
+
+		var result;
+
+		patterns.forEach(function(pattern){
+
+			var dates = getDates(new Date(pattern.date_from), new Date(pattern.date_to))
+
+			dates = dates.map(function(date){
+
+				return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+
+			})
+
+			if (dates.indexOf(dayDate) !== -1) {
+
+				result = pattern
+
+			}
+
+		})
+
+
+		return result
+
+	}
+
+	function toHours(num) {
+
+		if (num == 1) {
+			return 'час'
+		}
+		else if ([2, 3, 4].indexOf(num) !== -1) {
+			return 'часа'
+		}
+		if ([5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].indexOf(num) !== -1) {
+			return 'часов'
+		}
+		else if (num == 21) {
+			return 'час'
+		}
+		else if ([22, 23, 24].indexOf(num) !== -1) {
+			return 'часа'
+		}
+
+	}
+
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
@@ -368,7 +416,9 @@ function DataHelper() {
 		getWeekNumber: getWeekNumber,
 		getDates: getDates,
 		generateRegularEvents: generateRegularEvents,
-		getSeasonNumberByMonthNumber
+		getSeasonNumberByMonthNumber,
+		getPatternForDay: getPatternForDay,
+		toHours: toHours
 	}
 
 }
