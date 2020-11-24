@@ -149,6 +149,7 @@ function DayDetailModule(dataService, eventService) {
 		var addDayActionInputHours = document.querySelector('.addDayActionInputHours');
 		var addDayActionInputMinutes = document.querySelector('.addDayActionInputMinutes');
 		var addDayActionInputColor = document.querySelector('.addDayActionInputColor');
+		var addDayActionInputText = document.querySelector('.addDayActionInputText');
 
 		$('.addDayActionInputColor').spectrum({
 	       allowEmpty: true
@@ -170,7 +171,8 @@ function DayDetailModule(dataService, eventService) {
 				name: addDayActionInputName.value,
 				hours: 0,
 				minutes: 0,
-				color: addDayActionInputColor.value
+				color: addDayActionInputColor.value,
+				text: addDayActionInputText.value
 			}
 
 			if (parseInt(addDayActionInputHours.value, 10)) {
@@ -332,9 +334,43 @@ function DayDetailModule(dataService, eventService) {
 
 		var dayDetail = dataService.getDayDetail(dayDate);
 
+		var dataHelper = new DataHelper();
+
+		var pattern = dataHelper.getPatternForDay(dayDate, dataService.getDayPatterns())
+
 		console.log('renderActionsSection.dayDetail', dayDetail);
 
 		var actions = [];
+
+		if (pattern) {
+
+			pattern.actions.forEach(function(action){
+
+				var act = Object.assign({}, action)
+
+				act.from_pattern = true;
+
+				if (action.exclude_weekend) {
+
+					var dayOfWeek = new Date(dayDate).getDay()
+					
+					if (dayOfWeek == 0 || dayOfWeek == 6) { // 0 sunday, 6 saturday
+						// do nothning
+					} else {
+
+
+
+						actions.push(act);
+					}
+
+				} else {
+
+					actions.push(act);
+
+				}
+			})
+
+		}
 
 		if (dayDetail) {
 
@@ -345,6 +381,29 @@ function DayDetailModule(dataService, eventService) {
 				})
 
 			}
+
+		}
+
+		var total = 1440; // in minutes
+
+		actions.forEach(function(action){
+
+			var durationInMin = action.hours * 60 + action.minutes
+
+			total = total - durationInMin;
+		})
+
+		if (total > 0) {
+
+			var h = Math.floor(total / 60);
+
+			actions.push({
+				from_pattern: true,
+				name: "Свободное время",
+				color: '#ddd',
+				hours: h,
+				minutes: total - h * 60
+			})
 
 		}
 
@@ -364,15 +423,17 @@ function DayDetailModule(dataService, eventService) {
 				actionHTML = actionHTML + '<div style="background: '+action.color+'" class="day-detail-action-color"></div>'
 				actionHTML = actionHTML + '<span class="day-detail-action-name">' + action.name  + ' </span>'
 				if (action.hours) {
-					actionHTML = actionHTML + action.hours + ' часов'
+					actionHTML = actionHTML + action.hours + ' ' + dataHelper.toHours(action.hours) + ' '
 				}
 
 				if (action.minutes) {
 					actionHTML = actionHTML + action.minutes + ' минут'
 				}
 
-				actionHTML = actionHTML + '<button data-id="'+ action.id + '" class="day-detail-action-delete dayDetailActionDelete" title="Удалить"><i class="fa fa-close"></i></button>'
 
+				if (!action.from_pattern) {
+					actionHTML = actionHTML + '<button data-id="'+ action.id + '" class="day-detail-action-delete dayDetailActionDelete" title="Удалить"><i class="fa fa-close"></i></button>'
+				}
 				actionHTML = actionHTML + '</div>'
 
 
@@ -417,6 +478,14 @@ function DayDetailModule(dataService, eventService) {
 
 		result = result + '</div>'
 
+		// Text 
+		result = result + '<div class="add-day-action-input-container">'
+
+		result = result + '<label class="add-day-action-label">Текст</label>'
+		result = result + '<input class="add-day-action-input add-day-action-input-text addDayActionInputText width-100">'
+
+		result = result + '</div>'
+
 		result = result + '<button class="add-day-action-button addDayActionButton">Добавить</button>'
 
 		result = result + '</div>'
@@ -442,6 +511,11 @@ function DayDetailModule(dataService, eventService) {
 
 	function renderHeader(dayDate) {
 
+		var currentDate = new Date()
+		var currentDateYear = currentDate.getFullYear();
+		var currentDateMonth = currentDate.getMonth() + 1;
+		var currentDateDay = currentDate.getDate();
+
 		var date = new Date(dayDate);
 		var previousDate =  new Date(moment(date).add(-1,'days'));
 		var nextDate =  new Date(moment(date).add(1,'days'));
@@ -457,6 +531,16 @@ function DayDetailModule(dataService, eventService) {
 		var nextDayMonth = nextDate.getMonth() + 1;
 		var nextDayDay = nextDate.getDate();
 
+		var showHelp = false;
+		var helpTitle = ''
+
+		if (currentDateYear == date.getFullYear() && 
+			currentDateMonth == date.getMonth() + 1 &&
+			currentDateDay == date.getDate()) {
+			showHelp = true;
+			helpTitle = 'Сегодня'
+		}
+
 		var result = '';
 
 		result = result + '<button class="day-detail-save dayDetailSave">Сохранить</button>'
@@ -469,6 +553,7 @@ function DayDetailModule(dataService, eventService) {
 		result = result + '<div class="day-detail-center-block">'
 		result = result + '<div class="day-detail-current-date-title">' +title + '</div>'
 		result = result + '<div class="day-detail-current-date-day-title">' +dayOfWeek + '</div>'
+		result = result + '<div class="day-detail-current-date-day-subtitle">' +helpTitle + '</div>'
 		result = result + '</div>'
 		result = result + '<div class="day-detail-right-block">'
 		result = result + '<a href="#/view/'+nextDayYear+'/'+nextDayMonth+'/'+nextDayDay+'" class="day-detail-change-day-link day-detail-next-day">Вперед</a>'

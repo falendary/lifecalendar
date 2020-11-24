@@ -327,3 +327,12 @@ button.day-detail-action-delete:hover {
 .day-pattern-action-delete:hover {
     opacity: .6;
 }
+
+.day-detail-current-date-day-subtitle {
+    font-size: 14px;
+     opacity: .8; 
+    text-align: center;
+    color: orange;
+    border-top: 1px solid orange;
+    margin-top: 6px;
+}

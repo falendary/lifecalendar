@@ -54,6 +54,7 @@ body {
     z-index: 2;
     padding: 16px;
     padding-top: 36px;
+    overflow: hidden;
 }
 
 .file-input-box {

@@ -133,6 +133,14 @@ function DataService() {
 		return null;
 	}
 
+	function setEventsFeedType(type){
+		data.eventsFeedType = type
+	}
+
+	function getEventsFeedType(){
+		return data.eventsFeedType;
+	}
+
 	return {
 
 		setData: setData,
@@ -160,6 +168,9 @@ function DataService() {
 
 		setRenderType: setRenderType,
 		getRenderType: getRenderType,
+
+		setEventsFeedType: setEventsFeedType,
+		getEventsFeedType: getEventsFeedType,
 
 		// Day Module
 		setDayPatterns: setDayPatterns,

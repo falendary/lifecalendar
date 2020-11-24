@@ -119,8 +119,9 @@
     font-size: 11px;
 }
 
-.eventsContainer {
+.events-container {
     padding-left: 16px;
+    padding-top: 8px;
 }
 
 
@@ -152,4 +153,31 @@
 .event-color-input-holder {
     float: left;
     margin-right: 8px;
+}
+
+.events-toggle-buttons-holder {
+    display: flex;
+    padding: 2px 8px;
+}
+.events-toggle-button:first-child {
+    border-right: 0;
+}
+.events-toggle-button {
+    flex-grow: 1;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+}
+.events-toggle-button:hover {
+    opacity: .6;
+}
+
+.events-toggle-button.active {
+    background: coral;
+    color: #fff;
+}
+
+.events-feed-title {
+    margin: 4px 0;
 }

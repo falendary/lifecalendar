@@ -287,6 +287,8 @@ function addInterfaceEventListeners(){
   var showInYearsButton = document.querySelector('.showInYearsButton')
   var yearsCloseButtonDialog = document.querySelector('.yearsCloseButtonDialog')
   var showDayButtonDialog = document.querySelector('.showDayButtonDialog')
+  var eventsFeedButton = document.querySelector('.eventsFeedButton')
+  var eventsHistoricalButton = document.querySelector('.eventsHistoricalButton')
 
   var renderType = dataService.getRenderType();
 
@@ -837,6 +839,28 @@ function addInterfaceEventListeners(){
 
   })
 
+  eventsFeedButton.addEventListener('click', function(event){
+
+    dataService.setEventsFeedType('feed');
+
+    eventsFeedButton.classList.add('active');
+    eventsHistoricalButton.classList.remove('active');
+
+    render();
+
+  })
+
+  eventsHistoricalButton.addEventListener('click', function(event){
+
+    dataService.setEventsFeedType('historical');
+
+    eventsFeedButton.classList.remove('active');
+    eventsHistoricalButton.classList.add('active');
+
+    render();
+
+  })
+
   addEventListenersToYearsSlider();
 
 }
@@ -875,7 +899,7 @@ function render(){
 
   renderRightSection();
 
-  document.querySelector('.eventsTitle').title =  dataService.getEvents().length + " событий";
+  // document.querySelector('.eventsTitle').title =  dataService.getEvents().length + " событий";
 
 
   calendarModule.addEventListeners();
@@ -990,6 +1014,9 @@ function setInterfaceState(){
   var renderType = dataService.getRenderType();
   var filters = dataService.getFilters();
 
+  var eventsFeedType = dataService.getEventsFeedType()
+
+
   if (renderType) {
 
     var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
@@ -1023,6 +1050,13 @@ function setInterfaceState(){
     }
     
   }
+
+  if (eventsFeedType == 'feed') {
+    document.querySelector('.eventsFeedButton').classList.add('active');
+  } else {
+    document.querySelector('.eventsHistoricalButton').classList.add('active');
+  }
+
 
 }
 
