@@ -541,6 +541,34 @@ function DayDetailModule(dataService, eventService) {
 			helpTitle = 'Сегодня'
 		}
 
+		var diff = Math.floor((currentDate.getTime() - date.getTime()) / (1000 * 3600 * 24))
+
+		if (diff == 1) {
+			showHelp = true;
+			helpTitle = 'Вчера'
+		}
+		if (diff == 2) {
+			showHelp = true;
+			helpTitle = 'Позавчера'
+		}
+		if (diff == 3) {
+			showHelp = true;
+			helpTitle = '2 дня назад'
+		}
+		if (diff == -1) {
+			showHelp = true;
+			helpTitle = 'Завтра'
+		}
+		if (diff == -2) {
+			showHelp = true;
+			helpTitle = 'Послезавтра'
+		}
+		if (diff == -3) {
+			showHelp = true;
+			helpTitle = 'Через 2 дня'
+		}
+
+
 		var result = '';
 
 		result = result + '<button class="day-detail-save dayDetailSave">Сохранить</button>'
@@ -553,7 +581,9 @@ function DayDetailModule(dataService, eventService) {
 		result = result + '<div class="day-detail-center-block">'
 		result = result + '<div class="day-detail-current-date-title">' +title + '</div>'
 		result = result + '<div class="day-detail-current-date-day-title">' +dayOfWeek + '</div>'
-		result = result + '<div class="day-detail-current-date-day-subtitle">' +helpTitle + '</div>'
+		if (helpTitle) {
+			result = result + '<div class="day-detail-current-date-day-subtitle">' +helpTitle + '</div>'
+		}
 		result = result + '</div>'
 		result = result + '<div class="day-detail-right-block">'
 		result = result + '<a href="#/view/'+nextDayYear+'/'+nextDayMonth+'/'+nextDayDay+'" class="day-detail-change-day-link day-detail-next-day">Вперед</a>'

@@ -101,8 +101,9 @@ body {
     position: absolute;
     min-width: 320px;
     background: #fff;
-    border: 1px solid #000;
+    /*border: 1px solid #000;*/
     z-index: 4;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 .square-context-menu {

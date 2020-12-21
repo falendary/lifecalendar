@@ -108,12 +108,13 @@
 .calendar-holder .square {
     width: 48px;
     height: 48px;
-    border: 1px solid #000;
+    border: 1px solid transparent;
     float: left;
     margin: 6px;
     padding: 8px;
     position: relative;
     cursor: pointer;
+    background: #f4f4f4;
 }
 
 
@@ -122,11 +123,13 @@
 }
 
 .calendar-holder .square.square-lived {
-    background: #363636;
+    background: #7f7f7f;
     color: #fff;
 }
 .calendar-holder .square.square-has-events {
     color: #363636;
+    background: #f4f4f4;
+    border: 1px solid #777;
 }
 
 .calendar-holder .square.highlighted {

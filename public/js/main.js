@@ -273,6 +273,9 @@ function addInterfaceEventListeners(){
   var saveEventButton = document.querySelector('.saveEventButton')
   var clearColorButton = document.querySelector('.clearColorButton')
   var closeEventButton = document.querySelector('.closeEventButton')
+  var eventDateTodayButton = document.querySelector('.eventDateTodayButton')
+  var eventDateMinusDayButton = document.querySelector('.eventDateMinusDayButton')
+  var eventDatePlusDayButton = document.querySelector('.eventDatePlusDayButton')
   var eventTypeInput = document.querySelector('.eventTypeInput')
   var deleteEventButton = document.querySelector('.deleteEventButton')
   var toggleYearsButtonDialog = document.querySelector('.toggleYearsButtonDialog')
@@ -575,6 +578,67 @@ function addInterfaceEventListeners(){
       option.selected = false;
       
     })
+
+  })
+
+  eventDateTodayButton.addEventListener('click', function(event){
+
+    var eventDateInput = document.querySelector('.eventDateInput')
+
+    var todayDate = new Date();
+
+    var todayValue = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+
+    eventDateInput.value = todayValue;
+
+  })
+
+  eventDateMinusDayButton.addEventListener('click', function(event){
+
+     var eventDateInput = document.querySelector('.eventDateInput')
+
+     if (!eventDateInput.value) {
+
+      var todayDate = new Date();
+
+      var todayValue = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+
+      eventDateInput.value = todayValue;
+
+     }
+
+
+     var date = new Date(eventDateInput.value);
+     
+     var newDate = new Date(moment(date).add(-1,'days'));
+
+     var newDateValue = newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate();
+
+     eventDateInput.value = newDateValue;
+
+  })
+
+  eventDatePlusDayButton.addEventListener('click', function(event){
+
+     var eventDateInput = document.querySelector('.eventDateInput')
+
+     if (!eventDateInput.value) {
+
+      var todayDate = new Date();
+
+      var todayValue= todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+
+      eventDateInput.value = todayValue;
+
+     }
+
+     var date = new Date(eventDateInput.value);
+
+     var newDate = new Date(moment(date).add(1,'days'));
+
+     var newDateValue = newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate();
+
+     eventDateInput.value = newDateValue;
 
   })
 
