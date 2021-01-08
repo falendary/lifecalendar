@@ -62,6 +62,11 @@
 
 .day-detail-content {
     display: flex;
+    flex-direction: column;
+}
+
+.day-detail-content-section {
+    display: flex;
     flex-direction: row;
 }
 
@@ -330,9 +335,35 @@ button.day-detail-action-delete:hover {
 
 .day-detail-current-date-day-subtitle {
     font-size: 14px;
-     opacity: .8; 
+    opacity: .8; 
     text-align: center;
     color: orange;
     border-top: 1px solid orange;
     margin-top: 6px;
+}
+
+
+
+.day-detail-notes-header {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 24px;
+    color: #363636;
+}
+
+.day-detail-notes-holder {
+    padding: 10px;
+    padding-bottom: 100px;
+}
+.day-detail-notes {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 260px;
+    font-size: 18px;
+    padding: 8px;
+}
+
+.day-detail-notes-length {
+    text-align: right;
+    margin-bottom: 4px;
 }

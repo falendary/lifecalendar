@@ -162,7 +162,8 @@ function DayDetailModule(dataService, eventService) {
 			if (!dayDetail) {
 				dayDetail = {
 					date: new Date(dayDate),
-					actions: []
+					actions: [],
+					notes: ''
 				}
 			}
 
@@ -206,8 +207,12 @@ function DayDetailModule(dataService, eventService) {
 
 	  	var closeButton = document.querySelector('.closeDayDetailButton')
 	  	var dayDetailSave = document.querySelector('.dayDetailSave')
+	  	var dayDetailNotes = document.querySelector('.dayDetailNotes')
+	  	var dayDetailNotesLength = document.querySelector('.dayDetailNotesLength')
 	  	var dayDetailActionDelete = document.querySelectorAll('.dayDetailActionDelete')
-	 
+	 	
+
+
 		var container = document.querySelector('.dayDetailDialogContainer');
 	  	var dialogContent = document.querySelector('.dayDetailDialog')
 
@@ -223,6 +228,34 @@ function DayDetailModule(dataService, eventService) {
 
 			eventService.dispatchEvent('SAVE');
 
+			toastr.success('Сохранено')
+
+		})
+
+		dayDetailNotes.addEventListener('keyup', function(){
+
+			dayDetailNotesLength.innerHTML = dayDetailNotes.value.length + ' символов';
+
+		})
+
+		dayDetailNotes.addEventListener('blur', function(){
+
+			var dayDetail = dataService.getDayDetail(dayDate);
+
+			if (!dayDetail) {
+				dayDetail = {
+					date: new Date(dayDate),
+					actions: [],
+					notes: ''
+				};
+			}
+
+			dayDetailNotesLength.innerHTML = dayDetailNotes.value.length + ' символов';
+
+			dayDetail.notes = dayDetailNotes.value;
+			dataService.setDayDetail(dayDate, dayDetail)
+
+			eventService.dispatchEvent('SAVE');
 			toastr.success('Сохранено')
 
 		})
@@ -509,6 +542,43 @@ function DayDetailModule(dataService, eventService) {
 
 	}
 
+	function renderNotesSection(dayDate){
+
+		var dayDetail = dataService.getDayDetail(dayDate);
+
+		if (!dayDetail) {
+			dayDetail = {
+				date: new Date(dayDate),
+				actions: [],
+				notes: ''
+			};
+		}
+
+		console.log('dayDetail', dayDetail);
+
+		var notes = '';
+
+		if (dayDetail.notes) {
+			notes = dayDetail.notes;
+		}
+
+		var result = '';
+
+		result = result + '<h4 class="day-detail-notes-header">Заметки</h4>'
+
+		result = result + '<div class="day-detail-notes-holder">';
+
+		result = result + '<div class="day-detail-notes-length dayDetailNotesLength">'+notes.length+' символов</div>'
+
+		result = result + '<textarea class="day-detail-notes dayDetailNotes">'+notes+'</textarea>';
+
+		result = result + '</div';
+
+
+		return result;
+
+	}
+
 	function renderHeader(dayDate) {
 
 		var currentDate = new Date()
@@ -612,11 +682,21 @@ function DayDetailModule(dataService, eventService) {
 
 		result = result + '<div class="day-detail-content">'
 
+		result = result + '<div class="day-detail-content-section">'
+
 		result = result + renderActionsSection(dayDate);
 
 		result = result + renderChartSection(dayDate);
 
 		result = result + renderDayEventsSection(dayDate);
+
+		result = result + '</div>'
+
+		result = result + '<div>'
+
+		result = result + renderNotesSection(dayDate);
+
+		result = result + '</div>'
 
 		result = result + '</div>'
 	

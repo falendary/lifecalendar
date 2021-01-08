@@ -30,12 +30,30 @@ function save(){
 
   var data = dataService.getData();
 
+  if(localStorage.getItem('data')) {
+
+    var localStorageData = JSON.parse(localStorage.getItem('data'))
+
+    if (new Date(localStorageData.modified).toISOString() != new Date(data.modified).toISOString()) {
+
+      toastr.error('Ошибка синхронизации')
+
+      return 
+    }
+
+  }
+
+
+  data.modified = new Date().toISOString();
+
   var preparedData = JSON.parse(JSON.stringify(data))
 
   delete preparedData.squares;
   delete preparedData.yearSquares;
 
   localStorage.setItem('data', JSON.stringify(preparedData));
+
+  toastr.success('Сохранено')
 
 }
 
@@ -145,52 +163,54 @@ function syncEventsWithSquares() {
 
      if (event.type == 3) { // RANGE
 
-        var eventFromDate = new Date(event.date_from)
-        var yearFromNumber = eventFromDate.getFullYear()
-        var weekFromNumber = dataHelper.getWeekNumber(eventFromDate)
+        var eventFromDate = new Date(event.date_from);
+        var yearFromNumber = eventFromDate.getFullYear();
+        var weekFromNumber = dataHelper.getWeekNumber(eventFromDate);
 
-        var eventToDate = new Date(event.date_to)
-        var yearToNumber = eventToDate.getFullYear()
-        var weekToNumber = dataHelper.getWeekNumber(eventToDate)
+        var eventToDate = new Date(event.date_to);
+        var yearToNumber = eventToDate.getFullYear();
+        var yearToMonth = eventToDate.getMonth();
+        var weekToNumber = dataHelper.getWeekNumber(eventToDate);
+
+        if (yearToMonth != 12 && weekToNumber == 53) {
+          weekToNumber = 1; 
+        }
+
 
         squares.forEach(function(square) {
 
           var eventItem = Object.assign({}, event)
 
-          if (yearFromNumber != yearToNumber) {
+          var match = true;
 
-            if (square.year == yearFromNumber && square.week >= weekFromNumber) {
+          
+          if (square.year < yearFromNumber) {
+            match = false;
+          }
 
-                square.events.push(eventItem)
+          if (square.year > yearToNumber) {
+            match = false;
+          }
 
-            }
+          if (square.year == yearFromNumber) {
 
-            if (square.year > yearFromNumber && square.year < yearToNumber) {
-
-                square.events.push(eventItem)
-
-            }
-
-            if (square.year == yearToNumber && square.week <= weekToNumber) {
-
-              square.events.push(eventItem)
-
+            if (square.week < weekFromNumber) {
+              match = false;
             }
 
           }
 
-          if (yearFromNumber == yearToNumber) {
+          if (square.year == yearToNumber) {
 
-            if (square.year >= yearFromNumber && square.year <= yearToNumber) {
-
-              if (square.week >= weekFromNumber && square.week <= weekToNumber) {
-                square.events.push(eventItem)
-
-              }
-
+            if(square.week > weekToNumber) {
+              match = false;
             }
 
           }
+
+          if (match) {
+               square.events.push(eventItem)
+            }
 
         })
 
@@ -285,6 +305,7 @@ function addInterfaceEventListeners(){
   var closeCategoryButton = document.querySelector('.closeCategoryButton')
   var saveCategoriesButton = document.querySelector('.saveCategoriesButton')
   var eventsFilterInput = document.querySelector('.eventsFilterInput')
+  var clearEventsFilterButton = document.querySelector('.clearEventsFilterButton')
   var categoriesFilterInputAdd = document.querySelector('.categoriesFilterInputAdd')
   var categoriesFilterInput = document.querySelector('.categoriesFilterInput')
   var showInYearsButton = document.querySelector('.showInYearsButton')
@@ -382,6 +403,22 @@ function addInterfaceEventListeners(){
 
   })
 
+  clearEventsFilterButton.addEventListener('click', function(event){
+
+    event.preventDefault();
+
+    var filters = dataService.getFilters();
+
+    eventsFilterInput.value = '';
+
+    filters.eventSearchString = eventsFilterInput.value;
+
+    dataService.setFilters(filters);
+
+    renderRightSection();
+
+  })
+
   categoriesFilterInputAdd.addEventListener('click', function(event) {
 
     event.preventDefault();
@@ -429,8 +466,6 @@ function addInterfaceEventListeners(){
     event.preventDefault();
 
     eventService.dispatchEvent('SAVE')
-
-    toastr.success('Сохранено')
 
   })
 
@@ -587,7 +622,19 @@ function addInterfaceEventListeners(){
 
     var todayDate = new Date();
 
-    var todayValue = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+    var todayMonth = todayDate.getMonth() + 1
+
+    if (todayMonth < 10) {
+      todayMonth = '0' + todayMonth;
+    }
+
+    var todayDateDay = todayDate.getDate()
+
+    if (todayDateDay < 10) {
+      todayDateDay = '0' + todayDateDay;
+    }
+
+    var todayValue = todayDate.getFullYear() + '-' +  todayMonth + '-' + todayDateDay;
 
     eventDateInput.value = todayValue;
 
@@ -601,7 +648,19 @@ function addInterfaceEventListeners(){
 
       var todayDate = new Date();
 
-      var todayValue = todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+      var todayMonth = todayDate.getMonth() + 1
+
+      if (todayMonth < 10) {
+        todayMonth = '0' + todayMonth;
+      }
+
+      var todayDateDay = todayDate.getDate()
+
+      if (todayDateDay < 10) {
+        todayDateDay = '0' + todayDateDay;
+      }
+
+      var todayValue = todayDate.getFullYear() + '-' + todayMonth + '-' + todayDateDay;
 
       eventDateInput.value = todayValue;
 
@@ -612,7 +671,19 @@ function addInterfaceEventListeners(){
      
      var newDate = new Date(moment(date).add(-1,'days'));
 
-     var newDateValue = newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate();
+     var newMonth = newDate.getMonth() + 1
+
+     if (newMonth < 10) {
+        newMonth = '0' + newMonth;
+     }
+
+     var newDateDay = newDate.getDate()
+
+     if (newDateDay < 10) {
+        newDateDay = '0' + newDateDay;
+     }
+
+     var newDateValue = newDate.getFullYear() + '-' + newMonth + '-' + newDateDay;
 
      eventDateInput.value = newDateValue;
 
@@ -626,7 +697,19 @@ function addInterfaceEventListeners(){
 
       var todayDate = new Date();
 
-      var todayValue= todayDate.getFullYear() + '-' + (todayDate.getMonth() + 1) + '-' + todayDate.getDate();
+      var todayMonth = todayDate.getMonth() + 1
+
+      if (todayMonth < 10) {
+        todayMonth = '0' + todayMonth;
+      }
+
+      var todayDateDay = todayDate.getDate()
+
+      if (todayDateDay < 10) {
+        todayDateDay = '0' + todayDateDay;
+      }
+
+      var todayValue= todayDate.getFullYear() + '-' + todayMonth + '-' + todayDateDay;
 
       eventDateInput.value = todayValue;
 
@@ -636,7 +719,19 @@ function addInterfaceEventListeners(){
 
      var newDate = new Date(moment(date).add(1,'days'));
 
-     var newDateValue = newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate();
+     var newMonth = newDate.getMonth() + 1
+
+     if (newMonth < 10) {
+        newMonth = '0' + newMonth;
+     }
+
+     var newDateDay = newDate.getDate()
+
+     if (newDateDay < 10) {
+        newDateDay = '0' + newDateDay;
+     }
+
+     var newDateValue = newDate.getFullYear() + '-' + newMonth + '-' + newDateDay;
 
      eventDateInput.value = newDateValue;
 

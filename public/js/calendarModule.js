@@ -590,6 +590,8 @@ function CalendarModule(dataService) {
 		var squares = _filterBeforeRender(dataService);
 		var categoriesAsObject = dataService.getCategoriesAsObject();
 
+		console.log('squares', squares);
+
 		var dataHelper = new DataHelper();
 
 		result = result + '<div class="calendar-holder">'

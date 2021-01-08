@@ -476,9 +476,23 @@ function EventsModule(dataService) {
 					match = false;
 				}
 				
-			} else {
+			} else if(event.type == 3) { 
 
-				// TODO handle other event types
+				var diff = currentDate.getTime() - new Date(event.date_from).getTime()
+				var diffDays = Math.floor(diff / (1000 * 3600 * 24))
+
+				if (diffDays == 0) {
+					match = true
+				}
+				else if (diffDays >= 30) {
+					match = false;
+				}
+				else if (currentDate.getTime() <= new Date(event.date_from).getTime()) {
+					match = false;
+				}
+
+			} else {
+				
 				match = false; 
 			}
 

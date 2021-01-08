@@ -106,6 +106,11 @@ body {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
+.square-context-menu>div {
+    max-height: 400px;
+    overflow: auto;
+}
+
 .square-context-menu {
     padding: 16px;
 }
@@ -178,6 +183,7 @@ body {
     color: grey;
     border-bottom: 1px solid #000;
     margin-bottom: 8px;
+    padding-top: 1px;
 }
 
 .context-menu-week-holder {
@@ -220,22 +226,31 @@ body {
 }
 
 .years-render-container .year-square {
-    width: 64px;
-    height: 64px;
-    border: 1px solid #000;
+    width: 80px;
+    height: 80px;
+    border: 1px solid transparent;
     float: left;
     margin: 6px;
     padding: 8px;
     position: relative;
     cursor: pointer;
+    background: #f4f4f4;
+}
+.years-render-container .year-square .square-events-count{
+    height: 24px;
+    width: 24px;
+    line-height: 21px;
 }
 
+
 .year-square.year-square-lived {
-    background: lightgreen;
+    background: #64dd17;
+    border: 1px solid #777;
 }
 
 .year-square.year-square-current {
     background: coral;
+    border: 1px solid #777;
 }
 
 .year-square-year-number {
@@ -245,7 +260,9 @@ body {
     right: 4px;
     background: #fff;
     padding: 1px 3px;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
+    height: 15px;
+    line-height: 15px;
 }
 
 
@@ -287,3 +304,23 @@ body {
     overflow: scroll;
     position: fixed;
 }
+
+.clear-events-filter-button {
+    display: none;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+    height: 24px;
+    background: #fff;
+    border: 1px solid #000;
+}
+.clear-events-filter-button:hover {
+    background: #ddd;
+}
+
+.events-filter-holder:hover .clear-events-filter-button {
+    display: block;
+}
+
+
