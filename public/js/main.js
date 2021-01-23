@@ -2,6 +2,7 @@ var appContainer = document.querySelector('.appContainer')
 var interfaceContainer = appContainer.querySelector('.interfaceContainer');
 var calendarContainer = appContainer.querySelector('.calendarContainer');
 var eventsContainer = appContainer.querySelector('.eventsContainer');
+var infoblockContainer = appContainer.querySelector('.infoblockContainer');
 var eventDialogContainer = document.querySelector('.eventDialogContainer')
 var categoryContainerBody = document.querySelector('.categoryContainerBody')
 var categorySelect = document.querySelector('.categorySelect')
@@ -19,6 +20,7 @@ var eventsModule = EventsModule(dataService, eventService)
 
 var weekDetailModule = WeekDetailModule(dataService, eventService)
 var dayDetailModule = DayDetailModule(dataService, eventService)
+var infoblockModule = InfoBlockModule(dataService, eventService)
 
 EVENT_TYPES = {
   SINGLE: 1,
@@ -1150,6 +1152,9 @@ function renderCategoriesFilterChips(){
 }
 
 function renderRightSection() {
+
+  infoblockContainer.innerHTML = infoblockModule.render();
+  infoblockModule.addEventListeners();
 
   eventsContainer.innerHTML =  eventsModule.render();
   eventsModule.addEventListeners();

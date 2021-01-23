@@ -324,3 +324,90 @@ body {
 }
 
 
+
+
+.infloblock-short {
+    display: none;
+}
+.infloblock-short.active {
+    display: block;
+}
+
+
+.infloblock-full {
+    display: none;
+}
+.infloblock-full.active {
+    display: block;
+}
+
+.infloblock-progress-container {
+    padding: 8px;
+    padding-bottom: 24px;
+}
+
+.infloblock-progress {
+    height: 16px;
+    width: 100%;
+    background: #ddd;
+    border: 1px solid #000;
+    position: relative;
+}
+.infloblock-progress-lived-percent {
+    position: absolute;
+    left: 1px;
+    top: 0;
+    height: 14px;
+    background: #6aa84f;
+}
+
+.infloblock-progress-lived-slept-percent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 14px;
+    background: grey;
+}
+
+
+.infloblock-progress-future-sleep-percent {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 14px;
+    background: grey;
+}
+
+
+.infoblock-show-button, .infoblock-hide-button {
+    margin: 0 auto;
+    border: 1px solid #000;
+    background: #fff;
+    display: block;
+    cursor: pointer;
+}
+
+.infoblock-show-button:hover, .infoblock-hide-button:hover {
+    opacity: .5;
+}
+
+
+
+.infloblock-progress-age-pillar {
+    position: absolute;
+    top: 18px;
+    font-size: 10px;
+    margin-left: -4px;
+    opacity: .75;
+}
+
+.infloblock-progress-age-pillar::before {
+    content: " ";
+    display: block;
+    width: 1px;
+    height: 8px;
+    background: black;
+    position: absolute;
+    margin-left: 4px;
+    top: -8px;
+}   
