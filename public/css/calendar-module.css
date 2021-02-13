@@ -138,7 +138,7 @@
     outline: 1px solid coral;
 }
 
-.square.square-lived.square-has-events.highlighted::after
+/*.square.square-lived.square-has-events.highlighted::after
 {
     content: "";
     display: block;
@@ -148,7 +148,7 @@
     background: coral;
     top: 0;
     left: 0;
-}
+}*/
 
 @-webkit-keyframes pulse {
   0% {
@@ -311,3 +311,14 @@
     border: 0;
     color: #fff;
 }
+
+.app-left-section.highlighted .square {
+    opacity: .2
+}
+
+.app-left-section.highlighted .square.highlighted {
+    opacity: 1;
+}
+
+
+
