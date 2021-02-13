@@ -207,6 +207,7 @@ function EventsModule(dataService) {
 				if (square) {
 
 					square.classList.add('highlighted')
+					squareContainer.classList.add('highlighted')
 					squareContainer.scrollTo({top: square.offsetTop - 240, behavior: 'smooth'});
 					$(square).click();
 

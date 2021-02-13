@@ -1317,6 +1317,8 @@ function init(){
     document.querySelectorAll('.square-context-menu').forEach(function(element){ element.remove()});
 
     document.querySelectorAll('.square').forEach(function(element){ element.classList.remove('highlighted')});
+
+    document.querySelector('.app-left-section').classList.remove('highlighted');
     
   })
 
