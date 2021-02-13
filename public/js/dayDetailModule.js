@@ -228,8 +228,6 @@ function DayDetailModule(dataService, eventService) {
 
 			eventService.dispatchEvent('SAVE');
 
-			toastr.success('Сохранено')
-
 		})
 
 		dayDetailNotes.addEventListener('keyup', function(){
@@ -256,293 +254,300 @@ function DayDetailModule(dataService, eventService) {
 			dataService.setDayDetail(dayDate, dayDetail)
 
 			eventService.dispatchEvent('SAVE');
-			toastr.success('Сохранено')
 
 		})
 
-		dayDetailActionDelete.forEach(function(elem){
+		// Deprecated
+		// dayDetailActionDelete.forEach(function(elem){
 
-			elem.addEventListener('click', function(event){
+		// 	elem.addEventListener('click', function(event){
 
-				console.log('click here?', event);
+		// 		console.log('click here?', event);
 
-				var id = event.target.dataset.id
+		// 		var id = event.target.dataset.id
 
-				var dayDetail = dataService.getDayDetail(dayDate)
+		// 		var dayDetail = dataService.getDayDetail(dayDate)
 
-				dayDetail.actions = dayDetail.actions.filter(function(action){
+		// 		dayDetail.actions = dayDetail.actions.filter(function(action){
 
-					return action.id != id
+		// 			return action.id != id
 
-				})
+		// 		})
 
-				console.log('dayDetail.actions', dayDetail.actions);
+		// 		console.log('dayDetail.actions', dayDetail.actions);
 
-				dataService.setDayDetail(dayDate, dayDetail)
+		// 		dataService.setDayDetail(dayDate, dayDetail)
 
-				_redrawDialog();
+		// 		_redrawDialog();
 
-			})
+		// 	})
 
-		})
+		// })
 
 
 
-		renderChart(dayDate);
+		// Deprecated
+		// renderChart(dayDate);
 
-		addEventListenersToAddAction(dayDate);
+		// Deprectaed
+		// addEventListenersToAddAction(dayDate);
 		
 	}
 
-	function renderDayEventsSection(dayDate){
+	// Deprecated
+	// function renderDayEventsSection(dayDate){
 
-		var result = '';
+	// 	var result = '';
 
-		var events = dataService.getEvents()
-		var categoriesAsObject = dataService.getCategoriesAsObject();
+	// 	var events = dataService.getEvents()
+	// 	var categoriesAsObject = dataService.getCategoriesAsObject();
 
-		var pieces = dayDate.split('-');
-		var year = pieces[0];
-		var month = pieces[1];
-		var day = pieces[2];
+	// 	var pieces = dayDate.split('-');
+	// 	var year = pieces[0];
+	// 	var month = pieces[1];
+	// 	var day = pieces[2];
 
-		events = events.filter(function(event){
+	// 	events = events.filter(function(event){
 
-			var eventYear;
-			var eventMonth;
-			var eventDay;
+	// 		var eventYear;
+	// 		var eventMonth;
+	// 		var eventDay;
 
-			if (event.type == 1) {
+	// 		if (event.type == 1) {
 
-				var eventDate = new Date(event.date)
+	// 			var eventDate = new Date(event.date)
 
-				eventYear = eventDate.getFullYear()
-				eventMonth = eventDate.getMonth() + 1
-				eventDay = eventDate.getDate();
+	// 			eventYear = eventDate.getFullYear()
+	// 			eventMonth = eventDate.getMonth() + 1
+	// 			eventDay = eventDate.getDate();
 
-			}
+	// 		}
 
 
-			if (eventYear == year && eventMonth == month && eventDay == day) {
-				return true;
-			}
+	// 		if (eventYear == year && eventMonth == month && eventDay == day) {
+	// 			return true;
+	// 		}
 
-			return false
+	// 		return false
 
-		})
+	// 	})
 
-		result = result + '<div class="day-detail-events-section">'
-		result = result + '<h3 class="text-center">События</h4>'
+	// 	result = result + '<div class="day-detail-events-section">'
+	// 	result = result + '<h3 class="text-center">События</h4>'
 
-		if (events.length) {
+	// 	if (events.length) {
 
-			events.forEach(function(event) {
+	// 		events.forEach(function(event) {
 
-				var eventHtml = '<div class="event-item" data-id="'+event.id+'">';
+	// 			var eventHtml = '<div class="event-item" data-id="'+event.id+'">';
 
-				eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
-				eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
+	// 			eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
+	// 			eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
 			
-				eventHtml = eventHtml + '</div>';
+	// 			eventHtml = eventHtml + '</div>';
 
-				result = result + eventHtml
+	// 			result = result + eventHtml
 
-			})
+	// 		})
 
-		} else {
+	// 	} else {
 
-			result = result + '<div class="text-center">Не было событий</div>'
+	// 		result = result + '<div class="text-center">Не было событий</div>'
 
-		}
+	// 	}
 
-		result = result + '</div>'
+	// 	result = result + '</div>'
 
-		return result
+	// 	return result
 
-	}
+	// }
 
-	function renderActionsSection(dayDate){
+	// Deprecated
+	// function renderActionsSection(dayDate){
 
-		var result = ''
+	// 	var result = ''
 
-		var dayDetail = dataService.getDayDetail(dayDate);
+	// 	var dayDetail = dataService.getDayDetail(dayDate);
 
-		var dataHelper = new DataHelper();
+	// 	var dataHelper = new DataHelper();
 
-		var pattern = dataHelper.getPatternForDay(dayDate, dataService.getDayPatterns())
+	// 	var pattern = dataHelper.getPatternForDay(dayDate, dataService.getDayPatterns())
 
-		console.log('renderActionsSection.dayDetail', dayDetail);
+	// 	console.log('renderActionsSection.dayDetail', dayDetail);
 
-		var actions = [];
+	// 	var actions = [];
 
-		if (pattern) {
+	// 	if (pattern) {
 
-			pattern.actions.forEach(function(action){
+	// 		pattern.actions.forEach(function(action){
 
-				var act = Object.assign({}, action)
+	// 			var act = Object.assign({}, action)
 
-				act.from_pattern = true;
+	// 			act.from_pattern = true;
 
-				if (action.exclude_weekend) {
+	// 			if (action.exclude_weekend) {
 
-					var dayOfWeek = new Date(dayDate).getDay()
+	// 				var dayOfWeek = new Date(dayDate).getDay()
 					
-					if (dayOfWeek == 0 || dayOfWeek == 6) { // 0 sunday, 6 saturday
-						// do nothning
-					} else {
+	// 				if (dayOfWeek == 0 || dayOfWeek == 6) { // 0 sunday, 6 saturday
+	// 					// do nothning
+	// 				} else {
 
 
 
-						actions.push(act);
-					}
+	// 					actions.push(act);
+	// 				}
 
-				} else {
+	// 			} else {
 
-					actions.push(act);
+	// 				actions.push(act);
 
-				}
-			})
+	// 			}
+	// 		})
 
-		}
+	// 	}
 
-		if (dayDetail) {
+	// 	if (dayDetail) {
 
-			if (dayDetail.actions) {
+	// 		if (dayDetail.actions) {
 
-				dayDetail.actions.forEach(function(action){
-					actions.push(action)
-				})
+	// 			dayDetail.actions.forEach(function(action){
+	// 				actions.push(action)
+	// 			})
 
-			}
+	// 		}
 
-		}
+	// 	}
 
-		var total = 1440; // in minutes
+	// 	var total = 1440; // in minutes
 
-		actions.forEach(function(action){
+	// 	actions.forEach(function(action){
 
-			var durationInMin = action.hours * 60 + action.minutes
+	// 		var durationInMin = action.hours * 60 + action.minutes
 
-			total = total - durationInMin;
-		})
+	// 		total = total - durationInMin;
+	// 	})
 
-		if (total > 0) {
+	// 	if (total > 0) {
 
-			var h = Math.floor(total / 60);
+	// 		var h = Math.floor(total / 60);
 
-			actions.push({
-				from_pattern: true,
-				name: "Свободное время",
-				color: '#ddd',
-				hours: h,
-				minutes: total - h * 60
-			})
+	// 		actions.push({
+	// 			from_pattern: true,
+	// 			name: "Свободное время",
+	// 			color: '#ddd',
+	// 			hours: h,
+	// 			minutes: total - h * 60
+	// 		})
 
-		}
+	// 	}
 
-		result = result + '<div class="day-detail-actions-section">'
+	// 	result = result + '<div class="day-detail-actions-section">'
 
-		result = result + '<h3 class="text-center">Распорядок</h3>'
+	// 	result = result + '<h3 class="text-center">Распорядок</h3>'
 
-		if (actions) {
+	// 	if (actions) {
 
-			result = result + '<div class="day-detail-actions">'
+	// 		result = result + '<div class="day-detail-actions">'
 
-			actions.forEach(function(action){
+	// 		actions.forEach(function(action){
 
-				var actionHTML = '<div class="day-detail-action">'
-
-
-				actionHTML = actionHTML + '<div style="background: '+action.color+'" class="day-detail-action-color"></div>'
-				actionHTML = actionHTML + '<span class="day-detail-action-name">' + action.name  + ' </span>'
-				if (action.hours) {
-					actionHTML = actionHTML + action.hours + ' ' + dataHelper.toHours(action.hours) + ' '
-				}
-
-				if (action.minutes) {
-					actionHTML = actionHTML + action.minutes + ' минут'
-				}
+	// 			var actionHTML = '<div class="day-detail-action">'
 
 
-				if (!action.from_pattern) {
-					actionHTML = actionHTML + '<button data-id="'+ action.id + '" class="day-detail-action-delete dayDetailActionDelete" title="Удалить"><i class="fa fa-close"></i></button>'
-				}
-				actionHTML = actionHTML + '</div>'
+	// 			actionHTML = actionHTML + '<div style="background: '+action.color+'" class="day-detail-action-color"></div>'
+	// 			actionHTML = actionHTML + '<span class="day-detail-action-name">' + action.name  + ' </span>'
+	// 			if (action.hours) {
+	// 				actionHTML = actionHTML + action.hours + ' ' + dataHelper.toHours(action.hours) + ' '
+	// 			}
+
+	// 			if (action.minutes) {
+	// 				actionHTML = actionHTML + action.minutes + ' минут'
+	// 			}
 
 
-				result = result + actionHTML
-
-			})
-
-			result = result + '</div>'
-
-		} else {
-			result = result + '<div class="text-center">Еще ничего не добавлено</div>'
-		}
+	// 			if (!action.from_pattern) {
+	// 				actionHTML = actionHTML + '<button data-id="'+ action.id + '" class="day-detail-action-delete dayDetailActionDelete" title="Удалить"><i class="fa fa-close"></i></button>'
+	// 			}
+	// 			actionHTML = actionHTML + '</div>'
 
 
-		result = result + '<div class="add-day-action-holder">'
+	// 			result = result + actionHTML
 
-		// Name 
-		result = result + '<div class="add-day-action-input-container">'
+	// 		})
 
-		result = result + '<label class="add-day-action-label">Название</label>'
-		result = result + '<input class="add-day-action-input add-day-action-input-name addDayActionInputName width-100">'
+	// 		result = result + '</div>'
 
-		result = result + '</div>'
-
-		// Duration
-
-		result = result + '<div class="add-day-action-input-container">'
-
-		result = result + '<label class="add-day-action-label">Длительность</label>'
-		result = result + '<input class="add-day-action-input m-r-8 add-day-action-input-hours addDayActionInputHours" placeholder="Часов">'
-		result = result + '<input class="add-day-action-input add-day-action-input-minutes addDayActionInputMinutes" placeholder="Минут">'
-
-		result = result + '</div>'
+	// 	} else {
+	// 		result = result + '<div class="text-center">Еще ничего не добавлено</div>'
+	// 	}
 
 
-		// Color
+	// 	result = result + '<div class="add-day-action-holder">'
 
-		result = result + '<div class="add-day-action-input-container">'
+	// 	// Name 
+	// 	result = result + '<div class="add-day-action-input-container">'
 
-		result = result + '<label class="add-day-action-label">Цвет</label>'
-		result = result + '<input class="add-day-action-input add-day-action-input-color addDayActionInputColor width-100">'
+	// 	result = result + '<label class="add-day-action-label">Название</label>'
+	// 	result = result + '<input class="add-day-action-input add-day-action-input-name addDayActionInputName width-100">'
 
-		result = result + '</div>'
+	// 	result = result + '</div>'
 
-		// Text 
-		result = result + '<div class="add-day-action-input-container">'
+	// 	// Duration
 
-		result = result + '<label class="add-day-action-label">Текст</label>'
-		result = result + '<input class="add-day-action-input add-day-action-input-text addDayActionInputText width-100">'
+	// 	result = result + '<div class="add-day-action-input-container">'
 
-		result = result + '</div>'
+	// 	result = result + '<label class="add-day-action-label">Длительность</label>'
+	// 	result = result + '<input class="add-day-action-input m-r-8 add-day-action-input-hours addDayActionInputHours" placeholder="Часов">'
+	// 	result = result + '<input class="add-day-action-input add-day-action-input-minutes addDayActionInputMinutes" placeholder="Минут">'
 
-		result = result + '<button class="add-day-action-button addDayActionButton">Добавить</button>'
+	// 	result = result + '</div>'
 
-		result = result + '</div>'
 
-		result = result + '</div>'
+	// 	// Color
 
-		return result;
+	// 	result = result + '<div class="add-day-action-input-container">'
 
-	}
+	// 	result = result + '<label class="add-day-action-label">Цвет</label>'
+	// 	result = result + '<input class="add-day-action-input add-day-action-input-color addDayActionInputColor width-100">'
 
-	function renderChartSection(){
+	// 	result = result + '</div>'
 
-		var result = ''
-		result = result + '<div class="day-detail-chart-section">'
-		result = result + '<div class="chart-holder">'
-		result = result + '<canvas id="dayChart" width="400" height="400"></canvas>'
-		result = result + '</div>'
-		result = result + '</div>'
+	// 	// Text 
+	// 	result = result + '<div class="add-day-action-input-container">'
 
-		return result;
+	// 	result = result + '<label class="add-day-action-label">Текст</label>'
+	// 	result = result + '<input class="add-day-action-input add-day-action-input-text addDayActionInputText width-100">'
 
-	}
+	// 	result = result + '</div>'
+
+	// 	result = result + '<button class="add-day-action-button addDayActionButton">Добавить</button>'
+
+	// 	result = result + '</div>'
+
+	// 	result = result + '</div>'
+
+	// 	return result;
+
+	// }
+
+	// Deprecated
+	// function renderChartSection(){
+
+	// 	var result = ''
+	// 	result = result + '<div class="day-detail-chart-section">'
+	// 	result = result + '<div class="chart-holder">'
+	// 	result = result + '<canvas id="dayChart" width="400" height="400"></canvas>'
+	// 	result = result + '</div>'
+	// 	result = result + '</div>'
+
+	// 	return result;
+
+	// }
 
 	function renderNotesSection(dayDate){
+
+		console.log('renderNotesSection dayDate', dayDate)
 
 		var dayDetail = dataService.getDayDetail(dayDate);
 
@@ -562,6 +567,27 @@ function DayDetailModule(dataService, eventService) {
 			notes = dayDetail.notes;
 		}
 
+
+		var notesMinHeight = 260;
+		var charWidth = 11;
+		var textAreaWidth = document.body.clientWidth / 100 * 80
+
+		var charsPerRow = (textAreaWidth - 36) / charWidth
+		var rowHeight = 18;
+
+		if (notes.length) {
+
+			var rows = notes.length / charsPerRow;
+
+			rows = rows + notes.split('\n').length;
+			notesMinHeight = rows * rowHeight;
+
+			if (notesMinHeight < 260) {
+				notesMinHeight = 260
+			}
+
+		}
+
 		var result = '';
 
 		result = result + '<h4 class="day-detail-notes-header">Заметки</h4>'
@@ -570,9 +596,10 @@ function DayDetailModule(dataService, eventService) {
 
 		result = result + '<div class="day-detail-notes-length dayDetailNotesLength">'+notes.length+' символов</div>'
 
-		result = result + '<textarea class="day-detail-notes dayDetailNotes">'+notes+'</textarea>';
+		result = result + '<textarea class="day-detail-notes dayDetailNotes" style="height: '+notesMinHeight+'px">'+notes+'</textarea>';
 
-		result = result + '</div';
+		result = result + '</div>';
+
 
 
 		return result;
@@ -597,9 +624,25 @@ function DayDetailModule(dataService, eventService) {
 		var previousDayMonth = previousDate.getMonth() + 1;
 		var previousDayDay = previousDate.getDate();
 
+		if (previousDayMonth < 10) {
+			previousDayMonth = '0' + previousDayMonth
+		}
+
+		if (previousDayDay < 10) {
+			previousDayDay = '0' + previousDayDay
+		}
+
 		var nextDayYear = nextDate.getFullYear();
 		var nextDayMonth = nextDate.getMonth() + 1;
 		var nextDayDay = nextDate.getDate();
+
+		if (nextDayMonth < 10) {
+			nextDayMonth = '0' + nextDayMonth;
+		}
+
+		if (nextDayDay < 10) {
+			nextDayDay = '0' + nextDayDay;
+		}
 
 		var showHelp = false;
 		var helpTitle = ''
@@ -664,7 +707,125 @@ function DayDetailModule(dataService, eventService) {
 
 
 		result = result + '<button class="close-day-detail-button closeDayDetailButton">Закрыть</button>'
-		result = result + '<a href="#/settings/day-pattern" class="day-pattern-settings-button dayPatternSettingsButton">Настроить паттерн</a>'
+		// result = result + '<a href="#/settings/day-pattern" class="day-pattern-settings-button dayPatternSettingsButton">Настроить паттерн</a>'
+
+		return result;
+
+	}
+
+	function renderEventsCards(dayDate){
+
+		var dayDateIso = new Date(dayDate).toISOString()
+
+		var events = dataService.getEvents().filter(function(event){
+
+			if (event.date && event.date == dayDateIso) {
+				return true;
+			}
+
+			return false;
+
+		})
+
+		var categoriesAsObject = dataService.getCategoriesAsObject();
+
+
+		console.log('renderEventsCards.events', events);
+
+		var result = '';
+
+		if (events.length) {
+
+			result = result + '<div class="day-detail-events-cards-holder">';
+
+			result = result + '<h4 class="day-detail-events-header">События</h4>'
+
+
+			events.forEach(function(event){
+
+				var eventHtml = '';
+
+				var eventColor = 'transparent';
+
+				if (event.categories) {
+					var categoryId = event.categories[0]
+
+					if (categoriesAsObject.hasOwnProperty(categoryId)) {
+
+						var category = categoriesAsObject[categoryId]
+
+						if(category.color) {
+							eventColor = category.color;
+						}
+
+					}
+
+				}
+
+				if(event.color) {
+					eventColor = event.color;
+				}
+			
+
+				eventHtml = eventHtml + '<div class="day-detail-event-card" title="' + event.text+'">'
+
+				eventHtml = eventHtml + '<div class="day-detail-event-item-color" style="background: '+eventColor+'"></div>'
+
+				eventHtml = eventHtml + event.name;
+				eventHtml = eventHtml + '</div>'
+
+
+				result = result + eventHtml;
+
+			})
+			
+
+			result = result + '</div>';
+
+		}
+
+
+		return result;
+
+	}
+
+	function renderPastYearSection(dayDate){
+
+	
+		var pastDayDate = moment(dayDate).subtract(1, 'year').format('yyyy-MM-DD');
+		var pastDayDateIso = new Date(pastDayDate).toISOString()
+
+		var dayDetail = dataService.getDayDetail(pastDayDate);
+		var events = dataService.getEvents().filter(function(event){
+
+			if (event.date && event.date == pastDayDateIso) {
+				return true;
+			}
+
+			return false;
+
+		})
+
+		var result = '';
+
+		if (dayDetail || events.length) {
+
+			result = result + '<h4 class="day-detail-notes-header">В прошлом году</h4>'
+
+			if (dayDetail) {
+				result = result + '<div class="day-detail-notes-year-before">'+dayDetail.notes+'</div>'
+			} else {
+				result = result + '<div class="day-detail-notes-year-before text-center">Записей нет</div>'
+			}
+
+
+			result = result + renderEventsCards(pastDayDate)
+
+			
+			result = result + '</div';
+
+		}
+
 
 		return result;
 
@@ -680,25 +841,37 @@ function DayDetailModule(dataService, eventService) {
 		
 		result = result + '</div>'
 
-		result = result + '<div class="day-detail-content">'
+		result = result + '<div>'
 
-		result = result + '<div class="day-detail-content-section">'
+		result = result + renderNotesSection(dayDate);
 
-		result = result + renderActionsSection(dayDate);
-
-		result = result + renderChartSection(dayDate);
-
-		result = result + renderDayEventsSection(dayDate);
+		result = result + renderEventsCards(dayDate);
 
 		result = result + '</div>'
 
 		result = result + '<div>'
 
-		result = result + renderNotesSection(dayDate);
+		result = result + renderPastYearSection(dayDate);
 
 		result = result + '</div>'
 
-		result = result + '</div>'
+
+		// Deprecated
+
+		// result = result + '<div class="day-detail-content">'
+
+		// result = result + '<div class="day-detail-content-section">'
+
+		// result = result + renderActionsSection(dayDate);
+
+		// result = result + renderChartSection(dayDate);
+
+		// result = result + renderDayEventsSection(dayDate);
+
+		// result = result + '</div>'
+
+		
+		// result = result + '</div>'
 	
 		return result;
 
@@ -1126,8 +1299,6 @@ function DayDetailModule(dataService, eventService) {
 			location.hash = '#/settings/day-pattern';
 
 			eventService.dispatchEvent('SAVE');
-
-			toastr.success('Сохранено')
 
 		})
 

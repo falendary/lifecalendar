@@ -47,7 +47,7 @@
 .day-detail-save {
     position: absolute;
     left: 8px;
-    top: 36px;
+    top: 8px;
     background: #fff;
     border: 1px solid #000;
     cursor: pointer;
@@ -61,6 +61,7 @@
 }
 
 .day-detail-content {
+    margin-top: 24px;
     display: flex;
     flex-direction: column;
 }
@@ -352,18 +353,76 @@ button.day-detail-action-delete:hover {
 }
 
 .day-detail-notes-holder {
-    padding: 10px;
-    padding-bottom: 100px;
+    padding: 0 10px;
+    /*padding-bottom: 100px;*/
 }
 .day-detail-notes {
-    min-width: 100%;
-    max-width: 100%;
+    /*min-width: 100%;
+    max-width: 100%;*/
     min-height: 260px;
     font-size: 18px;
     padding: 8px;
+    width: 80%;
+    min-width: 80%;
+    max-width: 80%;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid transparent;
+    outline: none;
+}
+.day-detail-notes:focus {
+    border: 1px solid rgba(0,0,0,.1);
 }
 
 .day-detail-notes-length {
     text-align: right;
     margin-bottom: 4px;
+    width: 80%;
+    margin: 0 auto;
+    font-size: 11px;
+    color: grey;
+}
+
+
+.day-detail-notes-year-before {
+    width: 80%;
+    margin: 16px auto;
+}
+
+.day-detail-events-cards-holder {
+    margin: 0 auto;
+    width: 80%;
+    padding-bottom: 16px;
+
+}
+
+.day-detail-events-cards-holder::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.day-detail-event-card {
+    float: left;
+    padding: 8px;
+    border: 1px solid grey;
+    margin: 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.day-detail-event-item-color {
+    width: 12px;
+    height: 12px;
+    display: block;
+    float: left;
+    margin-right: 4px;
+}
+
+.day-detail-events-header {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 24px;
+    color: #363636;
 }
