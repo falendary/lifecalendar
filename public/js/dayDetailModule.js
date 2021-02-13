@@ -810,6 +810,8 @@ function DayDetailModule(dataService, eventService) {
 
 		if (dayDetail || events.length) {
 
+			result = result + '<div class="day-detail-past-year-divider"></div>'
+
 			result = result + '<h4 class="day-detail-notes-header">В прошлом году</h4>'
 
 			if (dayDetail) {

@@ -201,10 +201,13 @@ function EventsModule(dataService) {
 				console.log("sourceEvent", sourceEvent);
 				console.log("square", square);
 
+
+				var squareContainer = document.querySelector('.app-left-section')
+
 				if (square) {
 
 					square.classList.add('highlighted')
-					window.scrollTo({top: square.offsetTop - 240, behavior: 'smooth'});
+					squareContainer.scrollTo({top: square.offsetTop - 240, behavior: 'smooth'});
 					$(square).click();
 
 				} else {

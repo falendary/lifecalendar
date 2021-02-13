@@ -13,6 +13,9 @@
     z-index: 4;
 }
 
+.day-detail-dialog {
+    padding-bottom: 160px;
+}
 
 .close-day-detail-button {
     position: absolute;
@@ -423,6 +426,12 @@ button.day-detail-action-delete:hover {
 .day-detail-events-header {
     text-align: center;
     margin-bottom: 0;
-    font-size: 24px;
+    font-size: 16px;
     color: #363636;
+}
+.day-detail-past-year-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(0,0,0,.1);
+    display: block;
 }

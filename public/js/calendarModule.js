@@ -44,7 +44,9 @@ function CalendarModule(dataService) {
 				var height = squareElem.getBoundingClientRect().height;
 				var width = squareElem.getBoundingClientRect().width;
 
-				node.style.top = squareElem.offsetTop + height - 24 + 'px';
+				var squareContainer = document.querySelector('.app-left-section');
+
+				node.style.top = squareElem.offsetTop - squareContainer.scrollTop + height - 24 + 'px';
 				node.style.left = squareElem.offsetLeft + width - 24 +  'px';
 
 				var square;
