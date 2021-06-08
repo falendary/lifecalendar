@@ -59,6 +59,13 @@
     color: grey;
     font-size: 12px;
     margin-bottom: 4px; 
+
+}
+
+.search-result-title::after {
+    content: "";
+    clear: both;
+    display: block;
 }
 
 .search-result-count {
@@ -66,4 +73,43 @@
 }
 .search-result-count span {
     color: coral;
+}
+
+.search-result-title-link {
+    padding-top: 2px;
+    float: left;
+    margin-right: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.search-result-title-link:hover {
+    color: coral;
+}
+
+.search-result-item-events-cards-holder {
+    width: 80%;
+
+}
+
+.search-result-item-events-cards-holder::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.search-result-item-event-card {
+    float: left;
+    padding: 1px;
+    margin: 2px 4px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.search-result-item-event-item-color {
+    width: 12px;
+    height: 12px;
+    display: block;
+    float: left;
+    margin-right: 4px;
 }

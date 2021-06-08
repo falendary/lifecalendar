@@ -1225,19 +1225,26 @@ function setInterfaceState(){
 
 }
 
-function handleRoute(){
+function clearDialogs() {
+  var dialogs = document.querySelectorAll('.dialog');
+  dialogs.forEach(function(dialog){
+      dialog.classList.remove('active')
+    })
+}
+
+function handleRoute(onStartup){
 
     var dialogs = document.querySelectorAll('.dialog');
 
-    dialogs.forEach(function(dialog){
-      dialog.classList.remove('active')
-    })
+    
 
     var currentLocation = location.hash
 
     console.log('currentLocation', currentLocation);
 
     if (currentLocation.indexOf('/week/') !== -1) {
+
+      clearDialogs();
 
       var squareId = currentLocation.split('/week/')[1];
 
@@ -1252,6 +1259,8 @@ function handleRoute(){
       console.log('squareId', squareId);
 
     } else if (currentLocation.indexOf('/view/') !== -1) {
+
+      clearDialogs();
 
       var path = currentLocation.split('/view/')[1];
       var pieces = path.split('/');
@@ -1271,22 +1280,28 @@ function handleRoute(){
 
     } else if (currentLocation.indexOf('/search/') !== -1) {
 
-      var query = currentLocation.split('/search/?query=')[1];
+      if (onStartup) {
 
-      if(!query) {
-          query = '';
+        var query = currentLocation.split('/search/?query=')[1];
+
+        if(!query) {
+            query = '';
+        }
+
+        query = decodeURIComponent(query)
+
+        var container = document.querySelector('.searchDialogContainer');
+        var dialogContent = document.querySelector('.searchDialog')
+
+        searchModule.init(query, dialogContent, container)
+
+        container.classList.add('active');
+
       }
 
-      query = decodeURIComponent(query)
-
-      var container = document.querySelector('.searchDialogContainer');
-      var dialogContent = document.querySelector('.searchDialog')
-
-      searchModule.init(query, dialogContent, container)
-
-      container.classList.add('active');
-
     } else if(currentLocation.indexOf('/settings/day-pattern') !== -1) {
+
+      clearDialogs();
 
       console.log("Day pattern settings")
 
@@ -1298,6 +1313,8 @@ function handleRoute(){
       container.classList.add('active');
 
     } else if (location.hash != '#/') {
+
+      clearDialogs();  
       location.hash = '#/';
     }
 
@@ -1305,7 +1322,9 @@ function handleRoute(){
 
 function initRouter(){
 
-  handleRoute();
+  var onStartup = true
+
+  handleRoute(onStartup);
 
   window.addEventListener("hashchange", function(event){
 

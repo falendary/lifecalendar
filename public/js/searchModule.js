@@ -4,6 +4,8 @@ function SearchModule(dataService, eventService) {
 	var _container
 	var _query;
 	var _patternId;
+	var _dayDetails;
+	var _categoriesAsObject;
 
 
 	function addEventListeners(dayDate){
@@ -30,6 +32,8 @@ function SearchModule(dataService, eventService) {
 
 			_query = searchInput.value;
 
+			document.location.hash = "#/search/?query=" + _query; 
+
 			searchResultsContainer.innerHTML = renderResults(_query);
 
 			
@@ -39,22 +43,73 @@ function SearchModule(dataService, eventService) {
 		
 	}
 
-	function renderResults(query){
+	function renderSeachResultItemCards(item) {
 
 		var result = '';
 
 
-		var dayDetails = dataService.getDayDetailList();
+		if (item.events.length) {
 
-		console.log('dayDetails', dayDetails);
-		console.log('query', query);
+			result = result + '<div class="search-result-item-events-cards-holder">';
+
+
+			item.events.forEach(function(event){
+
+				var eventHtml = '';
+
+				var eventColor = 'transparent';
+
+				if (event.categories) {
+					var categoryId = event.categories[0]
+
+					if (_categoriesAsObject.hasOwnProperty(categoryId)) {
+
+						var category = _categoriesAsObject[categoryId]
+
+						if(category.color) {
+							eventColor = category.color;
+						}
+
+					}
+
+				}
+
+				if(event.color) {
+					eventColor = event.color;
+				}
+			
+
+				eventHtml = eventHtml + '<div class="search-result-item-event-card" title="' + event.text+'">'
+
+				eventHtml = eventHtml + '<div class="search-result-item-event-item-color" style="background: '+eventColor+'"></div>'
+
+				eventHtml = eventHtml + event.name;
+				eventHtml = eventHtml + '</div>'
+
+
+				result = result + eventHtml;
+
+			})
+			
+
+			result = result + '</div>';
+
+		}
+
+		return result;
+
+	}
+
+	function renderResults(query){
+
+		var result = '';
 
 
 		var matches = []
 
 		if (query) {
 
-			matches = dayDetails.filter(function(item){
+			matches = _dayDetails.filter(function(item){
 
 				if (item.notes) {
 					return item.notes.toLocaleLowerCase().search(query.toLocaleLowerCase()) != -1
@@ -62,8 +117,6 @@ function SearchModule(dataService, eventService) {
 				return false
 
 			})
-
-			console.log('matches', matches);
 
 			result = result + '<div class="search-result-count">Найдено совпадений: <span>' + matches.length + '</span></div>'
 
@@ -108,7 +161,9 @@ function SearchModule(dataService, eventService) {
 				rowHtml = rowHtml + '<div class="search-result-item">'
 
 				rowHtml = rowHtml + '<div class="search-result-title">'
-				rowHtml = rowHtml + '<a href="'+itemUrl+'" target="_blank">' + moment(item.date).locale('ru').format("DD MMMM YYYY") + '</a>';   
+				rowHtml = rowHtml + '<a class="search-result-title-link" href="'+itemUrl+'" target="_blank">' + moment(item.date).locale('ru').format("DD MMMM YYYY") + '</a>';   
+				rowHtml = rowHtml + renderSeachResultItemCards(item)
+
 				rowHtml = rowHtml + '</div>'
 
 				rowHtml = rowHtml + '<div class="search-result-body">'
@@ -148,7 +203,7 @@ function SearchModule(dataService, eventService) {
 
 		result = result + '<div class="search-input-holder">'
 
-		result = result + '<input class="search-input searchInput" type="text" value="'+query+'" placeholder="Поиск">'
+		result = result + '<input class="search-input searchInput" autofocus="true" type="text" value="'+query+'" placeholder="Поиск">'
 
 		result = result + '</div>'
 
@@ -179,6 +234,35 @@ function SearchModule(dataService, eventService) {
 		_query = query;
 		_dialogContent = dialogContent;
 		_container = container;
+
+		_dayDetails = dataService.getDayDetailList();
+
+
+		_categoriesAsObject = dataService.getCategoriesAsObject();
+
+		_dayDetails = _dayDetails.map(function(item){
+
+
+			var dayDateIso = new Date(item.date).toISOString()
+
+			item.events = dataService.getEvents().filter(function(event){
+
+				if (event.date && new Date(event.date).toISOString() == dayDateIso) {
+					return true;
+				}
+
+				if (event.date_from && new Date(event.date_from).toISOString() == dayDateIso) {
+					return true;
+				}
+
+				return false;
+
+			})
+
+			return item;
+
+
+		})
 
 	   _redrawDialog();
 
