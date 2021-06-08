@@ -1280,7 +1280,6 @@ function handleRoute(onStartup){
 
     } else if (currentLocation.indexOf('/search/') !== -1) {
 
-      if (onStartup) {
 
         var query = currentLocation.split('/search/?query=')[1];
 
@@ -1290,14 +1289,16 @@ function handleRoute(onStartup){
 
         query = decodeURIComponent(query)
 
-        var container = document.querySelector('.searchDialogContainer');
-        var dialogContent = document.querySelector('.searchDialog')
+        if (onStartup || !query) {
 
-        searchModule.init(query, dialogContent, container)
+          var container = document.querySelector('.searchDialogContainer');
+          var dialogContent = document.querySelector('.searchDialog')
 
-        container.classList.add('active');
+          searchModule.init(query, dialogContent, container)
 
-      }
+          container.classList.add('active');
+
+        }
 
     } else if(currentLocation.indexOf('/settings/day-pattern') !== -1) {
 
