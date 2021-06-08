@@ -685,6 +685,7 @@ function DayDetailModule(dataService, eventService) {
 		var result = '';
 
 		result = result + '<button class="day-detail-save dayDetailSave">Сохранить</button>'
+		result = result + '<a href="#/search/" class="day-detail-search dayDetailSearch">Поиск</a>'
 
 		result = result + '<div class="day-detail-block-wrapper">'
 
@@ -719,7 +720,11 @@ function DayDetailModule(dataService, eventService) {
 
 		var events = dataService.getEvents().filter(function(event){
 
-			if (event.date && event.date == dayDateIso) {
+			if (event.date && new Date(event.date).toISOString() == dayDateIso) {
+				return true;
+			}
+
+			if (event.date_from && new Date(event.date_from).toISOString() == dayDateIso) {
 				return true;
 			}
 
@@ -799,6 +804,10 @@ function DayDetailModule(dataService, eventService) {
 		var events = dataService.getEvents().filter(function(event){
 
 			if (event.date && event.date == pastDayDateIso) {
+				return true;
+			}
+
+			if (event.date_from && event.date_from == pastDayDateIso) {
 				return true;
 			}
 

@@ -241,7 +241,7 @@ function DataHelper() {
 
 				var subEvent = Object.assign({}, event);
 				subEvent.parentEvent = event;
-				subEvent.date = date;
+				subEvent.date = date.toISOString();
 				subEvent.type = 1
 
 				subEvents.push(subEvent)
@@ -288,7 +288,7 @@ function DataHelper() {
 
 				var subEvent = Object.assign({}, event);
 				subEvent.parentEvent = event;
-				subEvent.date = date;
+				subEvent.date = date.toISOString();
 				subEvent.type = 1
 
 				subEvents.push(subEvent)
@@ -326,7 +326,7 @@ function DataHelper() {
 
 				var subEvent = Object.assign({}, event);
 				subEvent.parentEvent = event;
-				subEvent.date = date;
+				subEvent.date = date.toISOString();
 				subEvent.type = 1
 
 				subEvents.push(subEvent)

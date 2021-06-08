@@ -1,5 +1,9 @@
 function EventsModule(dataService) {
 
+	function capitalizeFirstLetter(string) {
+	  return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+
 	var EVENT_TYPES = {
 	  SINGLE: 1,
 	  REGULAR: 2,
@@ -342,6 +346,17 @@ function EventsModule(dataService) {
 				eventDate = eventDate + new Date(event.date_to).toISOString().split('T')[0]
 			}
 
+			var eventDayOfWeek = null;
+
+			if (event.date_from) {
+				eventDayOfWeek =  moment(event.date_from).locale('ru').format("dddd");   
+			}
+
+			if (event.date) {
+				eventDayOfWeek =  moment(event.date).locale('ru').format("dddd");   
+			}
+
+
 			var eventColor = 'transparent';
 
 			if (event.categories) {
@@ -365,7 +380,16 @@ function EventsModule(dataService) {
 
 			eventHtml = eventHtml + '<div class="event-item-color" style="background: '+eventColor+'"></div>'
 
-			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
+			eventHtml = eventHtml + '<div class="event-item-date">' + eventDate;
+
+			if (eventDayOfWeek) {
+				eventHtml = eventHtml + ' ' + capitalizeFirstLetter(eventDayOfWeek);
+			} 
+
+			eventHtml = eventHtml + '</div>'
+
+
+
 			eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
 			eventHtml = eventHtml + '<div class="event-item-search"><i class="fa fa-search"></i></div>'
@@ -598,13 +622,32 @@ function EventsModule(dataService) {
 
 				}
 
+				var eventDayOfWeek = null;
+
+				if (event.date_from) {
+					eventDayOfWeek =  moment(event.date_from).locale('ru').format("dddd");   
+				}
+
+				if (event.date) {
+					eventDayOfWeek =  moment(event.date).locale('ru').format("dddd");   
+				}
+
+				console.log('eventDayOfWeek', eventDayOfWeek);
+
 				if(event.color) {
 					eventColor = event.color;
 				}
 
 				eventHtml = eventHtml + '<div class="event-item-color" style="background: '+eventColor+'"></div>'
 
-				eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
+				eventHtml = eventHtml + '<div class="event-item-date">' + eventDate;
+
+				if (eventDayOfWeek) {
+					eventHtml = eventHtml + ' ' + capitalizeFirstLetter(eventDayOfWeek);
+				} 
+
+				eventHtml = eventHtml + '</div>';
+
 				eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
 				eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
 				eventHtml = eventHtml + '<div class="event-item-search"><i class="fa fa-search"></i></div>'
@@ -820,13 +863,31 @@ function EventsModule(dataService) {
 
 				}
 
+				var eventDayOfWeek = null;
+
+				if (event.date_from) {
+					eventDayOfWeek =  moment(event.date_from).locale('ru').format("dddd");   
+				}
+
+				if (event.date) {
+					eventDayOfWeek =  moment(event.date).locale('ru').format("dddd");   
+				}
+
+
 				if(event.color) {
 					eventColor = event.color;
 				}
 
 				eventHtml = eventHtml + '<div class="event-item-color" style="background: '+eventColor+'"></div>'
 
-				eventHtml = eventHtml + '<div class="event-item-date">' + eventDate + '</div>'
+				eventHtml = eventHtml + '<div class="event-item-date">' + eventDate;
+
+				if (eventDayOfWeek) {
+					eventHtml = eventHtml + ' ' + capitalizeFirstLetter(eventDayOfWeek);
+				} 
+
+				eventHtml = eventHtml + '</div>'
+
 				eventHtml = eventHtml + '<div class="event-item-name">' + event.name + '</div>'
 				eventHtml = eventHtml + '<div class="event-item-text">' + event.text + '</div>'
 				eventHtml = eventHtml + '<div class="event-item-search"><i class="fa fa-search"></i></div>'

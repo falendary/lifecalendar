@@ -20,6 +20,7 @@ var eventsModule = EventsModule(dataService, eventService)
 
 var weekDetailModule = WeekDetailModule(dataService, eventService)
 var dayDetailModule = DayDetailModule(dataService, eventService)
+var searchModule = SearchModule(dataService, eventService)
 var infoblockModule = InfoBlockModule(dataService, eventService)
 
 EVENT_TYPES = {
@@ -1265,6 +1266,23 @@ function handleRoute(){
       var dayDate = year + '-' + month + '-' + day;
 
       dayDetailModule.init(dayDate, dialogContent, container)
+
+      container.classList.add('active');
+
+    } else if (currentLocation.indexOf('/search/') !== -1) {
+
+      var query = currentLocation.split('/search/?query=')[1];
+
+      if(!query) {
+          query = '';
+      }
+
+      query = decodeURIComponent(query)
+
+      var container = document.querySelector('.searchDialogContainer');
+      var dialogContent = document.querySelector('.searchDialog')
+
+      searchModule.init(query, dialogContent, container)
 
       container.classList.add('active');
 

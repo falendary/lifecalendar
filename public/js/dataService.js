@@ -133,6 +133,18 @@ function DataService() {
 		return null;
 	}
 
+	function getDayDetailList(){
+
+		var result = []
+
+		Object.keys(data.days).forEach(function(key){
+			result.push(data.days[key])
+		})
+
+		return result;
+
+	}
+
 	function setEventsFeedType(type){
 		data.eventsFeedType = type
 	}
@@ -178,7 +190,8 @@ function DataService() {
 		setDayPattern: setDayPattern,
 
 		setDayDetail: setDayDetail,
-		getDayDetail: getDayDetail
+		getDayDetail: getDayDetail,
+		getDayDetailList: getDayDetailList
 
 
 	}
