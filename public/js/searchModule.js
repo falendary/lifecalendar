@@ -146,8 +146,14 @@ function SearchModule(dataService, eventService) {
 
 				}
 
+				var formatedPreviewText = '';
 
-				item.previewText = item.notes.substring(startIndex, endIndex)
+				var fisrtHalf = item.notes.substring(startIndex, index)
+				var secondHalf = item.notes.substring(index + query.length , endIndex)
+
+				formatedPreviewText = fisrtHalf + '<span class="search-result-item-highlight-query">' + query + '</span>' + secondHalf;
+
+				item.previewText = formatedPreviewText
 
 				 var prettyDate = new Date(item.date).toISOString().split('T')[0];
 			    var datePieces = prettyDate.split('-')
