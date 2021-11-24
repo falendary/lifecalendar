@@ -7,24 +7,28 @@ function DataHelper() {
 	  return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 	}
 
-	function getDateOfWeek(w, y) {
-	    var d = (1 + (w - 1) * 7);
+	function getStartDayOfWeek(w, y) {
 
-	    return new Date(y, 0, d);
+		return new Date(moment()
+		.isoWeekYear(y)
+		.isoWeek(w)
+		.startOf('isoWeek'))
+
 	}
 
+	function getEndDayOfWeek(w, y) {
+
+		return new Date(moment()
+		.isoWeekYear(y)
+		.isoWeek(w)
+		.endOf('isoWeek'))
+
+	}
+
+
 	function getWeekNumber(d) {
-	    // Copy date so don't modify original
-	    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-	    // Set to nearest Thursday: current date + 4 - current day number
-	    // Make Sunday's day number 7
-	    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-	    // Get first day of year
-	    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-	    // Calculate full weeks to nearest Thursday
-	    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-	    // Return array of year and week number
-	    return weekNo;
+
+	    return moment(d).isoWeek();
 	}
 
 	function generateSquaresFromDate(date){
@@ -60,12 +64,20 @@ function DataHelper() {
 
 			for (w = 0; w < weeks; w = w + 1) {
 
-				var startDay = getDateOfWeek(w+1, currentYear);
-				var endDay = moment(startDay).endOf('isoWeek').toDate();
+				var startDay = getStartDayOfWeek(w+1, currentYear);
+				var endDay = getEndDayOfWeek(w+1, currentYear);
+				var month;
+
+				if (startDay.getFullYear() == currentYear) {
+					month = moment(startDay).month() + 1;
+				} else {
+					month = moment(endDay).month() + 1;
+				}
 
 				square = {
 					id: toMD5(currentYear + '_' + (w + 1)),
 					week: w + 1,
+					month: month,
 					year: currentYear,
 					startDay: startDay,
 					endDay: endDay,
@@ -165,6 +177,16 @@ function DataHelper() {
 		var eventDateFromYear = eventDateFrom.getFullYear();
 		var eventDateToYear = eventDateTo.getFullYear();
 		var eventDateToMonth = eventDateTo.getMonth();
+		var eventDateToWeek = getWeekNumber(eventDateTo)
+		var eventDateToWeekPad;
+
+		if (eventDateToWeek < 10) {
+			eventDateToWeekPad = '0' + eventDateToWeek
+		} else {
+			eventDateToWeekPad = eventDateToWeek
+		}
+
+		var eventTosimpleWeekPattern = parseInt(eventDateToYear.toString() + eventDateToWeekPad.toString(), 10)
 
 		var dates = dataHelper.getDates(new Date(event.date_from), new Date(event.date_to));
 
@@ -173,11 +195,63 @@ function DataHelper() {
 		}
 
 		if (event.date_type == 2) { // weekly
-			// TODO weekly logic
+
+			var weekCounter;
+		
+			dates = dates.filter(function(date){
+
+				var result = false;
+
+				var dateDate = date.getDate();
+				var dateMonth = date.getMonth();
+				var dateYear = date.getFullYear();
+				var dateWeek = getWeekNumber(date)
+
+				if (dateWeek == 53 && dateMonth == 0) {
+					dateWeek = 1
+				}
+
+				if (dateWeek < 10) {
+					dateWeek = '0' + dateWeek 
+				}
+
+				 // "2010"+"05" = "201005" = int("201005")
+				var dateSimpleWeekPattern = parseInt(dateYear.toString() + dateWeek.toString(), 10)
+
+				if (!weekCounter) {
+					weekCounter = dateSimpleWeekPattern
+					result = true;
+				}
+
+				if (weekCounter < eventTosimpleWeekPattern) {
+				
+					if (dateSimpleWeekPattern > weekCounter) {
+
+						weekCounter = dateSimpleWeekPattern;
+						result = true
+					}
+
+				}
+
+				return result;
+
+			})
+
+			dates.forEach(function(date){
+
+				var subEvent = Object.assign({}, event);
+				subEvent.parentEvent = event;
+				subEvent.date = date.toISOString();
+				subEvent.type = 1
+
+				subEvents.push(subEvent)
+
+			})
+
+
 		}
 
 		if (event.date_type == 3) { // monthly
-			// TODO monthly logic
 
 			dates = dates.filter(function(date){
 
@@ -214,7 +288,7 @@ function DataHelper() {
 
 				var subEvent = Object.assign({}, event);
 				subEvent.parentEvent = event;
-				subEvent.date = date;
+				subEvent.date = date.toISOString();
 				subEvent.type = 1
 
 				subEvents.push(subEvent)
@@ -252,7 +326,7 @@ function DataHelper() {
 
 				var subEvent = Object.assign({}, event);
 				subEvent.parentEvent = event;
-				subEvent.date = date;
+				subEvent.date = date.toISOString();
 				subEvent.type = 1
 
 				subEvents.push(subEvent)
@@ -265,13 +339,86 @@ function DataHelper() {
 
 	}
 
+	function getSeasonNumberByMonthNumber(month) {
+
+		// var monthsTitles = ['Зима', 'Весна', 'Лето', 'Осень']
+
+		if ([12,1,2].indexOf(month) !== -1) {
+			return 1
+		}
+
+		if ([3,4,5].indexOf(month) !== -1) {
+			return 2
+		}
+
+		if ([6,7,8].indexOf(month) !== -1) {
+			return 3
+		}
+
+		if ([9,10,11].indexOf(month) !== -1) {
+			return 4
+		}
+
+	}
+
+
+	function getPatternForDay(dayDate, patterns) {
+
+		var result;
+
+		patterns.forEach(function(pattern){
+
+			var dates = getDates(new Date(pattern.date_from), new Date(pattern.date_to))
+
+			dates = dates.map(function(date){
+
+				return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+
+			})
+
+			if (dates.indexOf(dayDate) !== -1) {
+
+				result = pattern
+
+			}
+
+		})
+
+
+		return result
+
+	}
+
+	function toHours(num) {
+
+		if (num == 1) {
+			return 'час'
+		}
+		else if ([2, 3, 4].indexOf(num) !== -1) {
+			return 'часа'
+		}
+		if ([5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].indexOf(num) !== -1) {
+			return 'часов'
+		}
+		else if (num == 21) {
+			return 'час'
+		}
+		else if ([22, 23, 24].indexOf(num) !== -1) {
+			return 'часа'
+		}
+
+	}
+
 	return {
 		generateSquaresFromDate: generateSquaresFromDate,
 		deleteSquaresBeforeBirthday: deleteSquaresBeforeBirthday,
 		markLivedSquares: markLivedSquares,
 		getWeekNumber: getWeekNumber,
 		getDates: getDates,
-		generateRegularEvents: generateRegularEvents
+		generateRegularEvents: generateRegularEvents,
+		getSeasonNumberByMonthNumber,
+		getPatternForDay: getPatternForDay,
+		toHours: toHours
 	}
 
 }

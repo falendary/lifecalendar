@@ -11,17 +11,26 @@
     <link rel="stylesheet" type="text/css" href="css/lib/toastr.css">
     <link rel="stylesheet" type="text/css" href="css/lib/spectrum.css">
     <link rel="stylesheet" type="text/css" href="css/lib/nouislider.css">
+    <link rel="stylesheet" type="text/css" href="css/lib/chart.css">
 
-    <link rel="stylesheet" type="text/css" href="css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/solid.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/calendar-module.css">
+    <link rel="stylesheet" type="text/css" href="css/events-module.css">
+    <link rel="stylesheet" type="text/css" href="css/category-module.css">
+    <link rel="stylesheet" type="text/css" href="css/week-detail-module.css">
+    <link rel="stylesheet" type="text/css" href="css/day-detail-module.css">
+    <link rel="stylesheet" type="text/css" href="css/bottom-panel-module.css">
+    <link rel="stylesheet" type="text/css" href="css/search-module.css">
 
 </head>
 
 <body>
 
 
-<div class="main-container">
+<div class="main-container height-100">
 
     <div class="init-container initContainer">
 
@@ -41,37 +50,73 @@
         
     </div>
 
-    <div class="app-container appContainer">
+    <div class="app-container appContainer height-100">
+
+        <div class="bottom-panel bottomPanelContainer">
+            
+        </div>
 
         <div class="interface-container interfaceContainer">
 
-            <button class="interface-button save-button saveButton">Сохранить</button>
-            <button class="interface-button export-button exportButton">Экспорт</button>
+            <button class="interface-button save-button saveButton" title="Сохранить"><i class="fas fa-save" aria-hidden="true"></i></button>
+            <button class="interface-button export-button exportButton" title="Экспорт"><i class="fas fa-download" aria-hidden="true"></i></button>
+
+            <button class="interface-button show-day-button-dialog showDayButtonDialog">Просмотр дня</button>
 
             <button class="interface-button show-category-button-dialog showCategoryButtonDialog">Категории</button>
 
             <button class="interface-button add-event-button-dialog addEventButtonDialog">Добавить событие</button>
 
-            <button class="interface-button toggle-years-button-dialog toggleYearsButtonDialog">Скрыть года</button>
+            <button class="interface-button show-in-years-button-dialog showInYearsButton">Показать в годах</button>
+
+            <button class="interface-button toggle-years-button-dialog toggleYearsButtonDialog">Года</button>
+            <button class="interface-button toggle-seasons-button-dialog toggleSeasonsButtonDialog">Сезоны</button>
+            <button class="interface-button toggle-months-button-dialog toggleMonthsButtonDialog">Месяца</button>
 
             <div class="year-slider yearSlider"></div>
 
-        </div>
+            <div class="categories-filter-holder categoriesFilterHolder">
 
-        <div class="app-left-section">
+                <label class="p-l-8">Фильтр по категориям</label>
 
-            <div class="calendar-container calendarContainer">
-                
+                <div class="categories-filter-chips categoriesFilterChips">
+                    
+                </div>
+
+                <div class="categories-filter-input-container">
+                    <input class="categories-filter-input categoriesFilterInput">
+                    <button class="categories-filter-input-add categoriesFilterInputAdd">Добавить</button>
+                </div>
+
             </div>
 
         </div>
 
-        <div class="app-right-section">
+        <div class="app-left-section height-100">
 
-            <h2 class="text-center eventsTitle" style="margin: 8px">События</h2>
+            <div class="calendar-container calendarContainer">
 
-            <div class="p-8">
-                <input type="text" placeholder="Поиск" name="eventsFilter" class="events-filter-input eventsFilterInput">
+            </div>
+
+        </div>
+
+        <div class="app-right-section height-100">
+
+            <div class="infoblock-container infoblockContainer">
+
+
+            </div>
+
+            <div class="p-8 position-relative events-filter-holder">
+                <input type="text" placeholder="Поиск событий" name="eventsFilter" class="events-filter-input eventsFilterInput">
+                <button class="clear-events-filter-button clearEventsFilterButton"><i class="fa fa-close"></i></button>
+            </div>
+
+            <div class="events-toggle-buttons-holder">
+
+                <button class="events-toggle-button events-feed-button eventsFeedButton">Лента</button>
+                <button class="events-toggle-button events-historical-button eventsHistoricalButton">История</button>
+                
             </div>
 
             <div class="events-container eventsContainer">
@@ -83,7 +128,17 @@
 
     </div>
 
-    <div class="event-dialog-container eventDialogContainer">
+    <div class="years-render-container dialog yearsRenderContainer">
+
+        <button class="years-close-button-dialog yearsCloseButtonDialog">x</button>
+
+        <div class="years-render-body yearsRenderBody">
+            
+        </div>
+        
+    </div>
+
+    <div class="event-dialog-container dialog eventDialogContainer">
         
         <div class="event-dialog">
 
@@ -108,6 +163,9 @@
                 <div class="m-t-8">
                     <label class="display-block">Дата</label>
                     <input type="date" name="eventDate" class="event-date-input eventDateInput" >
+                     <button class="event-date-minus-day-button eventDateMinusDayButton">D-1</button>
+                    <button class="event-date-today-button eventDateTodayButton">T</button>
+                    <button class="event-date-plus-day-button eventDatePlusDayButton">D+1</button>
                 </div>
             </div>
 
@@ -210,8 +268,52 @@
         </div>
         
     </div>
+
+    <div class="week-detail-dialog-container dialog weekDetailDialogContainer">
+        
+        <div class="week-detail-dialog weekDetailDialog">
+
+        </div>
+
+    </div>
+
+    <div class="day-detail-dialog-container dialog dayDetailDialogContainer">
+        
+        <div class="day-detail-dialog dayDetailDialog">
+
+        </div>
+
+    </div>
+
+    <div class="day-pattern-settings-dialog-container dialog dayPatternSettingsDialogContainer">
+        
+        <div class="day-pattern-settings-dialog dayPatternSettingsDetailDialog">
+
+        </div>
+
+    </div>
+
+
+    <div class="search-dialog-container dialog searchDialogContainer">
+        
+        <div class="search-dialog searchDialog">
+
+        </div>
+
+    </div>
+
  
+    
+
 </div>
+
+<script type="text/javascript">
+    
+    function numberWithSpaces(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+</script>
 
 
 <script src="js/lib/crypto.js"></script>
@@ -220,14 +322,22 @@
 <script src="js/lib/spectrum.js"></script>
 <script src="js/lib/nouislider.js"></script>
 <script src="js/lib/moment.js"></script>
+<script src="js/lib/chart.js"></script>
+<script src="js/lib/chart-plugin-labels.js"></script>
 
 
 <script src="js/base.js"></script>
 <script src="js/dataService.js"></script>
+<script src="js/eventService.js"></script>
 <script src="js/dataHelper.js"></script>
 <script src="js/calendarModule.js"></script>
 <script src="js/categoryModule.js"></script>
 <script src="js/eventsModule.js"></script>
+<script src="js/dayDetailModule.js"></script>
+<script src="js/searchModule.js"></script>
+<script src="js/weekDetailModule.js"></script>
+<script src="js/infoBlockModule.js"></script>
+<script src="js/bottomPanelModule.js"></script>
 <script src="js/main.js"></script>
 
 </body>

@@ -1,0 +1,460 @@
+.day-detail-dialog-container {
+    display: none;
+}
+
+.day-detail-dialog-container.active {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.day-detail-dialog {
+    padding-bottom: 160px;
+}
+
+.close-day-detail-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.close-day-detail-button:hover {
+    opacity: .6;
+}
+
+.day-pattern-settings-button {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    padding: 1px 6px;
+    font-size: 13px;
+}
+
+.day-pattern-settings-button:hover {
+    opacity: .6;
+}
+
+.day-detail-save {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    font-size: 13px;
+    padding: 1px 6px;
+}
+
+
+.day-detail-save:hover {
+    opacity: .6;
+}
+
+.day-detail-search {
+    font-size: 13px;
+    display: block;
+    color: #000;
+    text-decoration: none;
+     position: absolute;
+    left: 88px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    padding: 1px 6px;
+}
+
+.day-detail-search:hover {
+    opacity: .6;
+}
+
+
+.day-detail-content {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-detail-content-section {
+    display: flex;
+    flex-direction: row;
+}
+
+.day-detail-events-section {
+    min-width: 320px;
+    max-width: 320px;
+}
+.day-detail-chart-section {
+    display: flex;
+    flex-grow: 1;
+}
+
+.day-detail-actions-section {
+    min-width: 300px;
+    border-right: 1px solid #ddd;
+}
+
+.day-detail-header {
+    height: 80px;
+}
+
+.chart-holder {
+    width: 650px;
+    height: 650px;
+    margin: 0 auto;
+}
+
+.add-day-action-label {
+    display: block;
+}
+
+.add-day-action-holder {
+    padding: 8px;
+    border-top: 1px solid #ddd;
+
+}
+
+
+.add-day-action-input-container {
+    margin: 8px 0;
+}
+
+.add-day-action-input-container .sp-original-input-container {
+    width: 100%;
+}
+
+button.add-day-action-button {
+    display: block;
+    margin: 8px auto;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+button.add-day-action-button:hover {
+    opacity: .6;
+}
+
+.day-detail-action {
+    margin: 8px;
+}
+
+.day-detail-action-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+}
+
+button.day-detail-action-delete {
+    float: right;
+    background: white;
+    border: 1px solid #000;
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    cursor: pointer;
+}
+button.day-detail-action-delete:hover {
+    opacity: .6;
+}
+
+.day-detail-block-wrapper {
+    margin: 0 auto;
+    display: block;
+    width: 400px;
+    
+    overflow: hidden;
+    
+}
+
+.day-detail-left-block {
+    float: left;
+    text-align: center;
+    width: 50px;
+    height: 80px;
+}
+.day-detail-center-block {
+    float: left;
+    width: 300px;
+    padding-top: 12px;
+}
+.day-detail-right-block {
+    width: 50px;
+    text-align: center;
+    float: left;
+    height: 80px;
+}
+.day-detail-change-day-link {
+    text-decoration: none;
+    padding-top: 24px;
+    display: block;
+    color: #000;
+    cursor: pointer;
+    height: 80px;
+    font-size: 14px;
+}
+.day-detail-change-day-link:hover {
+    background: #ddd;
+}
+
+.day-detail-current-date-title {
+    font-size: 20px;
+    text-align: center;
+}
+
+.day-detail-current-date-day-title {
+    font-size: 18px;
+    text-transform: capitalize;
+    text-align: center;
+    color: #777;
+}
+
+/* Day Pattern Settings Below*/
+
+.close-day-pattern-settings-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.close-day-pattern-settings-button:hover {
+    opacity: .6;
+}
+
+.day-pattern-settings-dialog-container {
+    display: none;
+}
+
+.day-pattern-settings-dialog-container.active {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.day-pattern-body {
+    display: block;
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 24px;
+}
+
+.add-day-pattern-holder {
+    width: 300px;
+    margin: 16px auto;
+    border-top: 1px solid #ddd;
+    padding: 8px 40px;
+}
+.add-day-pattern-label {
+    display: block;
+}
+.day-pattern-add-new {
+    display: block;
+    margin: 8px auto;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.day-pattern-add-new:hover {
+    opacity: .6;
+}
+.day-pattern-settings-items-holder {
+    text-align: center;
+    margin: 8px;
+}
+
+.day-pattern-item-date {
+    color: #777;
+}
+
+.day-pattern-item-delete {
+    margin-left: 8px;
+    background: white;
+    border: 1px solid #000;
+    font-size: 10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    top: -2px;
+}
+
+.day-pattern-item-title {
+    color: #000;
+    text-decoration: none;
+}
+
+.day-pattern-item-delete:hover {
+    opacity: .6;
+}
+
+
+.day-pattern-detail-holder {
+    width: 1024px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.edit-day-pattern-close-pattern {
+    color: #000;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 1px 4px;
+}
+
+.day-pattern-action-label {
+    display: block;
+}
+
+.day-pattern-action-color-box {
+    position: absolute;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    top: 10px;
+}
+
+.day-pattern-action-holder {
+    position: relative;
+    padding-left: 20px;
+}
+
+.day-pattern-action-delete {
+    position: relative;
+    top: -12px;
+    margin-left: 8px;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #000;
+}
+
+.day-pattern-action-delete:hover {
+    opacity: .6;
+}
+
+.day-detail-current-date-day-subtitle {
+    font-size: 14px;
+    opacity: .8; 
+    text-align: center;
+    color: orange;
+    border-top: 1px solid orange;
+    margin-top: 6px;
+}
+
+
+
+.day-detail-notes-header {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 24px;
+    color: #363636;
+}
+
+.day-detail-notes-holder {
+    padding: 0 10px;
+    /*padding-bottom: 100px;*/
+}
+.day-detail-notes {
+    /*min-width: 100%;
+    max-width: 100%;*/
+    min-height: 260px;
+    font-size: 18px;
+    padding: 8px;
+    width: 80%;
+    min-width: 80%;
+    max-width: 80%;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid transparent;
+    outline: none;
+}
+.day-detail-notes:focus {
+    border: 1px solid rgba(0,0,0,.1);
+}
+
+.day-detail-notes-length {
+    text-align: right;
+    margin-bottom: 4px;
+    width: 80%;
+    margin: 0 auto;
+    font-size: 11px;
+    color: grey;
+}
+
+
+.day-detail-notes-year-before {
+    width: 80%;
+    margin: 16px auto;
+}
+
+.day-detail-events-cards-holder {
+    margin: 0 auto;
+    width: 80%;
+    padding-bottom: 16px;
+
+}
+
+.day-detail-events-cards-holder::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.day-detail-event-card {
+    float: left;
+    padding: 8px;
+    border: 1px solid grey;
+    margin: 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.day-detail-event-item-color {
+    width: 12px;
+    height: 12px;
+    display: block;
+    float: left;
+    margin-right: 4px;
+}
+
+.day-detail-events-header {
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: #363636;
+}
+.day-detail-past-year-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(0,0,0,.1);
+    display: block;
+}

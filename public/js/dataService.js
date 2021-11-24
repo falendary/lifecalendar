@@ -27,6 +27,14 @@ function DataService() {
 		return data.squares
 	}
 
+	function setYearSquares(yearSquares) {
+		data.yearSquares = yearSquares
+	}
+
+	function getYearSquares(){
+		return data.yearSquares
+	}
+
 	function setEvents(events) {
 		data.events = events
 	}
@@ -78,6 +86,97 @@ function DataService() {
 
 	}
 
+	function setRenderType(renderType) {
+		data.renderType = renderType
+	}
+
+	function getRenderType(){
+		return data.renderType;
+	}
+
+	function setDayPatterns(dayPatterns) {
+		data.dayPatterns = dayPatterns
+	}
+
+	function setDayPattern(pattern) {
+
+		data.dayPatterns = data.dayPatterns.map(function(item){
+
+			if (item.id == pattern.id) {
+				return pattern;
+			}
+
+			return item
+		})
+	}
+
+	function getDayPatterns(){
+		return data.dayPatterns
+	}
+
+	function setDayDetail(day, dayData) {
+
+		if (!data.days) {
+			data.days = {}
+		}
+
+		data.days[day] = dayData;
+
+	}
+
+	function getDayDetail(day) {
+
+		if (data.days && data.days[day]) {
+			return data.days[day]
+		}
+
+		return null;
+	}
+
+	function getDayDetailList(){
+
+		var result = []
+
+		Object.keys(data.days).forEach(function(key){
+			result.push(data.days[key])
+		})
+
+		return result;
+
+	}
+
+	function setEventsFeedType(type){
+		data.eventsFeedType = type
+	}
+
+	function getEventsFeedType(){
+		return data.eventsFeedType;
+	}
+
+	function setBalances(balances) {
+
+		if (!data.specificData) {
+			data.specificData = {
+				balances: []
+			}
+		}
+
+		data.specificData.balances = balances
+	}
+
+	function getBalances(){
+
+		if (!data.specificData) {
+			data.specificData = {
+				balances: []
+			}
+		}
+
+		return data.specificData.balances
+
+	}
+
+
 	return {
 
 		setData: setData,
@@ -89,6 +188,9 @@ function DataService() {
 		setSquares: setSquares,
 		getSquares: getSquares,
 
+		setYearSquares: setYearSquares,
+		getYearSquares: getYearSquares,
+
 		setEvents: setEvents,
 		getEvents: getEvents,
 
@@ -98,7 +200,27 @@ function DataService() {
 		setCategories: setCategories,
 		getCategories: getCategories,
 		getCategoriesAsObject: getCategoriesAsObject,
-		setCategory:setCategory
+		setCategory:setCategory,
+
+		setRenderType: setRenderType,
+		getRenderType: getRenderType,
+
+		setEventsFeedType: setEventsFeedType,
+		getEventsFeedType: getEventsFeedType,
+
+		// Day Module
+		setDayPatterns: setDayPatterns,
+		getDayPatterns: getDayPatterns,
+		setDayPattern: setDayPattern,
+
+		setDayDetail: setDayDetail,
+		getDayDetail: getDayDetail,
+		getDayDetailList: getDayDetailList,
+
+
+		setBalances: setBalances,
+		getBalances: getBalances
+
 
 	}
 

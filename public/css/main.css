@@ -11,8 +11,12 @@ html {
 body {
     margin: 0;
     font-family: sans-serif;   
+    height: 100%;
 }
 
+.height-100 {
+    height: 100%;
+}
 
 .init-container {
     display: none;
@@ -37,20 +41,14 @@ body {
 .app-left-section {
     float: left;
     width: calc(100% - 300px);
+    overflow: auto;
 }
 
 .app-right-section {
     float: left;
     width: 300px;
+    overflow: auto;
 }
-
-.calendar-container {
-    padding-top: 80px;
-}
-.calendar-container.hide-years .year-hr {
-    display: none;
-}
-
 
 .interface-container {
     height: 100px;
@@ -62,129 +60,7 @@ body {
     z-index: 2;
     padding: 16px;
     padding-top: 36px;
-}
-
-
-.calendar-holder {
-    width: 100%;
-    padding-left: 12px;
-}
-
-.calendar-holder::after {
-    content: " ";
-    clear: both;
-}
-
-.calendar-holder .square {
-    width: 48px;
-    height: 48px;
-    border: 1px solid #000;
-    float: left;
-    margin: 6px;
-    padding: 8px;
-    position: relative;
-    cursor: pointer;
-}
-
-.calendar-holder .square:hover {
-    opacity: .5;
-}
-
-.calendar-holder .square.square-lived {
-    background: #363636;
-    color: #fff;
-}
-.calendar-holder .square.square-has-events {
-    color: #363636;
-}
-
-.calendar-holder  .square.square-current-week {
-    border: 2px solid #000;
-}
-
-.calendar-holder .square .event-overlay-holder {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-1 {
-    height: 100%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-2 {
-   height: 50%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-3 {
-   height: 33%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-4 {
-   height: 25%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-5 {
-   height: 20%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-6 {
-   height: 16.5%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-7 {
-   height: 14.2%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-8 {
-   height: 12.5%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-9 {
-   height: 11.1%; 
-}
-
-.calendar-holder .square .event-overlay.event-overlay-1-out-10 {
-   height: 10%; 
-}
-
-
-.square-events-count {
-    position: relative;
-    z-index: 1;
-}
-
-
-.year-hr {
-    opacity: .7;
-    padding-left: 60px;
-    float: left;
-    width: 100%;
-    position: relative;
     overflow: hidden;
-}
-
-.year-hr::after {
-    content: "";
-    position: absolute;
-    height: 2px;
-    width: 100%;
-    background: #ddd;
-    top: 8px;
-    margin-left: 8px;
-}
-
-.year-hr::before {
-    content: "";
-    position: absolute;
-    height: 2px;
-    width: 40px;
-    background: #ddd;
-    top: 8px;
-    margin-left: 8px;
-    left: 0;
 }
 
 .file-input-box {
@@ -196,159 +72,6 @@ body {
 .file-input-box label {
     text-align: left;
     font-size: 12px;
-}
-
-.event-dialog-container {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 3;
-    background: rgba(255, 255, 255, .6);
-    display: none;
-}
-
-.event-dialog-container.active {
-    display: block;
-}
-
-.event-dialog {
-    width: 360px;
-    padding: 16px;
-    border: 1px solid #000;
-    margin: 60px auto;
-    background: #fff;
-}
-
-.event-dialog input {
-    width: 100%;
-}
-
-.event-dialog select {
-    width: 100%;
-}
-
-.event-dialog textarea {
-    width: 100%;
-    resize: none;
-    height: 80px;
-}
-
-.event-dialog-container.edit-dialog .add-event-button {
-    display: none
-}
-
-.event-dialog-container.add-dialog .save-event-button {
-    display: none
-}
-
-.event-dialog-container.add-dialog .delete-event-button {
-    display: none
-}
-
-
-.add-event-button {
-    float: right;
-    display: block;
-}
-
-.save-event-button {
-    float: right;
-    display: block;
-}
-
-.delete-event-button {
-    float: right;
-    display: block;
-}
-
-.close-event-button {
-    float: left;
-    display: block;
-}
-
-.event-item {
-    padding: 8px;
-    cursor: pointer;
-    position: relative;
-    padding-left: 34px;
-
-}
-
-.event-item-color {
-    position: absolute;
-    left: 10px;
-    top: 20px;
-    width: 12px;
-    height: 12px;
-    display: block;
-}
-
-.event-item:hover {
-    background: #ddd;
-}
-
-.event-item-date {
-    font-size: 11px;
-    color: #1f1f1f;
-}
-.event-item-text {
-    padding-left: 16px;
-    font-size: 11px;
-}
-
-.eventsContainer {
-    padding-left: 16px;
-}
-
-
-.event-date-single-holder {
-    display: none;
-}
-
-.event-date-single-holder.active {
-    display: block;
-}
-
-.event-date-range-holder {
-    display: none;
-}
-
-
-.event-date-range-holder.active {
-    display: block;
-}
-
-.event-date-regular-holder  {
-    display: none;
-}
-
-.event-date-regular-holder.active {
-    display: block;
-}
-
-.event-color-input-holder {
-    float: left;
-    margin-right: 8px;
-}
-
-.calendar-holder .square.square-events-1 {
-    background: darkseagreen;
-    border: 0;
-    color: #fff;
-}
-
-.calendar-holder .square.square-events-2 {
-    background: cornflowerblue;
-    border: 0;
-    color: #fff;
-}
-
-.calendar-holder .square.square-events-3 {
-    background: orange;
-    border: 0;
-    color: #fff;
 }
 
 .event-id-holder {
@@ -368,18 +91,30 @@ body {
     padding: 8px;
     border: 1px solid #000;
     cursor: pointer;
+    outline: none;
 }
 
 .interface-button:hover {
     opacity: .5;
 }
 
+.interface-button.active {
+    background: coral;
+    color: #fff;
+}
+
 .square-context-menu {
     position: absolute;
     min-width: 320px;
     background: #fff;
-    border: 1px solid #000;
-    z-index: 2;
+    /*border: 1px solid #000;*/
+    z-index: 4;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.square-context-menu>div {
+    max-height: 400px;
+    overflow: auto;
 }
 
 .square-context-menu {
@@ -391,11 +126,14 @@ body {
     display: inline-block;
     margin-left: 20px;
     position: relative;
-    top: 4px;
+    top: 3px;
     border: 1px solid #000;
 }
 .noUi-handle.noUi-handle-lower {
     border: 1px solid #000;
+}
+.noUi-horizontal {
+    height: 16px;
 }
 .noUi-horizontal .noUi-handle {
     border: 1px solid #000;
@@ -413,12 +151,23 @@ body {
     width: 20px;
 }
 
+.noUi-handle {
+    border-radius: 0;
+}
+
 .noUi-handle:before {
     left: 6px;
 }
 
 .noUi-handle:after {
     left: 12px;
+}
+
+.noUi-tooltip {
+    padding: 3px;
+}
+.noUi-target {
+    border-radius: 0;
 }
 
 .context-menu-event {
@@ -440,7 +189,7 @@ body {
     color: grey;
     border-bottom: 1px solid #000;
     margin-bottom: 8px;
-    overflow: hidden;
+    padding-top: 1px;
 }
 
 .context-menu-week-holder {
@@ -451,27 +200,25 @@ body {
     border-bottom: 1px dotted #000;
 }
 
-.category-container {
-    display: none;
+
+/*Years page start here */
+.years-render-container {
+    display: none
 }
 
-.category-container.active {
+.years-render-container.active {
     display: block;
-    position: absolute;
+    position: fixed;
     border: 1px solid #000;
     background: #fff;
-    width: 90%;
-    min-height: 90%;
-    top: 40px;
-    z-index: 4;
-    left: 5%;
-}
-.category-container-content {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
+    top: 0;
+    z-index: 4;
+    left: 0;
+    padding: 36px 16px;
 }
-
-.category-close-button-dialog {
+.years-close-button-dialog {
     position: absolute;
     right: 8px;
     top: 8px;
@@ -480,59 +227,234 @@ body {
     cursor: pointer;
 }
 
-
-.category-close-button-dialog:hover {
+.years-close-button-dialog:hover {
     opacity: .6;
 }
 
-.category-header {
-    padding-left: 27px;
-    font-size: 20px;
-    margin: 16px;
-    padding-top: 8px;
-}
-
-.category-container-body {
-    padding: 0 16px;
-}
-
-.category-item {
-    border-bottom: 1px solid #ddd;
-    padding: 8px;
-    margin: 16px;
-}
-
-.category-item {
-    overflow: hidden;
-}
-
-.category-item label {
-    display: block;
-    font-size: 11px;
-    color: #000;
-}
-
-.category-color-input-holder {
-    float: left;
-    margin-right: 8px;
-}
-
-.category-name-input-holder {
-    float: left;
-    margin-right: 8px;
-}
-
-.category-delete-button {
-    margin-top: 14px;
-    float: left;
-}
-
-.category-container-footer {
+.years-render-container .year-square {
+    width: 80px;
     height: 80px;
-    text-align: center;
-    width: 100%;
-    padding-top: 10px;
+    border: 1px solid transparent;
+    float: left;
+    margin: 6px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    background: #f4f4f4;
 }
-.events-filter-input {
-    width: 100%;
+.years-render-container .year-square .square-events-count{
+    height: 24px;
+    width: 24px;
+    line-height: 21px;
 }
+
+
+.year-square.year-square-lived {
+    background: #64dd17;
+    border: 1px solid #777;
+}
+
+.year-square.year-square-current {
+    background: coral;
+    border: 1px solid #777;
+}
+
+.year-square-year-number {
+    position: absolute;
+    bottom: 4px;
+    font-size: 10px;
+    right: 4px;
+    background: #fff;
+    padding: 1px 3px;
+    /*border-radius: 5px;*/
+    height: 15px;
+    line-height: 15px;
+}
+
+
+/* Years page ends here*/
+
+
+.context-menu-events-categories {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 16px;
+}
+.context-menu-title {
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: coral;
+    opacity: .8;
+}
+
+.show-week-detail, .show-day-detail {
+    font-size: 10px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0 2px;
+    color: #000;
+    display: inline-block;
+    position: relative;
+    top: -1px;
+}
+
+.show-week-detail:hover. .show-day-detail:hover {
+    opacity: .6;
+}
+
+.dialog {
+    overflow: scroll;
+    position: fixed;
+}
+
+.clear-events-filter-button {
+    display: none;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+    height: 24px;
+    background: #fff;
+    border: 1px solid #000;
+}
+.clear-events-filter-button:hover {
+    background: #ddd;
+}
+
+.events-filter-holder:hover .clear-events-filter-button {
+    display: block;
+}
+
+
+
+
+.infloblock-short {
+    display: none;
+}
+.infloblock-short.active {
+    display: block;
+}
+
+
+.infloblock-full {
+    display: none;
+}
+.infloblock-full.active {
+    display: block;
+}
+
+.infloblock-progress-container {
+    padding: 8px;
+    padding-bottom: 24px;
+}
+
+.infloblock-progress {
+    height: 16px;
+    width: 100%;
+    background: #ddd;
+    border: 1px solid #000;
+    position: relative;
+}
+.infloblock-progress-lived-percent {
+    position: absolute;
+    left: 0px;
+    top: 0;
+    height: 14px;
+    background: #6aa84f;
+}
+
+.infloblock-progress-lived-percent:hover {
+    background: #80cc5f;
+}
+
+.infloblock-progress-lived-slept-percent {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    height: 8px;
+    background: grey;
+}
+
+.infloblock-progress-lived-slept-percent:hover {
+    background: #969595;
+}
+
+
+.infloblock-progress-future-sleep-percent {
+    position: absolute;
+    right: 0;
+    top: 6px;
+    height: 8px;
+    background: grey;
+}
+
+
+.infloblock-progress-future-sleep-percent:hover {
+    background: #969595;
+}
+
+
+.infloblock-progress-future-live-percent {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 14px;
+}
+
+.infloblock-progress-future-live-percent:hover {
+    background: #d2d1d1;
+}
+
+.infoblock-show-button, .infoblock-hide-button {
+    margin: 0 auto;
+    border: 1px solid #000;
+    background: #fff;
+    display: block;
+    cursor: pointer;
+}
+
+.infoblock-show-button:hover, .infoblock-hide-button:hover {
+    opacity: .5;
+}
+
+
+.infoblock-header-total {
+    display: none;
+    cursor: pointer;
+}
+.infoblock-header-left {
+    display: none;
+    cursor: pointer;
+}
+
+.infoblock-header-total.active {
+    display: block;
+}
+
+.infoblock-header-left.active {
+    display: block;
+}
+
+
+.infloblock-progress-age-pillar {
+    position: absolute;
+    top: 18px;
+    font-size: 10px;
+    margin-left: -4px;
+    opacity: .75;
+}
+
+.infloblock-progress-age-pillar::before {
+    content: " ";
+    display: block;
+    width: 1px;
+    height: 8px;
+    background: black;
+    position: absolute;
+    margin-left: 4px;
+    top: -8px;
+}   

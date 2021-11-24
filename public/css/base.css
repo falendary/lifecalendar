@@ -39,6 +39,10 @@
     padding: 8px;
 }
 
+.p-l-8 {
+    padding-left: 8px;
+}
+
 .m-t-8 {
     margin-top: 8px;
 }
@@ -74,6 +78,9 @@
 .display-block {
     display: block;
 }
+.display-inline-block {
+    display: inline-block;
+}
 
 .disabled {
     opacity: .6;
@@ -87,15 +94,32 @@
 .float-left {
     float: left;
 }
+.float-right {
+    float: right;
+}
 
 .m-r-8 {
     margin-right: 8px;
+}
+
+.m-t-8 {
+    margin-top: 8px;
+}
+
+.m-auto {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .simple-button {
     background: #fff;
     border: 1px solid #000;
     cursor: pointer;
+    outline: none;
+}
+
+.simple-button:active {
+    outline: none;
 }
 
 .simple-button:hover {

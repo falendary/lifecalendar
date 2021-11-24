@@ -1,0 +1,324 @@
+.calendar-container {
+    padding-top: 100px;
+    position: relative;
+    float: left;
+}
+.calendar-holder {
+    float: left;
+}
+.calendar-container.hide-years .year-hr {
+    display: none;
+}
+
+.calendar-container.hide-months .month-title {
+    display: none;
+}
+
+.calendar-container.hide-months .month-square-container {
+    margin:  0;
+}
+
+.calendar-holder {
+    width: 100%;
+    padding-left: 12px;
+}
+
+.calendar-holder::after {
+    content: " ";
+    clear: both;
+}
+
+
+.month-square-container {
+    float: left;
+    margin: 0 4px 12px; 
+}
+
+.calendar-holder .month-square-container .square {
+    margin: 2px;
+}
+
+
+.season-square-container {
+    float: left;
+    margin: 0 4px 12px; 
+    max-width: 210px;
+    min-height: 240px;
+}
+
+.calendar-holder .season-square-container .square {
+    margin: 2px;
+}
+
+
+.square-month-info {
+    text-align: center;
+}
+
+
+.square-month-info span {
+    display: inline-block;
+    background: #fff;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+}
+
+.square-month-info::after {
+    content: "";
+    display: block;
+    clear: both;
+    position: relative;
+    width: 80%;
+    height: 2px;
+    background: #ddd;
+    margin: 0 auto;
+    bottom: 10px;
+}
+
+.square-season-info {
+    text-align: center;
+    clear: both;
+}
+
+
+.square-season-info span {
+    display: inline-block;
+    background: #fff;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+}
+
+.square-season-info::after {
+    content: "";
+    display: block;
+    clear: both;
+    position: relative;
+    width: 80%;
+    height: 2px;
+    background: #ddd;
+    margin: 0 auto;
+    bottom: 10px;
+}
+
+
+.calendar-holder .square {
+    width: 48px;
+    height: 48px;
+    border: 1px solid transparent;
+    float: left;
+    margin: 6px;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    background: #f4f4f4;
+}
+
+
+.calendar-holder .square:hover {
+    opacity: .5;
+}
+
+.calendar-holder .square.square-lived {
+    background: #7f7f7f;
+    color: #fff;
+}
+.calendar-holder .square.square-has-events {
+    color: #363636;
+    background: #f4f4f4;
+    border: 1px solid #777;
+}
+
+.calendar-holder .square.highlighted {
+    box-shadow: 0 0 8px rgb(255, 127, 80);
+    animation: pulse 2s infinite;
+    outline: 1px solid coral;
+}
+
+/*.square.square-lived.square-has-events.highlighted::after
+{
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: coral;
+    top: 0;
+    left: 0;
+}*/
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4);
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+      box-shadow: 0 0 0 10px rgba(255, 127, 80, 0);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+      box-shadow: 0 0 0 0 rgba(255, 127, 80, 0);
+  }
+}
+
+.calendar-holder  .square.square-current-week {
+    border: 2px solid #000;
+}
+
+.calendar-holder .square .event-overlay-holder {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-1 {
+    height: 100%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-2 {
+   height: 50%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-3 {
+   height: 33%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-4 {
+   height: 25%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-5 {
+   height: 20%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-6 {
+   height: 16.5%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-7 {
+   height: 14.2%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-8 {
+   height: 12.5%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-9 {
+   height: 11.1%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-10 {
+   height: 10%; 
+}
+
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-11 {
+   height: 9.09%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-12 {
+   height: 8.3%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-13 {
+   height: 7.6%; 
+}
+
+.calendar-holder .square .event-overlay.event-overlay-1-out-14 {
+   height: 7.14%; 
+}
+
+
+.square-events-count {
+    z-index: 1;
+    background: #fff;
+    display: inline-block;
+    border-radius: 50%;
+    min-width: 12px;
+    min-height: 12px;
+    font-size: 11px;
+    position: absolute;
+    font-weight: bold;
+    height: 18px;
+    width: 18px;
+    overflow: hidden;
+    text-align: center;
+    padding-top: 2px;
+}
+
+
+.year-hr {
+    opacity: .7;
+    padding-left: 60px;
+    float: left;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.year-hr::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: #ddd;
+    top: 8px;
+    margin-left: 8px;
+}
+
+.year-hr::before {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 40px;
+    background: #ddd;
+    top: 8px;
+    margin-left: 8px;
+    left: 0;
+}
+
+.calendar-holder .square.square-events-1 {
+    background: darkseagreen;
+    border: 0;
+    color: #fff;
+}
+
+.calendar-holder .square.square-events-2 {
+    background: cornflowerblue;
+    border: 0;
+    color: #fff;
+}
+
+.calendar-holder .square.square-events-3 {
+    background: orange;
+    border: 0;
+    color: #fff;
+}
+
+.app-left-section.highlighted .square {
+    opacity: .2
+}
+
+.app-left-section.highlighted .square.highlighted {
+    opacity: 1;
+}
+
+
+
