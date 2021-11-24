@@ -8,6 +8,9 @@ function InfoBlockModule(dataService) {
 		var infoBlockShort = document.querySelector('.infoBlockShort');
 		var infoBlockFull = document.querySelector('.infoBlockFull');
 
+		var infoblockHeaderTotal = document.querySelector('.infoblockHeaderTotal');
+		var infoblockHeaderLeft = document.querySelector('.infoblockHeaderLeft');
+
 		infoblockShowButton.addEventListener('click', function(){
 
 			infoBlockShort.classList.remove('active');
@@ -20,6 +23,20 @@ function InfoBlockModule(dataService) {
 
 			infoBlockFull.classList.remove('active');
 			infoBlockShort.classList.add('active');
+
+		})
+
+		infoblockHeaderTotal.addEventListener('click', function(){
+
+			infoblockHeaderTotal.classList.remove('active');
+			infoblockHeaderLeft.classList.add('active');
+
+		})
+
+		infoblockHeaderLeft.addEventListener('click', function(){
+
+			infoblockHeaderLeft.classList.remove('active');
+			infoblockHeaderTotal.classList.add('active');
 
 		})
 	  
@@ -51,11 +68,15 @@ function InfoBlockModule(dataService) {
 		var daysLivedSleptPercent = Math.floor(daysLivedSlept / (daysToLive / 100))
 		var daysFutureSleepPercent = Math.floor(daysFutureSleep / (daysToLive / 100))
 
+		var daysLeftPercent = 100 - daysLivedPercent
+		var daysLeft = daysToLive - daysLived;
+
 		var progressBarHtml = '<div class="infloblock-progress-container">' + 
-							'<div class="infloblock-progress" title="Всего дней: '+ daysToLive +'"> '+
-								'<div class="infloblock-progress-lived-percent" style="width: '+daysLivedPercent+'%" title="Прожито дней: ' +daysLived+ ' ('+daysLivedPercent+'%)"></div>' +
-								'<div class="infloblock-progress-lived-slept-percent" style="width: '+daysLivedSleptPercent+'%" title="Дней ушло на сон: ' +daysLivedSlept+ ' ('+daysLivedSleptPercent+'%)"></div>' + 
-								'<div class="infloblock-progress-future-sleep-percent" style="width: '+daysFutureSleepPercent+'%" title="Дней уйдет на сон: ' +daysFutureSleep+ ' ('+daysFutureSleepPercent+'%)"></div>';
+							'<div class="infloblock-progress" title="Всего дней: '+ numberWithSpaces(daysToLive) +'"> '+
+								'<div class="infloblock-progress-lived-percent" style="width: '+daysLivedPercent+'%" title="Прожито дней: ' + numberWithSpaces(daysLived)+ ' ('+daysLivedPercent+'%)"></div>' +
+								'<div class="infloblock-progress-lived-slept-percent" style="width: '+daysLivedSleptPercent+'%" title="Дней ушло на сон: ' + numberWithSpaces(daysLivedSlept) + ' ('+daysLivedSleptPercent+'%)"></div>' + 
+								'<div class="infloblock-progress-future-live-percent" style="width: '+daysLeftPercent+'%" title="Осталось дней: ' + numberWithSpaces(daysLeft) + ' ('+daysLeftPercent+'%)"></div>' +
+								'<div class="infloblock-progress-future-sleep-percent" style="width: '+daysFutureSleepPercent+'%" title="Дней уйдет на сон: ' + numberWithSpaces(daysFutureSleep)+ ' ('+daysFutureSleepPercent+'%)"></div>';
 							
 		for (var x = 0; x < yearsToLive; x = x + 5) {
 
@@ -80,7 +101,8 @@ function InfoBlockModule(dataService) {
 		result = result + 
 					'<div class="infloblock-short active infoBlockShort">' +
 						'<div>' +
-							'<h3 style="margin: 4px 0; padding-left: 16px">О Жизни в днях</h3>' +
+							'<h3 class="infoblock-header-total infoblockHeaderTotal active" style="margin: 4px 0; padding-left: 16px" title="Всего дней: '+ numberWithSpaces(daysToLive) +'">О Жизни в днях</h3>' +
+							'<h3 class="infoblock-header-left infoblockHeaderLeft" style="margin: 4px 0; padding-left: 16px" title="Оставшиеся дни минус дни которые уйдут на сон">Активных дней осталось: '+ (numberWithSpaces(daysLeft - daysFutureSleep))+'</h3>' +
 						'</div>'+
 
 						progressBarHtml + 

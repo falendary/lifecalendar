@@ -361,29 +361,53 @@ body {
 }
 .infloblock-progress-lived-percent {
     position: absolute;
-    left: 1px;
+    left: 0px;
     top: 0;
     height: 14px;
     background: #6aa84f;
 }
 
+.infloblock-progress-lived-percent:hover {
+    background: #80cc5f;
+}
+
 .infloblock-progress-lived-slept-percent {
     position: absolute;
     left: 0;
-    top: 0;
-    height: 14px;
+    top: 6px;
+    height: 8px;
     background: grey;
+}
+
+.infloblock-progress-lived-slept-percent:hover {
+    background: #969595;
 }
 
 
 .infloblock-progress-future-sleep-percent {
     position: absolute;
     right: 0;
-    top: 0;
-    height: 14px;
+    top: 6px;
+    height: 8px;
     background: grey;
 }
 
+
+.infloblock-progress-future-sleep-percent:hover {
+    background: #969595;
+}
+
+
+.infloblock-progress-future-live-percent {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 14px;
+}
+
+.infloblock-progress-future-live-percent:hover {
+    background: #d2d1d1;
+}
 
 .infoblock-show-button, .infoblock-hide-button {
     margin: 0 auto;
@@ -397,6 +421,23 @@ body {
     opacity: .5;
 }
 
+
+.infoblock-header-total {
+    display: none;
+    cursor: pointer;
+}
+.infoblock-header-left {
+    display: none;
+    cursor: pointer;
+}
+
+.infoblock-header-total.active {
+    display: block;
+}
+
+.infoblock-header-left.active {
+    display: block;
+}
 
 
 .infloblock-progress-age-pillar {

@@ -153,6 +153,30 @@ function DataService() {
 		return data.eventsFeedType;
 	}
 
+	function setBalances(balances) {
+
+		if (!data.specificData) {
+			data.specificData = {
+				balances: []
+			}
+		}
+
+		data.specificData.balances = balances
+	}
+
+	function getBalances(){
+
+		if (!data.specificData) {
+			data.specificData = {
+				balances: []
+			}
+		}
+
+		return data.specificData.balances
+
+	}
+
+
 	return {
 
 		setData: setData,
@@ -191,7 +215,11 @@ function DataService() {
 
 		setDayDetail: setDayDetail,
 		getDayDetail: getDayDetail,
-		getDayDetailList: getDayDetailList
+		getDayDetailList: getDayDetailList,
+
+
+		setBalances: setBalances,
+		getBalances: getBalances
 
 
 	}

@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="css/lib/chart.css">
 
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/solid.css">
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="css/calendar-module.css">
@@ -21,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="css/category-module.css">
     <link rel="stylesheet" type="text/css" href="css/week-detail-module.css">
     <link rel="stylesheet" type="text/css" href="css/day-detail-module.css">
+    <link rel="stylesheet" type="text/css" href="css/bottom-panel-module.css">
     <link rel="stylesheet" type="text/css" href="css/search-module.css">
 
 </head>
@@ -50,10 +52,14 @@
 
     <div class="app-container appContainer height-100">
 
+        <div class="bottom-panel bottomPanelContainer">
+            
+        </div>
+
         <div class="interface-container interfaceContainer">
 
-            <button class="interface-button save-button saveButton" title="Сохранить"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-            <button class="interface-button export-button exportButton" title="Экспорт"><i class="fa fa-download" aria-hidden="true"></i></button>
+            <button class="interface-button save-button saveButton" title="Сохранить"><i class="fas fa-save" aria-hidden="true"></i></button>
+            <button class="interface-button export-button exportButton" title="Экспорт"><i class="fas fa-download" aria-hidden="true"></i></button>
 
             <button class="interface-button show-day-button-dialog showDayButtonDialog">Просмотр дня</button>
 
@@ -301,6 +307,14 @@
 
 </div>
 
+<script type="text/javascript">
+    
+    function numberWithSpaces(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+</script>
+
 
 <script src="js/lib/crypto.js"></script>
 <script src="js/lib/jquery.js"></script>
@@ -323,6 +337,7 @@
 <script src="js/searchModule.js"></script>
 <script src="js/weekDetailModule.js"></script>
 <script src="js/infoBlockModule.js"></script>
+<script src="js/bottomPanelModule.js"></script>
 <script src="js/main.js"></script>
 
 </body>

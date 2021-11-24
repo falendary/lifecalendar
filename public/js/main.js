@@ -3,6 +3,7 @@ var interfaceContainer = appContainer.querySelector('.interfaceContainer');
 var calendarContainer = appContainer.querySelector('.calendarContainer');
 var eventsContainer = appContainer.querySelector('.eventsContainer');
 var infoblockContainer = appContainer.querySelector('.infoblockContainer');
+var bottomPanelContainer = appContainer.querySelector('.bottomPanelContainer');
 var eventDialogContainer = document.querySelector('.eventDialogContainer')
 var categoryContainerBody = document.querySelector('.categoryContainerBody')
 var categorySelect = document.querySelector('.categorySelect')
@@ -22,12 +23,14 @@ var weekDetailModule = WeekDetailModule(dataService, eventService)
 var dayDetailModule = DayDetailModule(dataService, eventService)
 var searchModule = SearchModule(dataService, eventService)
 var infoblockModule = InfoBlockModule(dataService, eventService)
+var bottomPanelModule = BottomPanelModule(dataService, eventService)
 
 EVENT_TYPES = {
   SINGLE: 1,
   REGULAR: 2,
   RANGE: 3
 }
+
 
 function save(){
 
@@ -1060,6 +1063,9 @@ function render(){
   categorySelect.innerHTML = categoryModule.renderOptionsForSelect()
 
   renderRightSection();
+
+  bottomPanelContainer.innerHTML = bottomPanelModule.render();
+  bottomPanelModule.addEventListeners();
 
   // document.querySelector('.eventsTitle').title =  dataService.getEvents().length + " событий";
 
