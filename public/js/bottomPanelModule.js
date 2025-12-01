@@ -219,14 +219,25 @@ function BottomPanelModule(dataService) {
 
 	}
 
+	function getDayOfYear(date){
+		return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+	}
+
 	function renderDateBlock(){
 
 		var dateBlock = '<div class="bottom-panel-date-block">'
 
+		var dayOfYear = getDayOfYear(new Date())
+
+		var one_percent = 365 / 100
+
+		var percent = Math.floor(dayOfYear / one_percent)
+
 		dateBlock = dateBlock + 'Год: ' + new Date().getFullYear() + ', '
 		dateBlock = dateBlock + 'Месяц: ' + (new Date().getMonth() + 1) + ', '
 		dateBlock = dateBlock + 'Неделя: ' + getNumberOfWeek() + ', ' 
-		dateBlock = dateBlock + 'День: ' + new Date().getDate()
+		dateBlock = dateBlock + 'День: ' + new Date().getDate() + '. '
+		dateBlock = dateBlock +   percent + '%'
 
 		dateBlock = dateBlock + '</div>'
 

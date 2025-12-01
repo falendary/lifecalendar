@@ -274,6 +274,65 @@ body {
 
 /* Years page ends here*/
 
+/* Everything page starts here */
+
+
+/*Years page start here */
+.everything-render-container {
+    display: none
+}
+
+.everything-render-container.active {
+    display: block;
+    position: fixed;
+    border: 1px solid #000;
+    background: #fff;
+    width: 100%;
+    min-height: 100%;
+    top: 0;
+    z-index: 4;
+    left: 0;
+    padding: 36px 16px;
+    height: 100%;
+}
+
+.everything-render-body.everythingRenderBody {
+    overflow: auto;
+    height: 100%;
+}
+.everything-close-button-dialog {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.everything-close-button-dialog:hover {
+    opacity: .6;
+}
+
+.everything-render-container .calendar-holder {
+    width: 900px;
+    float: right;
+}
+
+.everything-render-container .calendar-holder div.square {
+    width: 16px;
+    height: 16px;
+    margin: 1px;
+    box-shadow: border-box;
+    padding: 0;
+}
+
+.everything-render-container .calendar-holder .square-events-count {
+    display: none
+}
+
+
+/* Everything page end here*/
+
 
 .context-menu-events-categories {
     margin-bottom: 16px;

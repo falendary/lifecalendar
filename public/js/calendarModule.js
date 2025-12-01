@@ -832,6 +832,47 @@ function CalendarModule(dataService) {
 
 	}
 
+	function renderEverything(){
+
+		var result = '';
+
+		var squares = JSON.parse(JSON.stringify(dataService.getSquares()))
+
+		var categoriesAsObject = dataService.getCategoriesAsObject();
+
+		var dataHelper = new DataHelper();
+
+		result = result + '<div class="calendar-holder">'
+
+		var currentYear = new Date().getFullYear() // actual current year
+		var currentWeek = dataHelper.getWeekNumber(new Date()) // actual current week
+
+		squares.forEach(function(square){
+
+			var options = {
+				categoriesAsObject: categoriesAsObject,
+				currentYear: currentYear,
+				currentWeek: currentWeek
+			}
+
+			var squareHTML = _renderSquare(square, options);
+
+			result = result + squareHTML
+
+		})
+
+		result = result + '</div>'
+
+		return result;
+
+	}
+
+	function addEverythingEventListeners(){
+
+			addEventListeners();
+
+	}
+
 	return {
 
 		renderGroupByYears: renderGroupByYears,
@@ -842,7 +883,10 @@ function CalendarModule(dataService) {
 		addEventListeners: addEventListeners,
 
 		renderAsYears: renderAsYears,
-		addYearsEventListeners: addYearsEventListeners
+		addYearsEventListeners: addYearsEventListeners,
+
+		renderEverything: renderEverything,
+		addEverythingEventListeners: addEverythingEventListeners
 	}
 
 }

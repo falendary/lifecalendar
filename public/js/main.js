@@ -34,7 +34,7 @@ EVENT_TYPES = {
 
 function save(){
 
-  var data = dataService.getData();
+ var data = dataService.getData();
 
   if(localStorage.getItem('data')) {
 
@@ -315,7 +315,9 @@ function addInterfaceEventListeners(){
   var categoriesFilterInputAdd = document.querySelector('.categoriesFilterInputAdd')
   var categoriesFilterInput = document.querySelector('.categoriesFilterInput')
   var showInYearsButton = document.querySelector('.showInYearsButton')
+  var showEverythingButton = document.querySelector('.showEverythingButton')
   var yearsCloseButtonDialog = document.querySelector('.yearsCloseButtonDialog')
+  var everythingCloseButtonDialog = document.querySelector('.everythingCloseButtonDialog')
   var showDayButtonDialog = document.querySelector('.showDayButtonDialog')
   var eventsFeedButton = document.querySelector('.eventsFeedButton')
   var eventsHistoricalButton = document.querySelector('.eventsHistoricalButton')
@@ -589,12 +591,35 @@ function addInterfaceEventListeners(){
 
   })
 
+  showEverythingButton.addEventListener('click', function(event){
+
+    var everythingRenderContainer = document.querySelector('.everythingRenderContainer')
+    var everythingRenderBody = document.querySelector('.everythingRenderBody')
+
+    everythingRenderContainer.classList.add('active');
+
+    everythingRenderBody.innerHTML = calendarModule.renderEverything()
+    calendarModule.addEverythingEventListeners()
+
+  })
+
   yearsCloseButtonDialog.addEventListener('click', function(event){
 
     var yearsRenderContainer = document.querySelector('.yearsRenderContainer')
     var yearsRenderBody = document.querySelector('.yearsRenderBody')
 
     yearsRenderContainer.classList.remove('active');
+
+    yearsRenderBody.innerHTML = '';
+
+  })
+
+  everythingCloseButtonDialog.addEventListener('click', function(event){
+
+    var everythingRenderContainer = document.querySelector('.everythingRenderContainer')
+    var everythingRenderBody = document.querySelector('.everythingRenderBody')
+
+    everythingRenderContainer.classList.remove('active');
 
     yearsRenderBody.innerHTML = '';
 
