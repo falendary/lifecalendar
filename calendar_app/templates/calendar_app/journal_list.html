@@ -1,0 +1,27 @@
+{% extends "calendar_app/base.html" %}
+
+{% block content %}
+<h1>Journal</h1>
+
+<form class="filters" method="get">
+  <div>
+    <label>Search notes</label>
+    <input type="text" name="q" value="{{ q }}" placeholder="text…">
+  </div>
+  <button type="submit">Search</button>
+</form>
+
+{% for note in notes %}
+  <div class="card">
+    <a href="{% url 'day_detail' note.date.year note.date.month note.date.day %}">
+      <strong>{{ note.date|date:"l, j F Y" }}</strong>
+    </a>
+    <p>{{ note.text|linebreaks }}</p>
+  </div>
+{% empty %}
+  <p class="muted">
+    No journal notes yet. They come from the <code>days[].notes</code> field —
+    re-import your JSON via <a href="/admin/calendar_app/settings/import-json/">Import JSON</a> to load them.
+  </p>
+{% endfor %}
+{% endblock %}

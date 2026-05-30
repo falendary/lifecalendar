@@ -1,60 +1,69 @@
 # Lifecalendar
 
-Приложение создающую карту-календарь жизни в виде квадратиков (недель)
-показывающее сколько уже квадратиков окрашено
+A "life in weeks" calendar: a grid of ISO-week squares spanning ~90 years from
+your birthday, with weeks lived shaded and personal events pinned to the squares.
 
+Originally a vanilla-JS single-page app backed by a JSON file. Now rebuilt on
+**Django + Django REST Framework**, with server-rendered templates, the Django
+admin for data management, and a JSON importer for existing exports.
 
-# Задачи
+## Stack
 
+- Django 6 (server-rendered templates)
+- Django REST Framework (read/write API under `/api/`)
+- Django Admin (CRUD + JSON import tool)
+- SQLite
 
-- Добавить подсказку дня недели при смене дат когда добавляешь событие
-- ~~Сделать невозможность перезаписать данные если вкладка старая~~
-- ~~Добавить секцию заметки в модуль дня~~
-- Сделать свой HTML Template Renderer и перевести текущие шаблоны на него
-- Добавить приоритетность событий
-- ~~Добавить модуль просмотр дней внутри недели~~
-- ~~Добавить роутер в приложение~~
-- ~~Добавить модуль - обзор дня~~
-- ~~Изменить боковое меню с событиями - Лента/Исторические~~
-- ~~Удаление квадратов годов перед сохранением~~
-- ~~Выпадающее меню на левый клик на квадрат в отображении в годах~~
-- ~~Добавить кнопку - Показать в годах, где будет отрисовка событий не в неделях а в годах~~
-- ~~Кнопки Сгруппировать по - имеют активное состояние, можно выбирать только одно~~
-- ~~Переделать кнопки показать года/месяца - на Группировать по годам, месяцам, сезонам~~
-- ~~Добавить подписи с месяцами к квадратикам~~
-- ~~Реализовать отрисовку квадратиков - Регулярное событие "раз в неделю"~~
-- ~~Добавить кнопку - сегодняшний день для выбора дат~~
-- ~~Подсветить текущую неделю~~
-- Добавить у регулярного события для даты до - флажок "Завершено", а по умолчанию незаконченное
-- ~~Добавить фильтр по имени события~~
-- Добавить индикатор - что нету изменений
-- Добавить кнопку - скрыть регулярные события
-- ~~При клике на обычное событие - скроллить к квадратику и подсветить его~~
-- ~~Добавить фильтрацию по категориям~~
-- ~~Добавить выбор категорий для события~~
-- ~~Добавить страницу категорий~~
-- ~~Убрать данные о квадратиках из файла экспорта~~
-- ~~Слайдер с фильтрацией по годам~~
-- ~~Кнопка скрыть года~~
-- ~~Обновить стили кнопок~~
-- ~~Окно с событиями по клику на квадратик~~
-- ~~События периоды~~
-- ~~Регулярные события~~
-- ~~Цвет у событий~~
-- ~~Нотификации toastr~~
-- ~~Библиотека выбора цвета~~
-- ~~Удаление событий~~
-- ~~Добавить типы событий~~
-- ~~Вывод на github pages~~
-- ~~Связь события и квадратика~~
-- ~~Редактирование события~~
-- ~~Добавление формы для создания событий~~
-- ~~Вывод отсортированного списка событий в боковой панели Timeline~~
-- ~~Импорт из JSON файла~~
-- ~~Сохранение в JSON файл~~
-- ~~Отметка годов~~
-- ~~Закраска прожитых недель~~
-- ~~Пометка дня рождения~~
-- ~~Генерация квадратиков на основе даты рождения~~
+## Setup
 
-Сделать подробную линию жизни (ту зеленую справа сверху, но побольше и чтобы события на шкалах были)
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Then open http://127.0.0.1:8000/ (admin at `/admin/`).
+
+## Importing existing data
+
+The old app stored everything in one JSON blob (see `example.json`). Two ways
+to import it:
+
+- **Admin UI:** Admin → Settings → *Import JSON* (top right). Upload or paste
+  the JSON; tick *Dry run* to preview counts without saving.
+- **CLI:** `python manage.py import_json example.json` (add `--dry-run` to preview).
+
+Imports are idempotent — records are matched on their original ids, so
+re-importing updates in place instead of duplicating.
+
+## Data model (`calendar_app/models.py`)
+
+| Model | Purpose |
+|---|---|
+| `Settings` | Singleton: birthday, render type, year range, feed type |
+| `Category` | Name + color, linked to events |
+| `Event` | Single (`type=1`), recurring (`type=2`, daily/weekly/monthly/yearly), or period (`type=3`) |
+| `DayPattern` / `PatternAction` | Daily time-budget template over a date range |
+| `DayNote` | Free-form note for a specific day |
+| `Balance` | Financial balance snapshots |
+
+The week grid itself is **derived** (never stored) — see
+`calendar_app/services.py`, the Python port of the old `dataHelper.js` date math.
+
+## Pages
+
+- `/` — the life-calendar grid (group by year / month / season, filter by year
+  range, category, search)
+- `/events/` — event list (historical / feed)
+- `/categories/`, `/patterns/`, `/balances/` — listings
+- `/day/<y>/<m>/<d>/` — a single day's events, day-pattern breakdown, and note
+- `/api/` — DRF browsable API (events, categories, patterns, balances)
+
+## Tests
+
+```bash
+python manage.py test calendar_app
+```

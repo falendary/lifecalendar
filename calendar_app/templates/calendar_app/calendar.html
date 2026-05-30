@@ -1,0 +1,239 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="cal-layout">
+  <section class="cal-main">
+    <form class="filters" method="get">
+      <div>
+        <label>Group by</label>
+        <select name="render">
+          {% for value, label in render_types %}
+            <option value="{{ value }}" {% if value == render_type %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Year from</label>
+        <input type="number" name="year_from" value="{{ year_from }}">
+      </div>
+      <div>
+        <label>Year to</label>
+        <input type="number" name="year_to" value="{{ year_to }}">
+      </div>
+      <div>
+        <label>Category</label>
+        <select name="category">
+          <option value="">All</option>
+          {% for c in categories %}
+            <option value="{{ c.id }}" {% if c.id == selected_category %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Search</label>
+        <input type="text" name="q" value="{{ q }}" placeholder="event name">
+      </div>
+      <button type="submit">Apply</button>
+    </form>
+
+    <div class="calendar mode-{{ render_type }}">
+      {% for label, squares in groups %}
+        <div class="cal-group">
+          <div class="group-title"><span>{{ label }}</span></div>
+          <div class="cal-row">
+            {% for sq in squares %}
+              {% url 'week_detail' sq.iso_year sq.iso_week as week_url %}
+              <div class="square{% if sq.lived %} lived{% endif %}{% if sq.is_current %} current{% endif %}{% if sq.items %} has-events{% endif %}{% if sq.has_important %} has-important{% endif %}"
+                   data-week-url="{{ week_url }}"
+                   data-range="Week of {{ sq.start|date:'M j' }} – {{ sq.end|date:'M j, Y' }}"
+                   {% if sq.items %}role="button" tabindex="0"{% endif %}>
+                {% if sq.items %}
+                  <div class="overlays">
+                    {% for it in sq.items %}
+                      <div class="overlay" style="height: {{ sq.bar_pct }}%; background: {{ it.color }}"></div>
+                    {% endfor %}
+                  </div>
+                  <span class="count">{{ sq.items|length }}</span>
+                  <template class="sq-data">
+                    <ul class="pop-tree">
+                      {% for g in sq.day_groups %}
+                        <li class="pop-day-group">
+                          <a class="pop-date" href="{% url 'day_detail' g.date.year g.date.month g.date.day %}">
+                            {{ g.date|date:'D, M j' }}
+                          </a>
+                          <ul>
+                            {% for it in g.events %}
+                              <li><span class="dot" style="background: {{ it.color }}"></span>{% if it.important %}<span class="star">★</span> {% endif %}{{ it.name }}</li>
+                            {% endfor %}
+                          </ul>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </template>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <p class="muted">No weeks in this range.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <aside class="cal-side">
+    <div class="side-actions">
+      <button type="button" class="action-btn" data-open-modal="modal-event">+ Add Event</button>
+      <button type="button" class="action-btn secondary" data-open-modal="modal-journal">+ Add Journal</button>
+    </div>
+
+    <div class="infoblock">
+      <div class="ib-head">
+        <strong>{{ lived_pct }}%</strong> of life
+        <span class="muted">· born {{ settings.birthday|date:"Y-m-d" }}</span>
+      </div>
+      <div class="ib-bar"><div class="ib-fill" style="width: {{ lived_pct }}%"></div></div>
+      <div class="ib-legend">
+        <span>{{ lived_weeks }} lived</span>
+        <span>{{ remaining_weeks }} left</span>
+        <span>{{ total_weeks }} total</span>
+      </div>
+    </div>
+
+    <div class="feed">
+      <div class="feed-head">Events</div>
+      <ul class="feed-list">
+        {% for item in sidebar_events %}
+          <li>
+            <span class="dot" style="background: {{ item.color }}"></span>
+            {% if item.date %}
+              <a href="{% url 'day_detail' item.date.year item.date.month item.date.day %}">{{ item.event.name }}</a>
+              <div class="feed-date">{{ item.date|date:"Y-m-d" }}</div>
+            {% else %}
+              {{ item.event.name }}
+            {% endif %}
+          </li>
+        {% empty %}
+          <li class="muted">No events.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+
+{# Shared popover, positioned by JS #}
+<div id="sq-popover" class="sq-popover" hidden>
+  <div class="pop-head">
+    <span class="pop-range"></span>
+    <button type="button" class="pop-close" aria-label="Close">×</button>
+  </div>
+  <div class="pop-body"></div>
+  <a class="pop-day" href="#">View whole week →</a>
+</div>
+
+{# --- Add Event modal --- #}
+<div class="modal-backdrop" id="modal-event" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Add event">
+    <div class="modal-head">
+      <h3>Add Event</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <form method="post" action="{% url 'event_create' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+      <label>Name</label>
+      <input type="text" name="name" required autofocus>
+
+      <label>Type</label>
+      <select name="type" class="event-type-select">
+        {% for value, label in event_type_choices %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="type-fields" data-type="1">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ today|date:'Y-m-d' }}">
+      </div>
+
+      <div class="type-fields" data-type="2 3" hidden>
+        <div class="row">
+          <div>
+            <label>From</label>
+            <input type="date" name="date_from" value="{{ today|date:'Y-m-d' }}">
+          </div>
+          <div>
+            <label>To</label>
+            <input type="date" name="date_to" value="{{ today|date:'Y-m-d' }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="type-fields" data-type="2" hidden>
+        <label>Repeats</label>
+        <select name="date_type">
+          {% for value, label in date_type_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <label>Categories</label>
+      <select name="categories" multiple size="5">
+        {% for c in categories %}
+          <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Text</label>
+      <textarea name="text" rows="3"></textarea>
+
+      <div class="row">
+        <div>
+          <label>Color</label>
+          <input type="color" name="color" value="#9fc5e8">
+        </div>
+        <label class="check"><input type="checkbox" name="important"> ★ Important</label>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
+        <button type="submit" class="action-btn">Add Event</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{# --- Add Journal modal --- #}
+<div class="modal-backdrop" id="modal-journal" hidden>
+  <div class="modal modal-a4" role="dialog" aria-modal="true" aria-label="Add journal note">
+    <div class="modal-head">
+      <h3>Add Journal</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <form method="post" action="{% url 'journal_create' %}" class="a4-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+      <div class="a4-meta">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" required>
+      </div>
+
+      <textarea name="text" class="a4-paper" placeholder="Dear diary…" autofocus></textarea>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
+        <button type="submit" class="action-btn">Save Note</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/popover.js' %}"></script>
+<script src="{% static 'calendar_app/modal.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Years</h1>
+<p class="muted">One square per year of life — highlighting your {{ total_important }} major events.</p>
+
+<div class="years-grid">
+  {% for cell in cells %}
+    <div class="year-square{% if cell.lived %} lived{% endif %}{% if cell.current %} current{% endif %}{% if cell.items %} clickable{% endif %}"
+         {% if cell.items %}
+           data-week-url="{% url 'calendar' %}?year_from={{ cell.year }}&year_to={{ cell.year }}"
+           data-range="{{ cell.year }} · age {{ cell.age }}"
+           role="button" tabindex="0"
+         {% else %}
+           title="{{ cell.year }} · age {{ cell.age }}"
+         {% endif %}>
+      {% if cell.items %}
+        <div class="square-events-count">{{ cell.items|length }}</div>
+        <template class="sq-data">
+          <ul class="pop-tree">
+            {% for it in cell.items %}
+              <li class="pop-day-group">
+                <a class="pop-date" href="{% url 'day_detail' it.date.year it.date.month it.date.day %}">{{ it.date|date:'M j, Y' }}</a>
+                <ul><li><span class="dot" style="background: {{ it.color }}"></span>{{ it.name }}</li></ul>
+              </li>
+            {% endfor %}
+          </ul>
+        </template>
+      {% endif %}
+      <div class="year-square-year-number">{{ cell.year }}</div>
+    </div>
+  {% endfor %}
+</div>
+
+<h2 style="margin-top:24px">Achievements</h2>
+{% for row in achievements %}
+  <div class="card">
+    <strong>{{ row.year }}</strong> <span class="muted">· age {{ row.age }}</span>
+    <ul class="day-events" style="margin-top:6px">
+      {% for it in row.items %}
+        <li>
+          <span class="dot" style="background: {{ it.color }}"></span>
+          <a href="{% url 'day_detail' it.date.year it.date.month it.date.day %}">
+            <span class="muted">{{ it.date|date:'M j' }}</span> — {{ it.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% empty %}
+  <p class="muted">No important events yet. Open an event in the admin and tick <em>Important</em>.</p>
+{% endfor %}
+
+{# Shared popover, positioned by JS #}
+<div id="sq-popover" class="sq-popover" hidden>
+  <div class="pop-head">
+    <span class="pop-range"></span>
+    <button type="button" class="pop-close" aria-label="Close">×</button>
+  </div>
+  <div class="pop-body"></div>
+  <a class="pop-day" href="#">Open this year on the calendar →</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/popover.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "calendar_app/base.html" %}
+
+{% block title %}Week {{ week }}, {{ year }} — Life Calendar{% endblock %}
+
+{% block content %}
+<h1>Week {{ week }}, {{ year }}</h1>
+<p class="muted">{{ monday|date:"j M Y" }} – {{ sunday|date:"j M Y" }}</p>
+<p><a href="{% url 'calendar' %}">&larr; back to calendar</a></p>
+
+{% for row in rows %}
+  <div class="card">
+    <h3>
+      <a href="{% url 'day_detail' row.date.year row.date.month row.date.day %}">
+        {{ row.date|date:"l, j F" }}
+      </a>
+    </h3>
+    {% if row.events %}
+      <ul class="day-events">
+        {% for e in row.events %}
+          <li>
+            {% for c in e.categories.all %}
+              <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
+            {% endfor %}
+            <strong>{{ e.name }}</strong>
+            {% if e.text %}<div class="muted">{{ e.text }}</div>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No events.</p>
+    {% endif %}
+    {% if row.note %}
+      <div class="day-note">{{ row.note.text|linebreaks }}</div>
+    {% endif %}
+  </div>
+{% endfor %}
+{% endblock %}

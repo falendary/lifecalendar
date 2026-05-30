@@ -1,2 +1,14 @@
 .DS_Store
 node_modules
+
+# Python / Django
+venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+db.sqlite3
+.env
+/staticfiles/
+.idea/
+old-app
+example.json

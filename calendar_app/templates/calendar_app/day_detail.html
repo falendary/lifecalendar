@@ -1,0 +1,28 @@
+{% extends "calendar_app/base.html" %}
+
+{% block title %}{{ date|date:"Y-m-d" }} — Life Calendar{% endblock %}
+
+{% block content %}
+<h1>{{ date|date:"l, j F Y" }}</h1>
+<p><a href="{% url 'calendar' %}">&larr; back to calendar</a></p>
+
+<h2>Events</h2>
+{% if events %}
+  {% for e in events %}
+    <div class="card">
+      <strong>{{ e.name }}</strong>
+      {% for c in e.categories.all %}
+        <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
+      {% endfor %}
+      {% if e.text %}<p class="muted">{{ e.text }}</p>{% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="muted">No events on this day.</p>
+{% endif %}
+
+{% if note %}
+  <h2>Note</h2>
+  <div class="card">{{ note.text|linebreaks }}</div>
+{% endif %}
+{% endblock %}

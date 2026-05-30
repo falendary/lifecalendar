@@ -1,0 +1,46 @@
+{% extends "calendar_app/base.html" %}
+
+{% block content %}
+<h1>Events</h1>
+
+<div class="tabs" style="margin-bottom:12px">
+  {% for value, label in feed_types %}
+    <a class="{% if value == feed_type %}active{% endif %}"
+       href="?feed={{ value }}{% if q %}&q={{ q }}{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<form class="filters" method="get">
+  <input type="hidden" name="feed" value="{{ feed_type }}">
+  <div>
+    <label>Search</label>
+    <input type="text" name="q" value="{{ q }}" placeholder="event name">
+  </div>
+  <button type="submit">Search</button>
+</form>
+
+<table>
+  <tr><th>Date</th><th>Type</th><th>Name</th><th>Categories</th></tr>
+  {% for e in events %}
+    <tr>
+      <td>
+        {% if e.date %}{{ e.date|date:"Y-m-d" }}
+        {% else %}{{ e.date_from|date:"Y-m-d" }} → {{ e.date_to|date:"Y-m-d" }}{% endif %}
+      </td>
+      <td>{{ e.get_type_display }}</td>
+      <td>
+        {% if e.date %}
+          <a href="{% url 'day_detail' e.date.year e.date.month e.date.day %}">{{ e.name }}</a>
+        {% else %}{{ e.name }}{% endif %}
+      </td>
+      <td>
+        {% for c in e.categories.all %}
+          <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
+        {% endfor %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="4" class="muted">No events.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

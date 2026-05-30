@@ -1,0 +1,14 @@
+{% extends "calendar_app/base.html" %}
+
+{% block content %}
+<h1>Welcome to Life Calendar</h1>
+<div class="card">
+  <p>No birthday is set yet, so there's nothing to draw.</p>
+  <p>To get started:</p>
+  <ul>
+    <li>Open the <a href="/admin/calendar_app/settings/">Settings</a> in the admin and set your birthday, or</li>
+    <li>Use <a href="/admin/calendar_app/settings/import-json/">Import JSON</a> to load an existing export
+        (like <code>example.json</code>) — it will set the birthday and all your data.</li>
+  </ul>
+</div>
+{% endblock %}

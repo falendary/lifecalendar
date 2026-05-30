@@ -1,0 +1,18 @@
+{% extends "calendar_app/base.html" %}
+
+{% block content %}
+<h1>Categories</h1>
+<table>
+  <tr><th>Category</th><th>Color</th><th>Events</th></tr>
+  {% for c, count in categories %}
+    <tr>
+      <td><span class="swatch" style="background: {{ c.color }}"></span>{{ c.name }}</td>
+      <td class="muted">{{ c.color }}</td>
+      <td>{{ count }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="3" class="muted">No categories.</td></tr>
+  {% endfor %}
+</table>
+<p style="margin-top:12px"><a href="/admin/calendar_app/category/">Manage in admin →</a></p>
+{% endblock %}

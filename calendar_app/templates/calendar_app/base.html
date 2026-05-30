@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Life Calendar{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'calendar_app/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'calendar' %}">Life Calendar</a>
+    <nav>
+      <a href="{% url 'calendar' %}">Calendar</a>
+      <a href="{% url 'years_view' %}">Years</a>
+      <a href="{% url 'event_list' %}">Events</a>
+      <a href="{% url 'journal_list' %}">Journal</a>
+      <a href="{% url 'category_list' %}">Categories</a>
+      <a href="/admin/">Admin</a>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

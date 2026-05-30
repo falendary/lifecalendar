@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block object-tools-items %}
+  <li>
+    <a href="{% url 'admin:calendar_app_import_json' %}" class="addlink">Import JSON</a>
+  </li>
+  {{ block.super }}
+{% endblock %}
