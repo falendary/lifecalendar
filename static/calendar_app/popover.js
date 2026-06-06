@@ -39,10 +39,9 @@
   }
 
   function handleSquare(square) {
+    // A square click only opens the events popup — never navigates.
     if (square.querySelector(".sq-data")) {
       openPopover(square);
-    } else if (square.dataset.weekUrl) {
-      window.location.href = square.dataset.weekUrl;
     }
   }
 

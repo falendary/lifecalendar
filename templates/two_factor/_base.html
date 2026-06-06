@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Sign in{% endblock %} — Life Calendar</title>
+  <link rel="stylesheet" href="{% static 'calendar_app/app.css' %}">
+  {% block extra_media %}{% endblock %}
+</head>
+<body>
+  <main class="login-wrap">
+    <div class="login-card two-factor">
+      <a class="brand" href="/">Life Calendar</a>
+      {% block content_wrapper %}
+        {% block content %}{% endblock %}
+      {% endblock %}
+    </div>
+  </main>
+</body>
+</html>

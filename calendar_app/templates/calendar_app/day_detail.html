@@ -14,6 +14,8 @@
       {% for c in e.categories.all %}
         <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
       {% endfor %}
+      <a class="btn-ghost" style="float:right; padding:2px 10px;"
+         href="{% url 'event_edit' e.pk %}?next={{ request.path }}">Edit</a>
       {% if e.text %}<p class="muted">{{ e.text }}</p>{% endif %}
     </div>
   {% endfor %}

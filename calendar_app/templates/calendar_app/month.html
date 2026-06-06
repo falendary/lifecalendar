@@ -1,0 +1,76 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block title %}{{ label }} — Life Calendar{% endblock %}
+
+{% block content %}
+<div class="month-bar">
+  <a class="btn-ghost" href="{% url 'month_view' prev.year prev.month %}">&larr;</a>
+  <h1 style="margin:0">{{ label }}</h1>
+  <a class="btn-ghost" href="{% url 'month_view' next.year next.month %}">&rarr;</a>
+  {% if not is_current %}<a class="btn-ghost" href="{% url 'month_view' %}">Today</a>{% endif %}
+</div>
+
+<div class="month-grid-head">
+  {% for name in weekday_names %}
+    <div class="month-weekday">{{ name }}</div>
+  {% endfor %}
+</div>
+
+{% for week in weeks %}
+  <div class="month-week" style="--lanes: {{ week.lanes }}">
+    <div class="month-week-cells">
+      {% for cell in week.days %}
+        <div class="month-cell{% if not cell.in_month %} out{% endif %}{% if cell.is_today %} today{% endif %}">
+          {% if cell.bg_color %}<div class="month-bg" style="background: {{ cell.bg_color }}"></div>{% endif %}
+          <div class="month-daynum">
+            <a href="{% url 'day_detail' cell.date.year cell.date.month cell.date.day %}">{{ cell.date.day }}</a>
+            <span class="month-daynum-right">
+              {% if cell.has_note %}<span class="month-note" title="Has a journal note">✎</span>{% endif %}
+              <button type="button" class="month-add" data-add-date="{{ cell.date|date:'Y-m-d' }}"
+                      title="Add event" aria-label="Add event on {{ cell.date|date:'Y-m-d' }}">+</button>
+            </span>
+          </div>
+          <div class="month-bar-reserve"></div>
+          <div class="month-events">
+            {% for ev in cell.events %}
+              <div class="month-ev" title="{{ ev.name }}">
+                <span class="dot" style="background: {{ ev.color }}"></span>{% if ev.important %}★ {% endif %}<span class="month-ev-name">{{ ev.name }}</span>
+                <button type="button" class="month-ev-edit"
+                        data-edit-url="{% url 'event_edit' ev.id %}?next={{ request.get_full_path|urlencode }}&amp;partial=1"
+                        title="Edit event" aria-label="Edit {{ ev.name }}">✎</button>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="month-bars">
+      {% for bar in week.bars %}
+        <button type="button" class="month-bar-ev{% if bar.open_l %} open-l{% endif %}{% if bar.open_r %} open-r{% endif %}"
+                style="grid-column: {{ bar.start1 }} / span {{ bar.span }}; grid-row: {{ bar.lane1 }}; background: {{ bar.color }}"
+                data-edit-url="{% url 'event_edit' bar.id %}?next={{ request.get_full_path|urlencode }}&amp;partial=1"
+                title="{{ bar.name }}">{{ bar.name }}</button>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+{% include "calendar_app/_event_drawer.html" %}
+
+{# Edit Event drawer — form fragment is fetched in on demand #}
+<div class="modal-backdrop drawer-backdrop" id="modal-event-edit" hidden>
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Edit event">
+    <div class="modal-head">
+      <h3>Edit Event</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <div class="edit-body"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/modal.js' %}"></script>
+{% endblock %}

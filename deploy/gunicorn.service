@@ -1,0 +1,19 @@
+[Unit]
+Description=Life Calendar gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=lifecalendar
+Group=www-data
+WorkingDirectory=/home/lifecalendar/lifecalendar
+EnvironmentFile=/home/lifecalendar/lifecalendar/.env
+ExecStart=/home/lifecalendar/lifecalendar/venv/bin/gunicorn \
+    --access-logfile - \
+    --workers 3 \
+    --bind unix:/run/lifecalendar.sock \
+    config.wsgi:application
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

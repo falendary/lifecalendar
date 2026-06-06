@@ -2,3 +2,16 @@ asgiref==3.11.1
 Django==6.0.5
 djangorestframework==3.17.1
 sqlparse==0.5.5
+
+# Production deployment
+gunicorn==26.0.0
+whitenoise==6.12.0
+python-dotenv==1.2.2
+
+# Two-factor authentication (TOTP + backup codes)
+django-two-factor-auth==1.18.1
+django-otp==1.7.0
+django-formtools==2.6.1
+django-phonenumber-field==8.4.0
+qrcode==8.2
+

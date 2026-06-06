@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <g fill="none" stroke="#d8c79c" stroke-width="1.2" opacity="0.55">
+    <!-- faint celestial scatter, tileable -->
+    <polygon points="40,16 43,28 55,31 43,34 40,46 37,34 25,31 37,28"/>
+    <polygon points="150,60 152,69 161,71 152,73 150,82 148,73 139,71 148,69"/>
+    <polygon points="96,120 99,132 111,135 99,138 96,150 93,138 81,135 93,132"/>
+    <circle cx="170" cy="150" r="7"/>
+    <g stroke-width="0.9">
+      <line x1="170" y1="138" x2="170" y2="133"/><line x1="170" y1="167" x2="170" y2="162"/>
+      <line x1="158" y1="150" x2="153" y2="150"/><line x1="187" y1="150" x2="182" y2="150"/>
+    </g>
+    <circle cx="22" cy="120" r="1.6" fill="#d8c79c" stroke="none"/>
+    <circle cx="120" cy="30" r="1.6" fill="#d8c79c" stroke="none"/>
+    <circle cx="180" cy="20" r="1.6" fill="#d8c79c" stroke="none"/>
+    <circle cx="60" cy="170" r="1.6" fill="#d8c79c" stroke="none"/>
+  </g>
+</svg>

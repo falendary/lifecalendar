@@ -13,11 +13,20 @@
     <a class="brand" href="{% url 'calendar' %}">Life Calendar</a>
     <nav>
       <a href="{% url 'calendar' %}">Calendar</a>
+      <a href="{% url 'birdview' %}">Life in weeks</a>
+      <a href="{% url 'month_view' %}">Month</a>
       <a href="{% url 'years_view' %}">Years</a>
       <a href="{% url 'event_list' %}">Events</a>
       <a href="{% url 'journal_list' %}">Journal</a>
       <a href="{% url 'category_list' %}">Categories</a>
       <a href="/admin/">Admin</a>
+      {% if user.is_authenticated %}
+        <span class="nav-user">{{ user.get_username }}</span>
+        <form method="post" action="{% url 'logout' %}" class="logout-form">
+          {% csrf_token %}
+          <button type="submit">Log out</button>
+        </form>
+      {% endif %}
     </nav>
   </header>
 

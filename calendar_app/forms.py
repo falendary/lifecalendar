@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import DayNote, Event
+from .models import DayNote, Event, EventType
 
 
 class EventForm(forms.ModelForm):
@@ -8,8 +8,28 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = [
             "name", "type", "date", "date_from", "date_to", "date_type",
-            "text", "color", "important", "categories",
+            "exclude_weekends", "background", "text", "color", "important", "categories",
         ]
+
+    def clean(self):
+        """Keep only the date fields relevant to the chosen type, so a hidden
+        input from another type can't leak a stray value (e.g. a Period event
+        must not carry a single `date`)."""
+        cleaned = super().clean()
+        etype = cleaned.get("type")
+        if etype == EventType.SINGLE:
+            cleaned["date_from"] = cleaned["date_to"] = cleaned["date_type"] = None
+        elif etype == EventType.PERIOD:
+            cleaned["date"] = cleaned["date_type"] = None
+        elif etype == EventType.RECURRING:
+            cleaned["date"] = None
+        # "Exclude weekends" only applies to period events.
+        if etype != EventType.PERIOD:
+            cleaned["exclude_weekends"] = False
+        # "Background" status is for periods / recurring, not single events.
+        if etype == EventType.SINGLE:
+            cleaned["background"] = False
+        return cleaned
 
 
 class JournalForm(forms.ModelForm):

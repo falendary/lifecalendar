@@ -48,6 +48,22 @@ class CalendarLogicTests(TestCase):
         dates = services.expand_event_dates(e)
         self.assertEqual(dates, [date(y, 7, 26) for y in range(2000, 2004)])
 
+    def test_period_excludes_weekends(self):
+        # Mon 2026-06-01 .. Sun 2026-06-07
+        e = Event(
+            type=EventType.PERIOD, name="work",
+            date_from=date(2026, 6, 1), date_to=date(2026, 6, 7),
+            exclude_weekends=True,
+        )
+        days = services.expand_event_dates(e)
+        self.assertEqual(len(days), 5)  # Mon–Fri
+        self.assertTrue(services.event_occurs_on(e, date(2026, 6, 5)))   # Fri
+        self.assertFalse(services.event_occurs_on(e, date(2026, 6, 6)))  # Sat
+        self.assertFalse(services.event_occurs_on(e, date(2026, 6, 7)))  # Sun
+        # Without the flag, all 7 days are included.
+        e.exclude_weekends = False
+        self.assertEqual(len(services.expand_event_dates(e)), 7)
+
     def test_weekly_recurrence_one_per_week(self):
         e = Event(
             type=EventType.RECURRING,

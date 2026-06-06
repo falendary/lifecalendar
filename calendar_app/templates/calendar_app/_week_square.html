@@ -1,0 +1,33 @@
+{% url 'week_detail' sq.iso_year sq.iso_week as week_url %}
+<div class="square{% if sq.lived %} lived{% endif %}{% if sq.is_current %} current{% endif %}{% if sq.items %} has-events{% endif %}{% if sq.has_important %} has-important{% endif %}"
+     data-week-url="{{ week_url }}"
+     data-range="Week of {{ sq.start|date:'M j' }} – {{ sq.end|date:'M j, Y' }}"
+     {% if sq.day_groups %}role="button" tabindex="0"{% endif %}>
+  {% if sq.bg_color %}<div class="sq-bg" style="background: {{ sq.bg_color }}"></div>{% endif %}
+  {% if sq.items %}
+    <div class="overlays">
+      {% for it in sq.items %}
+        <div class="overlay" style="height: {{ sq.bar_pct }}%; background: {{ it.color }}"></div>
+      {% endfor %}
+    </div>
+    <span class="count">{{ sq.items|length }}</span>
+  {% endif %}
+  {% if sq.day_groups %}
+    <template class="sq-data">
+      <ul class="pop-tree">
+        {% for g in sq.day_groups %}
+          <li class="pop-day-group">
+            <a class="pop-date" href="{% url 'day_detail' g.date.year g.date.month g.date.day %}">
+              {{ g.date|date:'D, M j' }}
+            </a>
+            <ul>
+              {% for it in g.events %}
+                <li class="{% if it.background %}is-bg{% endif %}"><span class="dot" style="background: {{ it.color }}"></span>{% if it.important %}<span class="star">★</span> {% endif %}{{ it.name }}{% if it.background %} <span class="muted">· status</span>{% endif %}</li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </template>
+  {% endif %}
+</div>

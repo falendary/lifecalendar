@@ -32,6 +32,10 @@ class Settings(models.Model):
     year_from = models.IntegerField(null=True, blank=True)
     year_to = models.IntegerField(null=True, blank=True)
     search_string = models.CharField(max_length=255, blank=True, default="")
+    excluded_categories = models.ManyToManyField(
+        "Category", blank=True, related_name="+",
+        help_text="Categories hidden in the Life-in-weeks view.",
+    )
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -98,6 +102,15 @@ class Event(models.Model):
         choices=DateType.choices, null=True, blank=True,
         help_text="Recurrence cadence (recurring events only).",
     )
+    exclude_weekends = models.BooleanField(
+        default=False, help_text="Period events: skip Saturdays and Sundays (e.g. work)."
+    )
+    background = models.BooleanField(
+        default=False,
+        help_text="Render as a subtle background status, not a prominent event (long-term periods).",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["date", "date_from", "name"]

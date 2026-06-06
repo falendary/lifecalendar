@@ -1,0 +1,46 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block title %}Life in Weeks — Life Calendar{% endblock %}
+
+{% block content %}
+<div class="bird-head">
+  <h1 style="margin:0">Life in Weeks</h1>
+  <span class="muted">{{ lived_weeks }} / {{ total_weeks }} weeks · {{ lived_pct }}% lived</span>
+</div>
+
+<div class="cat-filter">
+  <span class="cat-filter-label">Hide categories:</span>
+  {% for c in category_toggles %}
+    <a class="cat-chip{% if c.excluded %} off{% endif %}" href="{{ c.url }}">
+      <span class="dot" style="background: {{ c.color }}"></span>{{ c.name }}
+    </a>
+  {% endfor %}
+  {% if has_excluded %}<a class="cat-clear" href="?clear=1">Show all</a>{% endif %}
+</div>
+
+<div class="calendar bird">
+  {% for label, squares in groups %}
+    <div class="bird-row">
+      <div class="bird-year">{{ label }}</div>
+      <div class="cal-row">
+        {% for sq in squares %}{% include "calendar_app/_week_square.html" %}{% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{# Shared popover, positioned by JS #}
+<div id="sq-popover" class="sq-popover" hidden>
+  <div class="pop-head">
+    <span class="pop-range"></span>
+    <button type="button" class="pop-close" aria-label="Close">×</button>
+  </div>
+  <div class="pop-body"></div>
+  <a class="pop-day" href="#">View whole week →</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/popover.js' %}"></script>
+{% endblock %}

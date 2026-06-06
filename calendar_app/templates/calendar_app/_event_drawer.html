@@ -1,0 +1,93 @@
+<div class="modal-backdrop drawer-backdrop" id="modal-event" hidden>
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Add event">
+    <div class="modal-head">
+      <h3>Add Event</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <form method="post" action="{% url 'event_create' %}" class="drawer-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+      <div class="drawer-cols">
+        <div class="drawer-left">
+          <label>Name</label>
+          <input type="text" name="name" required autofocus>
+
+          <label>Type</label>
+          <select name="type" class="event-type-select">
+            {% for value, label in event_type_choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+
+          <div class="type-fields" data-type="1">
+            <label>Date</label>
+            <input type="date" name="date" value="{{ today|date:'Y-m-d' }}">
+          </div>
+
+          <div class="type-fields" data-type="2 3" hidden>
+            <div class="row">
+              <div>
+                <label>From</label>
+                <input type="date" name="date_from" value="{{ today|date:'Y-m-d' }}">
+              </div>
+              <div>
+                <label>To</label>
+                <input type="date" name="date_to" value="{{ today|date:'Y-m-d' }}">
+              </div>
+            </div>
+          </div>
+
+          <div class="type-fields" data-type="2" hidden>
+            <label>Repeats</label>
+            <select name="date_type">
+              {% for value, label in date_type_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="type-fields" data-type="3" hidden>
+            <label class="check" style="margin-top:0">
+              <input type="checkbox" name="exclude_weekends"> Exclude weekends
+            </label>
+          </div>
+
+          <div class="type-fields" data-type="2 3" hidden>
+            <label class="check" style="margin-top:0">
+              <input type="checkbox" name="background"> Background status (subtle, long-term)
+            </label>
+          </div>
+
+          <label>Categories</label>
+          <select name="categories" multiple size="6">
+            {% for c in categories %}
+              <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+
+          <div class="row">
+            <div>
+              <label class="check" style="margin-top:0">
+                <input type="checkbox" class="color-toggle"> Custom color
+              </label>
+              <input type="color" name="color" value="#9fc5e8" class="color-input" disabled>
+              <div class="muted" style="font-size:11px">Leave off to use the category's color.</div>
+            </div>
+            <label class="check"><input type="checkbox" name="important"> ★ Important</label>
+          </div>
+        </div>
+
+        <div class="drawer-right">
+          <label>Text</label>
+          <textarea name="text" placeholder="Describe the event…"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
+        <button type="submit" class="action-btn">Add Event</button>
+      </div>
+    </form>
+  </div>
+</div>

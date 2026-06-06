@@ -37,13 +37,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("name", "important", "type", "date", "date_from", "date_to", "swatch")
+    list_display = ("id", "name", "important", "type", "date", "date_from", "date_to", "swatch", "created_at")
+    list_display_links = ("name",)
     list_editable = ("important",)
     list_filter = ("important", "type", "date_type", "categories")
     search_fields = ("name", "text")
     filter_horizontal = ("categories",)
     date_hierarchy = "date"
-    ordering = ("-date", "-date_from")
+    readonly_fields = ("created_at", "modified_at")
+    ordering = ("-id",)
 
     @admin.display(description="Color")
     def swatch(self, obj):

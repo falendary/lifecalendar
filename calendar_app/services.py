@@ -85,6 +85,11 @@ def _daterange(start: date, stop: date):
         cur += timedelta(days=1)
 
 
+def _excluded(event, d: date) -> bool:
+    """Whether a day is skipped because the event excludes weekends."""
+    return bool(getattr(event, "exclude_weekends", False)) and d.isoweekday() >= 6
+
+
 def expand_event_dates(event) -> list[date]:
     """Return the concrete occurrence dates for an event.
 
@@ -98,7 +103,7 @@ def expand_event_dates(event) -> list[date]:
         return []
 
     if event.type == EventType.PERIOD:
-        return list(_daterange(event.date_from, event.date_to))
+        return [d for d in _daterange(event.date_from, event.date_to) if not _excluded(event, d)]
 
     # Recurring
     if event.date_type == DateType.DAILY:
@@ -128,6 +133,25 @@ def expand_event_dates(event) -> list[date]:
     return []
 
 
+def occurrences_in_window(event, start: date, end: date) -> list[date]:
+    """All days in [start, end] on which the event occurs (efficient for a month)."""
+    if event.type == EventType.SINGLE:
+        return [event.date] if event.date and start <= event.date <= end else []
+    if not event.date_from or not event.date_to:
+        return []
+    if event.type == EventType.PERIOD:
+        cur = max(event.date_from, start)
+        last = min(event.date_to, end)
+        out = []
+        while cur <= last:
+            if not _excluded(event, cur):
+                out.append(cur)
+            cur += timedelta(days=1)
+        return out
+    # recurring
+    return [d for d in expand_event_dates(event) if start <= d <= end]
+
+
 def event_occurs_on(event, target: date) -> bool:
     """Whether an event has an occurrence on the given day."""
     if event.type == EventType.SINGLE:
@@ -135,41 +159,27 @@ def event_occurs_on(event, target: date) -> bool:
     if not event.date_from or not event.date_to:
         return False
     if event.type == EventType.PERIOD:
-        return event.date_from <= target <= event.date_to
+        return event.date_from <= target <= event.date_to and not _excluded(event, target)
     return target in set(expand_event_dates(event))
 
 
 def weeks_for_event(event) -> set:
     """Set of (iso_year, iso_week) keys an event should appear on."""
-    if event.type == EventType.PERIOD:
-        # A period spans whole weeks between its endpoints.
-        keys = set()
-        cur = iso_week_start(event.date_from)
-        while cur <= event.date_to:
-            keys.add(cur.isocalendar()[:2])
-            cur += timedelta(days=7)
-        return keys
     return {d.isocalendar()[:2] for d in expand_event_dates(event)}
 
 
 def event_week_placements(event):
     """Yield (display_date, (iso_year, iso_week)) for each week an event touches.
 
-    ``display_date`` is the actual occurrence day (single/recurring) or, for a
-    period, the first in-period day of that week — so each placement can link to
-    a concrete day.
+    ``display_date`` is the first occurring day in that week, so each placement
+    links to a concrete day (weekend-excluded days are skipped for periods).
     """
-    if event.type == EventType.PERIOD:
-        if not event.date_from or not event.date_to:
-            return
-        cur = iso_week_start(event.date_from)
-        while cur <= event.date_to:
-            display = max(cur, event.date_from)
-            yield display, cur.isocalendar()[:2]
-            cur += timedelta(days=7)
-    else:
-        for d in expand_event_dates(event):
-            yield d, d.isocalendar()[:2]
+    seen = set()
+    for d in expand_event_dates(event):
+        key = d.isocalendar()[:2]
+        if key not in seen:
+            seen.add(key)
+            yield d, key
 
 
 def build_grid(birthday: date, events, years: int, today: date | None = None) -> list[Square]:

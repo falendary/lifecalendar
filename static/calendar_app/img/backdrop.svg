@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#1f1840"/>
+      <stop offset="42%" stop-color="#5a3d6e"/>
+      <stop offset="68%" stop-color="#b75f3d"/>
+      <stop offset="84%" stop-color="#e6a25a"/>
+      <stop offset="100%" stop-color="#f4d391"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="56%" r="36%">
+      <stop offset="0%"  stop-color="#fff3cf" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#ffcf7a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#ffcf7a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a86b4"/><stop offset="100%" stop-color="#6a6796"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4c4168"/><stop offset="100%" stop-color="#352c4c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sky + sun -->
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <circle cx="800" cy="560" r="520" fill="url(#sun)"/>
+  <circle cx="800" cy="540" r="58" fill="#fff1cb" opacity="0.9"/>
+
+  <!-- distant haze -->
+  <rect x="0" y="470" width="1600" height="120" fill="#f0c98f" opacity="0.20"/>
+
+  <!-- far mountains with snow -->
+  <polygon fill="url(#far)" opacity="0.85"
+    points="0,560 120,468 250,520 380,418 520,500 680,392 840,470 980,402 1150,486 1300,432 1460,500 1600,452 1600,600 0,600"/>
+  <polygon fill="#e9e4f3" opacity="0.85" points="680,392 648,432 712,432"/>
+  <polygon fill="#e9e4f3" opacity="0.85" points="980,402 952,440 1010,440"/>
+  <polygon fill="#e9e4f3" opacity="0.7"  points="380,418 356,452 408,452"/>
+
+  <!-- castle on a far peak -->
+  <g fill="#2b2640" opacity="0.9" transform="translate(966,360)">
+    <rect x="0" y="6" width="46" height="42"/>
+    <rect x="-8" y="0" width="10" height="20"/><rect x="44" y="0" width="10" height="20"/>
+    <rect x="18" y="-12" width="12" height="30"/>
+    <polygon points="18,-12 24,-26 30,-12"/>
+  </g>
+
+  <!-- mid mountains -->
+  <polygon fill="url(#mid)"
+    points="0,640 210,524 400,592 580,500 770,576 960,506 1170,584 1390,520 1600,572 1600,760 0,760"/>
+
+  <!-- forest treeline -->
+  <polygon fill="#16271b" points="0,648 0,1000 1600,1000 1600,612
+    1560,648 1520,612 1480,650 1440,616 1400,652 1360,620 1320,656 1280,622 1240,656 1200,624
+    1160,658 1120,626 1080,660 1040,628 1000,662 960,630 920,664 880,632 840,666 800,634
+    760,666 720,634 680,668 640,636 600,668 560,638 520,670 480,640 440,672 400,642
+    360,672 320,644 280,674 240,646 200,676 160,648 120,678 80,650 40,678"/>
+  <!-- nearer, darker trees -->
+  <g fill="#0e1c12">
+    <polygon points="120,1000 175,720 230,1000"/>
+    <polygon points="1330,1000 1390,700 1450,1000"/>
+    <polygon points="640,1000 690,760 740,1000"/>
+  </g>
+</svg>

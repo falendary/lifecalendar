@@ -15,9 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import include, path
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Two-factor login/setup/QR/backup-token flow (namespace `two_factor`).
+    # This REPLACES the plain password-only login: there is no
+    # /accounts/login/ that could bypass the second factor.
+    path('', include(tf_urls)),
+    # Logout (POST). The 2FA app provides login but not logout.
+    path('account/logout/', LogoutView.as_view(), name='logout'),
     path('', include('calendar_app.urls')),
 ]
