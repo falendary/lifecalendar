@@ -19,29 +19,33 @@
   <button type="submit">Search</button>
 </form>
 
-<table>
-  <tr><th>Date</th><th>Type</th><th>Name</th><th>Categories</th><th></th></tr>
+<table class="events-table">
+  <thead>
+    <tr><th>Date</th><th>Type</th><th>Name</th><th>Categories</th><th></th></tr>
+  </thead>
+  <tbody>
   {% for e in events %}
     <tr>
-      <td>
+      <td data-label="Date">
         {% if e.date %}{{ e.date|date:"Y-m-d" }}
         {% else %}{{ e.date_from|date:"Y-m-d" }} → {{ e.date_to|date:"Y-m-d" }}{% endif %}
       </td>
-      <td>{{ e.get_type_display }}</td>
-      <td>
+      <td data-label="Type">{{ e.get_type_display }}</td>
+      <td data-label="Name">
         {% if e.date %}
           <a href="{% url 'day_detail' e.date.year e.date.month e.date.day %}">{{ e.name }}</a>
         {% else %}{{ e.name }}{% endif %}
       </td>
-      <td>
+      <td data-label="Categories">
         {% for c in e.categories.all %}
           <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
         {% endfor %}
       </td>
-      <td><a href="{% url 'event_edit' e.pk %}?next={{ request.path }}">Edit</a></td>
+      <td class="ev-actions"><a href="{% url 'event_edit' e.pk %}?next={{ request.path }}">Edit</a></td>
     </tr>
   {% empty %}
     <tr><td colspan="5" class="muted">No events.</td></tr>
   {% endfor %}
+  </tbody>
 </table>
 {% endblock %}

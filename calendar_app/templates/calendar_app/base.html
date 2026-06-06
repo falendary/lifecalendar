@@ -3,7 +3,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Life Calendar">
   <title>{% block title %}Life Calendar{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'calendar_app/app.css' %}">
   {% block extra_head %}{% endblock %}
@@ -11,7 +15,10 @@
 <body>
   <header class="topbar">
     <a class="brand" href="{% url 'calendar' %}">Life Calendar</a>
-    <nav>
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-drawer">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav-drawer" class="nav-drawer">
       <a href="{% url 'calendar' %}">Calendar</a>
       <a href="{% url 'birdview' %}">Life in weeks</a>
       <a href="{% url 'month_view' %}">Month</a>
@@ -28,6 +35,7 @@
         </form>
       {% endif %}
     </nav>
+    <div class="nav-backdrop" hidden></div>
   </header>
 
   {% if messages %}
@@ -40,6 +48,7 @@
     {% block content %}{% endblock %}
   </main>
 
+  <script src="{% static 'calendar_app/menu.js' %}" defer></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>
