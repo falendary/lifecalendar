@@ -6,14 +6,6 @@
   <section class="cal-main">
     <form class="filters" method="get">
       <div>
-        <label>Group by</label>
-        <select name="render">
-          {% for value, label in render_types %}
-            <option value="{{ value }}" {% if value == render_type %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div>
         <label>Year from</label>
         <input type="number" name="year_from" value="{{ year_from }}">
       </div>
@@ -21,20 +13,34 @@
         <label>Year to</label>
         <input type="number" name="year_to" value="{{ year_to }}">
       </div>
-      <div>
-        <label>Category</label>
-        <select name="category">
-          <option value="">All</option>
-          {% for c in categories %}
-            <option value="{{ c.id }}" {% if c.id == selected_category %}selected{% endif %}>{{ c.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div>
-        <label>Search</label>
-        <input type="text" name="q" value="{{ q }}" placeholder="event name">
-      </div>
       <button type="submit">Apply</button>
+
+      <details class="filter-extra"{% if q or selected_category %} open{% endif %}>
+        <summary>Settings</summary>
+        <div class="filter-extra-body">
+          <div>
+            <label>Group by</label>
+            <select name="render">
+              {% for value, label in render_types %}
+                <option value="{{ value }}" {% if value == render_type %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label>Category</label>
+            <select name="category">
+              <option value="">All</option>
+              {% for c in categories %}
+                <option value="{{ c.id }}" {% if c.id == selected_category %}selected{% endif %}>{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label>Search</label>
+            <input type="text" name="q" value="{{ q }}" placeholder="event name">
+          </div>
+        </div>
+      </details>
     </form>
 
     <div class="calendar mode-{{ render_type }}">
@@ -73,6 +79,16 @@
         <span class="ib-leg-free">{{ available_days }} d free</span>
         <span class="ib-leg-sleep">{{ sleep_days }} d asleep</span>
       </div>
+      <div class="ib-countdowns">
+        <div class="ib-cd">
+          <span class="ib-cd-num">{{ days_to_year_end }}</span>
+          <span class="ib-cd-lbl">days to end of {{ today.year }}</span>
+        </div>
+        <div class="ib-cd">
+          <span class="ib-cd-num">{{ months_to_life_end }}</span>
+          <span class="ib-cd-lbl">months to end of life</span>
+        </div>
+      </div>
     </div>
 
     <div class="feed">
@@ -108,36 +124,7 @@
 
 {% include "calendar_app/_event_drawer.html" %}
 
-{# --- Add Journal drawer --- #}
-<div class="modal-backdrop drawer-backdrop" id="modal-journal" hidden>
-  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Add journal note">
-    <div class="modal-head">
-      <h3>Add Journal</h3>
-      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
-    </div>
-    <form method="post" action="{% url 'journal_create' %}" class="drawer-form">
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.get_full_path }}">
-
-      <div class="drawer-cols">
-        <div class="drawer-left">
-          <label>Date</label>
-          <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" required>
-        </div>
-
-        <div class="drawer-right">
-          <label>Note</label>
-          <textarea name="text" placeholder="Dear diary…"></textarea>
-        </div>
-      </div>
-
-      <div class="modal-foot">
-        <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
-        <button type="submit" class="action-btn">Save Note</button>
-      </div>
-    </form>
-  </div>
-</div>
+{% include "calendar_app/_journal_drawer.html" %}
 {% endblock %}
 
 {% block extra_js %}

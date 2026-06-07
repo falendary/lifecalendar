@@ -1,7 +1,11 @@
 {% extends "calendar_app/base.html" %}
+{% load static %}
 
 {% block content %}
-<h1>Journal</h1>
+<div class="page-head">
+  <h1>Journal</h1>
+  <button type="button" class="action-btn" data-open-modal="modal-journal">+ Add Journal</button>
+</div>
 
 <form class="filters" method="get">
   <div>
@@ -11,7 +15,7 @@
   <button type="submit">Search</button>
 </form>
 
-{% for note in notes %}
+{% for note in page_obj %}
   <div class="card">
     <a href="{% url 'day_detail' note.date.year note.date.month note.date.day %}">
       <strong>{{ note.date|date:"l, j F Y" }}</strong>
@@ -20,8 +24,30 @@
   </div>
 {% empty %}
   <p class="muted">
-    No journal notes yet. They come from the <code>days[].notes</code> field —
-    re-import your JSON via <a href="/admin/calendar_app/settings/import-json/">Import JSON</a> to load them.
+    {% if q %}No notes match “{{ q }}”.
+    {% else %}No journal notes yet. Tap <strong>+ Add Journal</strong> to write one.{% endif %}
   </p>
 {% endfor %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pager">
+  {% if page_obj.has_previous %}
+    <a class="btn-ghost" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">← Prev</a>
+  {% else %}
+    <span class="btn-ghost disabled">← Prev</span>
+  {% endif %}
+  <span class="pager-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a class="btn-ghost" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Next →</a>
+  {% else %}
+    <span class="btn-ghost disabled">Next →</span>
+  {% endif %}
+</nav>
+{% endif %}
+
+{% include "calendar_app/_journal_drawer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/modal.js' %}"></script>
 {% endblock %}

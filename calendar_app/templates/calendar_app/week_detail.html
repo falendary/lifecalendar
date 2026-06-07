@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Week {{ week }}, {{ year }}</h1>
 <p class="muted">{{ monday|date:"j M Y" }} – {{ sunday|date:"j M Y" }}</p>
-<p><a href="{% url 'calendar' %}">&larr; back to calendar</a></p>
+<p><a class="btn-back" href="{% url 'calendar' %}">&larr; Back to calendar</a></p>
 
 {% for row in rows %}
   <div class="card">

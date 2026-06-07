@@ -3,88 +3,86 @@
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ next }}">
 
-  <div class="drawer-cols">
-    <div class="drawer-left">
-      <label>Name</label>
-      <input type="text" name="name" value="{{ event.name }}" required autofocus>
+  <div class="event-editor">
+    <input type="text" name="name" value="{{ event.name }}" required
+           class="event-name" placeholder="Event name">
 
-      <label>Type</label>
-      <select name="type" class="event-type-select">
-        {% for value, label in event_type_choices %}
-          <option value="{{ value }}" {% if value == event.type %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-
-      <div class="type-fields" data-type="1">
-        <label>Date</label>
-        <input type="date" name="date" value="{{ event.date|date:'Y-m-d' }}">
-      </div>
-
-      <div class="type-fields" data-type="2 3">
-        <div class="row">
-          <div>
-            <label>From</label>
-            <input type="date" name="date_from" value="{{ event.date_from|date:'Y-m-d' }}">
-          </div>
-          <div>
-            <label>To</label>
-            <input type="date" name="date_to" value="{{ event.date_to|date:'Y-m-d' }}">
-          </div>
-        </div>
-      </div>
-
-      <div class="type-fields" data-type="2">
-        <label>Repeats</label>
-        <select name="date_type">
-          {% for value, label in date_type_choices %}
-            <option value="{{ value }}" {% if value == event.date_type %}selected{% endif %}>{{ label }}</option>
+    <details class="event-details">
+      <summary>Details <span class="muted">— type, dates, categories, color</span></summary>
+      <div class="event-details-body">
+        <label>Type</label>
+        <select name="type" class="event-type-select">
+          {% for value, label in event_type_choices %}
+            <option value="{{ value }}" {% if value == event.type %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
-      </div>
 
-      <div class="type-fields" data-type="3">
-        <label class="check" style="margin-top:0">
-          <input type="checkbox" name="exclude_weekends" {% if event.exclude_weekends %}checked{% endif %}> Exclude weekends
-        </label>
-      </div>
-
-      <div class="type-fields" data-type="2 3">
-        <label class="check" style="margin-top:0">
-          <input type="checkbox" name="background" {% if event.background %}checked{% endif %}> Background status (subtle, long-term)
-        </label>
-      </div>
-
-      <label>Categories</label>
-      <select name="categories" multiple size="6">
-        {% for c in categories %}
-          <option value="{{ c.id }}" {% if c.id in selected_categories %}selected{% endif %}>{{ c.name }}</option>
-        {% endfor %}
-      </select>
-
-      <div class="row">
-        <div>
-          <label class="check" style="margin-top:0">
-            <input type="checkbox" class="color-toggle" {% if event.color %}checked{% endif %}> Custom color
-          </label>
-          <input type="color" name="color" value="{{ event.color|default:'#9fc5e8' }}" class="color-input" {% if not event.color %}disabled{% endif %}>
-          <div class="muted" style="font-size:11px">Leave off to use the category's color.</div>
+        <div class="type-fields" data-type="1">
+          <label>Date</label>
+          <input type="date" name="date" value="{{ event.date|date:'Y-m-d' }}">
         </div>
-        <label class="check"><input type="checkbox" name="important" {% if event.important %}checked{% endif %}> ★ Important</label>
-      </div>
-    </div>
 
-    <div class="drawer-right">
-      <label>Text</label>
-      <textarea name="text" placeholder="Describe the event…">{{ event.text }}</textarea>
-    </div>
+        <div class="type-fields" data-type="2 3">
+          <div class="row">
+            <div>
+              <label>From</label>
+              <input type="date" name="date_from" value="{{ event.date_from|date:'Y-m-d' }}">
+            </div>
+            <div>
+              <label>To</label>
+              <input type="date" name="date_to" value="{{ event.date_to|date:'Y-m-d' }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="type-fields" data-type="2">
+          <label>Repeats</label>
+          <select name="date_type">
+            {% for value, label in date_type_choices %}
+              <option value="{{ value }}" {% if value == event.date_type %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="type-fields" data-type="3">
+          <label class="check" style="margin-top:0">
+            <input type="checkbox" name="exclude_weekends" {% if event.exclude_weekends %}checked{% endif %}> Exclude weekends
+          </label>
+        </div>
+
+        <div class="type-fields" data-type="2 3">
+          <label class="check" style="margin-top:0">
+            <input type="checkbox" name="background" {% if event.background %}checked{% endif %}> Background status (subtle, long-term)
+          </label>
+        </div>
+
+        <label>Categories</label>
+        <select name="categories" multiple size="6">
+          {% for c in categories %}
+            <option value="{{ c.id }}" {% if c.id in selected_categories %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+
+        <div class="row">
+          <div>
+            <label class="check" style="margin-top:0">
+              <input type="checkbox" class="color-toggle" {% if event.color %}checked{% endif %}> Custom color
+            </label>
+            <input type="color" name="color" value="{{ event.color|default:'#9fc5e8' }}" class="color-input" {% if not event.color %}disabled{% endif %}>
+            <div class="muted" style="font-size:11px">Leave off to use the category's color.</div>
+          </div>
+          <label class="check"><input type="checkbox" name="important" {% if event.important %}checked{% endif %}> ★ Important</label>
+        </div>
+      </div>
+    </details>
+
+    <textarea name="text" class="event-text" placeholder="Notes…" autofocus>{{ event.text }}</textarea>
   </div>
 
-  <div class="modal-foot" style="justify-content:space-between">
-    <button type="submit" name="delete" value="1" class="btn-ghost"
+  <div class="modal-foot event-foot">
+    <button type="submit" name="delete" value="1" class="btn-ghost btn-danger"
             onclick="return confirm('Delete this event?')">Delete</button>
-    <span>
-      <a class="btn-ghost" href="{% if next %}{{ next }}{% else %}{% url 'event_list' %}{% endif %}">Cancel</a>
-      <button type="submit" class="action-btn">Save</button>
-    </span>
+    <a class="btn-ghost" href="{% if next %}{{ next }}{% else %}{% url 'event_list' %}{% endif %}">Cancel</a>
+    <button type="submit" class="action-btn">Save</button>
   </div>
 </form>

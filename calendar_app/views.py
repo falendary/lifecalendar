@@ -3,6 +3,7 @@ from itertools import groupby
 
 from django.conf import settings as dj_settings
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from . import services
@@ -105,6 +106,12 @@ def calendar_view(request):
     available_days = round(remaining_days * (1 - sleep_frac))  # future awake
     lived_awake_days = round(lived_days * (1 - sleep_frac))
 
+    # Countdowns shown under the progress bar.
+    days_to_year_end = (date(today.year, 12, 31) - today).days  # to end of this year
+    months_to_life_end = max(0, (end_date.year - today.year) * 12
+                             + (end_date.month - today.month)
+                             - (1 if end_date.day < today.day else 0))
+
     # Year-range filtering (defaults to the saved filter, else the whole grid).
     year_from = _int(request.GET.get("year_from"), cfg.year_from) or all_squares[0].iso_year
     year_to = _int(request.GET.get("year_to"), cfg.year_to) or all_squares[-1].iso_year
@@ -147,6 +154,9 @@ def calendar_view(request):
         "sleep_days": sleep_days,
         "available_days": available_days,
         "lived_awake_days": lived_awake_days,
+        "days_to_year_end": days_to_year_end,
+        # Spaced thousands separator (non-breaking), e.g. "21 964".
+        "months_to_life_end": f"{months_to_life_end:,}".replace(",", " "),
         "past_sleep_pct": past_sleep_pct,
         "lived_awake_pct": lived_awake_pct,
         "future_awake_pct": future_awake_pct,
@@ -488,7 +498,9 @@ def category_list(request):
 
 def journal_list(request):
     q = (request.GET.get("q") or "").strip()
-    notes = DayNote.objects.all()
+    notes = DayNote.objects.all().order_by("-date")
     if q:
         notes = notes.filter(text__icontains=q)
-    return render(request, "calendar_app/journal_list.html", {"notes": notes, "q": q})
+    page_obj = Paginator(notes, 10).get_page(request.GET.get("page"))
+    context = {"page_obj": page_obj, "q": q, "today": date.today()}
+    return render(request, "calendar_app/journal_list.html", context)

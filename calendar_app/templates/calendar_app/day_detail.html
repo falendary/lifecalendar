@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>{{ date|date:"l, j F Y" }}</h1>
-<p><a href="{% url 'calendar' %}">&larr; back to calendar</a></p>
+<p><a class="btn-back" href="{% url 'calendar' %}">&larr; Back to calendar</a></p>
 
 <h2>Events</h2>
 {% if events %}
@@ -14,9 +14,10 @@
       {% for c in e.categories.all %}
         <span class="chip" style="background: {{ c.color }}">{{ c.name }}</span>
       {% endfor %}
-      <a class="btn-ghost" style="float:right; padding:2px 10px;"
-         href="{% url 'event_edit' e.pk %}?next={{ request.path }}">Edit</a>
       {% if e.text %}<p class="muted">{{ e.text }}</p>{% endif %}
+      <div class="card-actions">
+        <a class="btn-ghost" href="{% url 'event_edit' e.pk %}?next={{ request.path }}">Edit</a>
+      </div>
     </div>
   {% endfor %}
 {% else %}

@@ -4,11 +4,15 @@
 {% block title %}Edit · {{ event.name }}{% endblock %}
 
 {% block content %}
-<h1>Edit Event</h1>
-<p><a href="{% if next %}{{ next }}{% else %}{% url 'event_list' %}{% endif %}">&larr; back</a></p>
-
-<div class="modal" style="max-width:900px; margin:0;">
-  {% include "calendar_app/_event_edit_form.html" %}
+<div class="event-fullpage">
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Edit event">
+    <div class="modal-head">
+      <h3>Edit Event</h3>
+      <a class="modal-close" href="{% if next %}{{ next }}{% else %}{% url 'event_list' %}{% endif %}"
+         aria-label="Close">×</a>
+    </div>
+    {% include "calendar_app/_event_edit_form.html" %}
+  </div>
 </div>
 {% endblock %}
 

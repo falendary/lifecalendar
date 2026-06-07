@@ -1,0 +1,26 @@
+{# Add Journal drawer — shared by the calendar and journal pages. #}
+<div class="modal-backdrop drawer-backdrop" id="modal-journal" hidden>
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Add journal note">
+    <div class="modal-head">
+      <h3>Add Journal</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <form method="post" action="{% url 'journal_create' %}" class="drawer-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+      <div class="event-editor">
+        <div class="journal-date">
+          <label>Date</label>
+          <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" required>
+        </div>
+        <textarea name="text" class="event-text" placeholder="Dear diary…" autofocus></textarea>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
+        <button type="submit" class="action-btn">Save Note</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -113,6 +113,28 @@ input, select, textarea, button { font-size: 16px; }
 .filters label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
 .filters input, .filters select { padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; }
 .filters button { padding: 6px 14px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; cursor: pointer; }
+
+/* Collapsible extra filters (Group by / Category / Search) on the calendar. */
+.filter-extra { flex-basis: 100%; margin-top: 2px; }
+.filter-extra > summary {
+  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--accent); user-select: none;
+}
+.filter-extra > summary::-webkit-details-marker { display: none; }
+.filter-extra > summary::before { content: "⚙"; }
+.filter-extra-body { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-top: 10px; }
+.filter-extra-body > div { flex: 1 1 160px; }
+.journal-date { max-width: 220px; }
+
+/* Page header with a primary action (e.g. Journal + "Add Journal"). */
+.page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.page-head h1 { margin: 0; }
+.page-head .action-btn { flex: 0 0 auto; }
+
+/* Pagination. */
+.pager { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 20px 0 8px; }
+.pager-info { font-size: 13px; color: var(--muted); }
+.btn-ghost.disabled { opacity: .45; pointer-events: none; }
 .tabs a { padding: 5px 12px; border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--muted); margin-right: 6px; }
 .tabs a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -145,6 +167,23 @@ input, select, textarea, button { font-size: 16px; }
 }
 .calendar.mode-seasons .cal-group { width: 254px; min-height: 270px; }   /* 4 cols */
 .calendar.mode-months  .cal-group { width: 192px; min-height: 150px; }   /* 3 cols */
+
+/* On a phone, stack the groups full-width and lay each group's weeks out as a
+   4-per-row grid whose squares grow to fill the screen width. */
+@media (max-width: 640px) {
+  .calendar.mode-seasons,
+  .calendar.mode-months { display: block; }
+  .calendar.mode-seasons .cal-group,
+  .calendar.mode-months .cal-group { width: 100%; min-height: 0; margin-bottom: 20px; }
+  .calendar.mode-seasons .cal-row,
+  .calendar.mode-months .cal-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  }
+  .calendar.mode-seasons .square,
+  .calendar.mode-months .square {
+    width: 100%; height: auto; aspect-ratio: 1 / 1;
+  }
+}
 
 .square {
   position: relative;
@@ -307,12 +346,32 @@ input, select, textarea, button { font-size: 16px; }
 /* --- Sidebar action buttons --- */
 .side-actions { display: flex; gap: 8px; margin-bottom: 14px; }
 .action-btn {
-  flex: 1; padding: 9px 12px; border: 0; border-radius: 8px;
-  background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 42px; padding: 9px 18px; border: 0; border-radius: 8px;
+  background: var(--accent); color: #fff; font-size: 15px; font-weight: 600;
+  cursor: pointer; text-decoration: none;
 }
 .action-btn:hover { opacity: 0.9; }
 .action-btn.secondary { background: #6aa84f; }
-.btn-ghost { padding: 9px 14px; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: pointer; }
+.btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 42px; padding: 9px 16px; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; color: var(--fg); font-size: 15px; cursor: pointer; text-decoration: none;
+}
+.btn-ghost:hover { border-color: var(--muted); }
+.btn-ghost.btn-danger { color: #c0392b; border-color: #e6b0aa; }
+.btn-ghost.btn-danger:hover { border-color: #c0392b; }
+
+/* Pill "back" link used on day/week detail pages. */
+.btn-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px;
+  background: #fff; color: var(--accent); text-decoration: none; font-size: 14px;
+}
+.btn-back:hover { border-color: var(--accent); }
+
+/* Card action row (e.g. Edit button on day detail). */
+.card-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
 
 /* --- Modal --- */
 .modal-backdrop {
@@ -330,7 +389,7 @@ input, select, textarea, button { font-size: 16px; }
 }
 .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .modal-head h3 { margin: 0; }
-.modal-close { border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
+.modal-close { border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); text-decoration: none; }
 .modal label { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 4px; }
 .modal label.check { display: flex; align-items: center; gap: 6px; margin-top: 26px; font-size: 14px; color: var(--fg); }
 .modal input[type=text], .modal input[type=date], .modal textarea, .modal select {
@@ -341,10 +400,13 @@ input, select, textarea, button { font-size: 16px; }
 .modal .row > div { flex: 1; }
 .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-/* --- Event drawer: full-height side panel, two columns --- */
+/* --- Event drawer: full-screen Notes-style editor --- */
 .drawer-backdrop { align-items: stretch; justify-content: flex-end; padding: 0; }
+/* Standalone edit page (/events/<id>/edit/) reuses the drawer as a full-screen
+   overlay so it matches the Add Event experience exactly. */
+.event-fullpage { position: fixed; inset: 0; z-index: 100; display: flex; justify-content: flex-end; background: var(--bg); }
 .modal.drawer {
-  max-width: min(960px, 96vw); width: min(960px, 96vw);
+  width: 100vw; max-width: 100vw;
   height: 100vh; max-height: 100vh;
   border-radius: 0; padding: 0;
   display: flex; flex-direction: column;
@@ -352,20 +414,59 @@ input, select, textarea, button { font-size: 16px; }
   animation: drawer-in .22s ease;
 }
 @keyframes drawer-in { from { transform: translateX(40px); opacity: .5; } to { transform: none; opacity: 1; } }
-.drawer .modal-head { padding: 16px 24px; margin: 0; border-bottom: 1px solid var(--line); }
-.drawer-form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-.drawer-cols { display: flex; flex: 1; min-height: 0; }
-.drawer-left { width: 380px; flex: none; padding: 18px 24px; overflow: auto; border-right: 1px solid var(--line); }
-.drawer-right { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 18px 24px; }
-.drawer-right > label { margin-top: 0; }
-.drawer-right textarea { flex: 1; resize: none; min-height: 200px; }
-.drawer .modal-foot { padding: 14px 24px; margin: 0; border-top: 1px solid var(--line); }
-@media (max-width: 720px) {
-  .modal.drawer { width: 100vw; max-width: 100vw; }
-  .drawer-cols { flex-direction: column; overflow: auto; }
-  .drawer-left { width: auto; border-right: 0; border-bottom: 1px solid var(--line); }
-  .drawer-right textarea { min-height: 160px; }
+.drawer .modal-head {
+  padding: calc(16px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) 16px
+           calc(24px + env(safe-area-inset-left));
+  margin: 0; border-bottom: 1px solid var(--line);
 }
+.drawer-form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.drawer .modal-foot {
+  padding: 14px calc(24px + env(safe-area-inset-right))
+           calc(14px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
+  margin: 0; border-top: 1px solid var(--line);
+}
+
+/* The editor: Name on top, collapsible Details, then a Notes-tall Text area
+   that fills the remaining height. Inputs are full-width. */
+.event-editor {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  gap: 12px; overflow-y: auto;
+  padding: 18px calc(24px + env(safe-area-inset-right)) 18px calc(24px + env(safe-area-inset-left));
+}
+.event-editor .event-name {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+  font-size: 20px; font-weight: 600;
+}
+.event-details { border: 1px solid var(--line); border-radius: 8px; }
+.event-details > summary {
+  list-style: none; cursor: pointer; padding: 11px 14px; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.event-details > summary::-webkit-details-marker { display: none; }
+.event-details > summary::before { content: "▸"; color: var(--muted); font-size: 12px; }
+.event-details[open] > summary::before { content: "▾"; }
+.event-details > summary .muted { font-weight: 400; }
+.event-details-body { padding: 4px 14px 14px; border-top: 1px solid var(--line); }
+.event-details-body > label:first-child { margin-top: 4px; }
+.event-details-body label { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 4px; }
+.event-details-body label.check { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--fg); }
+.event-details-body input[type=text], .event-details-body input[type=date],
+.event-details-body select {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit;
+}
+.event-details-body input[type=color] { width: 48px; height: 38px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; }
+.event-details-body .row { display: flex; gap: 12px; align-items: flex-start; }
+.event-details-body .row > div { flex: 1; }
+.event-editor .event-text {
+  flex: 1 0 auto; min-height: 50vh; width: 100%; resize: none;
+  border: 0; outline: none; padding: 12px 2px;
+  font: inherit; line-height: 1.5;
+}
+
+/* Edit footer: Delete on the left, Cancel + Save on the right (desktop). */
+.event-foot { justify-content: flex-end; gap: 10px; }
+.event-foot .btn-danger { margin-right: auto; }
+.event-foot .action-btn { flex: 0 0 auto; }
 
 
 /* --- Sidebar: info block --- */
@@ -381,6 +482,15 @@ input, select, textarea, button { font-size: 16px; }
 .ib-leg-awake::before { background: #6aa84f; }
 .ib-leg-free::before { background: #cfe3c2; }
 .ib-leg-sleep::before { background: #9a9a9a; }
+
+/* Countdowns under the progress bar. */
+.ib-countdowns { display: flex; gap: 10px; margin-top: 12px; }
+.ib-cd {
+  flex: 1; background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; text-align: center;
+}
+.ib-cd-num { display: block; font-size: 20px; font-weight: 700; line-height: 1.1; }
+.ib-cd-lbl { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
 
 /* --- Sidebar: events feed --- */
 .feed { background: #fff; border: 1px solid var(--line); border-radius: 8px; }
@@ -431,7 +541,9 @@ input, select, textarea, button { font-size: 16px; }
 
 @media (max-width: 860px) {
   .cal-layout { flex-direction: column; }
-  .cal-side { width: 100%; position: static; }
+  /* Stack order: Add buttons → progress bar → events feed (the sidebar),
+     then the year filters + square calendar (the main column). */
+  .cal-side { width: 100%; position: static; order: -1; }
 }
 
 /* --- Generic tables / cards --- */
@@ -520,9 +632,10 @@ h1 { font-size: 22px; }
   h1 { font-size: 19px; }
   .stats { gap: 12px; }
 
-  /* Filters/search go full-width and stack on a phone. */
-  .filters { gap: 8px; }
-  .filters > div { flex: 1 1 100%; }
+  /* Filters/search on a phone: short fields (year from/to) sit side-by-side;
+     a lone field (search) grows to full width. */
+  .filters { gap: 8px 10px; }
+  .filters > div { flex: 1 1 140px; }
   .filters input, .filters select { width: 100%; }
   .filters button { width: 100%; min-height: 44px; }
 
@@ -530,6 +643,19 @@ h1 { font-size: 22px; }
   .card { padding: 16px; }
   .tabs { display: flex; flex-wrap: wrap; gap: 6px; }
   .tabs a { margin: 0; }
+
+  /* Bigger, tap-friendly buttons in the edit footer: Cancel + Save share the
+     top row, Delete spans full-width below. */
+  .event-foot { flex-wrap: wrap; gap: 10px; }
+  .event-foot .btn-ghost, .event-foot .action-btn { min-height: 50px; font-size: 16px; }
+  .event-foot a.btn-ghost { flex: 1 1 auto; order: 0; }   /* Cancel */
+  .event-foot .action-btn { flex: 1 1 auto; order: 0; }   /* Save */
+  .event-foot .btn-danger { flex: 1 1 100%; order: 1; margin-right: 0; }  /* Delete */
+
+  /* Day-detail Edit button fills the card width for an easy tap. */
+  .card-actions { margin-top: 14px; }
+  .card-actions .btn-ghost { flex: 1; min-height: 46px; font-size: 16px; }
+  .btn-back { min-height: 44px; padding: 0 18px; }
 
   /* Life-in-weeks rows are nowrap and wider than the screen → let them scroll. */
   .bird { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
