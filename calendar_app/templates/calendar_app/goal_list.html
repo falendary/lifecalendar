@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="page-head">
-  <h1>Goals</h1>
+  <h1>Goals <button type="button" class="help-btn" data-open-modal="modal-help" aria-label="How it works">?</button></h1>
   <button type="button" class="action-btn" data-open-modal="modal-goal">+ Add Goal</button>
 </div>
 
@@ -43,6 +43,7 @@
 {% endif %}
 
 {% include "calendar_app/_goal_drawer.html" %}
+{% include "calendar_app/_help_dialog.html" %}
 {% endblock %}
 
 {% block extra_js %}

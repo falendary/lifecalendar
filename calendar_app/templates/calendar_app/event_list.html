@@ -1,7 +1,11 @@
 {% extends "calendar_app/base.html" %}
+{% load static %}
 
 {% block content %}
-<h1>Events</h1>
+<div class="page-head">
+  <h1>Events</h1>
+  <button type="button" class="action-btn" data-open-modal="modal-event">+ Add Event</button>
+</div>
 
 <div class="tabs" style="margin-bottom:12px">
   {% for value, label in feed_types %}
@@ -48,4 +52,10 @@
   {% endfor %}
   </tbody>
 </table>
+
+{% include "calendar_app/_event_drawer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/modal.js' %}"></script>
 {% endblock %}

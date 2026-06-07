@@ -210,3 +210,4 @@ class GoalTests(TestCase):
         )
         resp = views.years_view(self.rf.get("/years/"))
         self.assertContains(resp, "Climb Everest")
+

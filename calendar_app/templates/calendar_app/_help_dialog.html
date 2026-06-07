@@ -1,0 +1,35 @@
+{# "How it works" guide for Goals. Opened via data-open-modal="modal-help". #}
+<div class="modal-backdrop" id="modal-help" hidden>
+  <div class="modal help-modal" role="dialog" aria-modal="true" aria-label="Guide">
+    <div class="modal-head">
+      <h3>How Goals work</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    </div>
+    <div class="help-body">
+      <h4>Goals — what you want to do</h4>
+      <ul>
+        <li>Add them with <strong>+ Add Goal</strong>.</li>
+        <li>Status: <strong>Idea</strong> (someday) → <strong>Active</strong> (committed) →
+            <strong>Achieved</strong> (done), or Dropped.</li>
+        <li>Optionally tag <strong>Years</strong> (e.g. <code>2026, 2027</code>) to plan
+            <em>when</em> — the goal then appears under each of those years.</li>
+      </ul>
+
+      <h4>Achieving a goal</h4>
+      <ul>
+        <li>Set status to <strong>Achieved</strong> and pick a date.</li>
+        <li>It writes a <strong>Journal</strong> entry for that day and shows up in the
+            <strong>Years</strong> view 🎯.</li>
+      </ul>
+
+      <h4>Finding things</h4>
+      <ul>
+        <li>Filter the list by <strong>Year</strong> or <strong>Status</strong>.</li>
+        <li>Goals with no year sit in the <strong>Backlog</strong> section.</li>
+      </ul>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="action-btn" data-close-modal>Got it</button>
+    </div>
+  </div>
+</div>

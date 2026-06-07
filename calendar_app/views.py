@@ -493,6 +493,11 @@ def event_list(request):
         "feed_type": feed_type,
         "feed_types": FeedType.choices,
         "q": q,
+        # For the shared Add Event drawer.
+        "categories": Category.objects.all(),
+        "today": date.today(),
+        "event_type_choices": EventType.choices,
+        "date_type_choices": DateType.choices,
     }
     return render(request, "calendar_app/event_list.html", context)
 
@@ -606,3 +611,4 @@ def goal_edit(request, pk):
         "today": date.today(),
     }
     return render(request, "calendar_app/goal_form.html", context)
+
