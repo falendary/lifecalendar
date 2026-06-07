@@ -1,0 +1,12 @@
+{# A single goal card. Expects `g` (a Goal). #}
+<div class="card goal-card">
+  <div class="goal-card-head">
+    <a href="{% url 'goal_edit' g.pk %}?next={{ request.get_full_path|urlencode }}"><strong>{{ g.title }}</strong></a>
+    <span class="badge badge-{{ g.status }}">{{ g.get_status_display }}</span>
+  </div>
+  {% if g.description %}<p class="muted goal-desc">{{ g.description|truncatewords:30 }}</p>{% endif %}
+  <div class="goal-card-meta">
+    {% for gy in g.years.all %}<span class="chip">{{ gy.year }}</span>{% endfor %}
+    {% if g.achieved_on %}<span class="muted goal-achieved">✓ {{ g.achieved_on|date:"M j, Y" }}</span>{% endif %}
+  </div>
+</div>

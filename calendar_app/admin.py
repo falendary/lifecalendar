@@ -10,6 +10,8 @@ from .models import (
     Category,
     DayNote,
     Event,
+    Goal,
+    GoalYear,
     Settings,
 )
 
@@ -56,6 +58,20 @@ class EventAdmin(admin.ModelAdmin):
 class DayNoteAdmin(admin.ModelAdmin):
     list_display = ("date",)
     date_hierarchy = "date"
+
+
+class GoalYearInline(admin.TabularInline):
+    model = GoalYear
+    extra = 1
+
+
+@admin.register(Goal)
+class GoalAdmin(admin.ModelAdmin):
+    list_display = ("title", "status", "achieved_on", "modified_at")
+    list_filter = ("status",)
+    search_fields = ("title", "description")
+    readonly_fields = ("created_at", "modified_at")
+    inlines = [GoalYearInline]
 
 
 @admin.register(Settings)

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import DayNote, Event, EventType
+from .models import DayNote, Event, EventType, Goal
 
 
 class EventForm(forms.ModelForm):
@@ -49,3 +49,23 @@ class JournalForm(forms.ModelForm):
             defaults={"text": self.cleaned_data.get("text", "")},
         )
         return note
+
+
+class GoalForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        fields = ["title", "description", "status", "color", "achieved_on"]
+
+
+def parse_years(raw):
+    """Parse a comma/space-separated year string into a sorted list of ints,
+    e.g. "2026, 2027" -> [2026, 2027]. Ignores junk and out-of-range values."""
+    years = set()
+    for chunk in (raw or "").replace(",", " ").split():
+        try:
+            y = int(chunk)
+        except ValueError:
+            continue
+        if 1900 <= y <= 2200:
+            years.add(y)
+    return sorted(years)

@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from . import services
-from .forms import EventForm, JournalForm
+from .forms import EventForm, GoalForm, JournalForm, parse_years
 from .models import (
     Category,
     DateType,
@@ -15,6 +15,9 @@ from .models import (
     Event,
     EventType,
     FeedType,
+    Goal,
+    GoalStatus,
+    GoalYear,
     RenderType,
     Settings,
 )
@@ -295,16 +298,22 @@ def years_view(request):
     for e in important:
         d = e.anchor_date
         if d:
-            by_year.setdefault(d.year, []).append((e, d))
+            by_year.setdefault(d.year, []).append(
+                {"name": e.name, "color": effective_color(e), "date": d, "is_goal": False}
+            )
+
+    # Achieved goals surface alongside important events, in their achieved year.
+    for g in Goal.objects.filter(status=GoalStatus.ACHIEVED, achieved_on__isnull=False):
+        by_year.setdefault(g.achieved_on.year, []).append(
+            {"name": g.title, "color": g.color or "#e0a000",
+             "date": g.achieved_on, "is_goal": True}
+        )
 
     cells = []
     achievements = []  # (year, [items]) for the chronological list below the grid
     total = 0
     for y in range(start_year, end_year + 1):
-        ordered = sorted(by_year.get(y, []), key=lambda pair: pair[1])
-        items = [
-            {"name": e.name, "color": effective_color(e), "date": d} for (e, d) in ordered
-        ]
+        items = sorted(by_year.get(y, []), key=lambda it: it["date"])
         total += len(items)
         cells.append(
             {
@@ -504,3 +513,96 @@ def journal_list(request):
     page_obj = Paginator(notes, 10).get_page(request.GET.get("page"))
     context = {"page_obj": page_obj, "q": q, "today": date.today()}
     return render(request, "calendar_app/journal_list.html", context)
+
+
+# --- Goals -----------------------------------------------------------------
+
+def _goal_save_extras(request, goal):
+    """Sync a goal's planned years from the `years` text field, and — when the
+    goal is achieved with a date — upsert and link a journal note for that day."""
+    years = parse_years(request.POST.get("years"))
+    goal.years.exclude(year__in=years).delete()
+    for y in years:
+        GoalYear.objects.get_or_create(goal=goal, year=y)
+
+    if goal.status == GoalStatus.ACHIEVED and goal.achieved_on:
+        note_text = (request.POST.get("journal_text") or "").strip() or f"Achieved: {goal.title}"
+        note, _ = DayNote.objects.update_or_create(
+            date=goal.achieved_on, defaults={"text": note_text}
+        )
+        goal.journal = note
+        goal.save(update_fields=["journal"])
+
+
+def goal_list(request):
+    status = request.GET.get("status") or ""
+    year = _int(request.GET.get("year"))
+
+    goals = Goal.objects.prefetch_related("years")
+    if status:
+        goals = goals.filter(status=status)
+    if year:
+        goals = goals.filter(years__year=year)
+    goals = list(goals.distinct())
+
+    # Group by planned year (newest first); goals with no year fall into Backlog.
+    by_year: dict = {}
+    backlog = []
+    for g in goals:
+        years = [gy.year for gy in g.years.all()]
+        if years:
+            for y in years:
+                by_year.setdefault(y, []).append(g)
+        else:
+            backlog.append(g)
+    year_groups = [{"year": y, "goals": by_year[y]} for y in sorted(by_year, reverse=True)]
+
+    context = {
+        "year_groups": year_groups,
+        "backlog": backlog,
+        "all_years": sorted(set(GoalYear.objects.values_list("year", flat=True)), reverse=True),
+        "selected_year": year,
+        "selected_status": status,
+        "status_choices": GoalStatus.choices,
+        "today": date.today(),
+    }
+    return render(request, "calendar_app/goal_list.html", context)
+
+
+def goal_create(request):
+    if request.method == "POST":
+        form = GoalForm(request.POST)
+        if form.is_valid():
+            goal = form.save()
+            _goal_save_extras(request, goal)
+            messages.success(request, "Goal added.")
+        else:
+            messages.error(request, f"Could not add goal: {form.errors.as_text()}")
+    return redirect(request.POST.get("next") or "goal_list")
+
+
+def goal_edit(request, pk):
+    goal = get_object_or_404(Goal.objects.prefetch_related("years"), pk=pk)
+    next_url = request.POST.get("next") or request.GET.get("next") or ""
+
+    if request.method == "POST":
+        if request.POST.get("delete"):
+            goal.delete()
+            messages.success(request, "Goal deleted.")
+            return redirect(next_url or "goal_list")
+        form = GoalForm(request.POST, instance=goal)
+        if form.is_valid():
+            goal = form.save()
+            _goal_save_extras(request, goal)
+            messages.success(request, "Goal updated.")
+            return redirect(next_url or "goal_list")
+        messages.error(request, f"Could not save: {form.errors.as_text()}")
+
+    context = {
+        "goal": goal,
+        "years_str": ", ".join(str(gy.year) for gy in goal.years.all()),
+        "status_choices": GoalStatus.choices,
+        "next": next_url,
+        "today": date.today(),
+    }
+    return render(request, "calendar_app/goal_form.html", context)

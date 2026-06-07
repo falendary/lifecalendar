@@ -21,5 +21,8 @@ urlpatterns = [
     path("journal/add/", views.journal_create, name="journal_create"),
     path("categories/", views.category_list, name="category_list"),
     path("journal/", views.journal_list, name="journal_list"),
+    path("goals/", views.goal_list, name="goal_list"),
+    path("goals/add/", views.goal_create, name="goal_create"),
+    path("goals/<int:pk>/edit/", views.goal_edit, name="goal_edit"),
     path("api/", include(router.urls)),
 ]

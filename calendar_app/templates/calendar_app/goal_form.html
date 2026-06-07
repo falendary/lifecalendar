@@ -1,0 +1,17 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block title %}Edit · {{ goal.title }}{% endblock %}
+
+{% block content %}
+<div class="event-fullpage">
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Edit goal">
+    <div class="modal-head">
+      <h3>Edit Goal</h3>
+      <a class="modal-close" href="{% if next %}{{ next }}{% else %}{% url 'goal_list' %}{% endif %}"
+         aria-label="Close">×</a>
+    </div>
+    {% include "calendar_app/_goal_edit_form.html" %}
+  </div>
+</div>
+{% endblock %}

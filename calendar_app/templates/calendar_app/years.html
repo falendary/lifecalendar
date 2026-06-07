@@ -22,7 +22,7 @@
             {% for it in cell.items %}
               <li class="pop-day-group">
                 <a class="pop-date" href="{% url 'day_detail' it.date.year it.date.month it.date.day %}">{{ it.date|date:'M j, Y' }}</a>
-                <ul><li><span class="dot" style="background: {{ it.color }}"></span>{{ it.name }}</li></ul>
+                <ul><li><span class="dot" style="background: {{ it.color }}"></span>{% if it.is_goal %}🎯 {% endif %}{{ it.name }}</li></ul>
               </li>
             {% endfor %}
           </ul>
@@ -42,7 +42,7 @@
         <li>
           <span class="dot" style="background: {{ it.color }}"></span>
           <a href="{% url 'day_detail' it.date.year it.date.month it.date.day %}">
-            <span class="muted">{{ it.date|date:'M j' }}</span> — {{ it.name }}
+            <span class="muted">{{ it.date|date:'M j' }}</span> — {% if it.is_goal %}🎯 {% endif %}{{ it.name }}
           </a>
         </li>
       {% endfor %}

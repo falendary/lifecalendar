@@ -1,0 +1,40 @@
+{# Edit Goal form body — used inside goal_form.html. #}
+<form method="post" action="{% url 'goal_edit' goal.pk %}" class="drawer-form">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+
+  <div class="event-editor">
+    <input type="text" name="title" value="{{ goal.title }}" required
+           class="event-name" placeholder="Goal title">
+
+    <details class="event-details"{% if goal.status == 'achieved' or years_str %} open{% endif %}>
+      <summary>Details <span class="muted">— status, years, achieved</span></summary>
+      <div class="event-details-body">
+        <label>Status</label>
+        <select name="status">
+          {% for value, label in status_choices %}
+            <option value="{{ value }}"{% if value == goal.status %} selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+
+        <label>Years <span class="muted">(comma-separated, e.g. 2026, 2027)</span></label>
+        <input type="text" name="years" value="{{ years_str }}" placeholder="2026, 2027">
+
+        <label>Achieved on</label>
+        <input type="date" name="achieved_on" value="{{ goal.achieved_on|date:'Y-m-d' }}">
+
+        <label>Achievement note <span class="muted">(added to your journal)</span></label>
+        <textarea name="journal_text" rows="3" placeholder="What you did…">{{ goal.journal.text }}</textarea>
+      </div>
+    </details>
+
+    <textarea name="description" class="event-text" placeholder="Describe the goal…" autofocus>{{ goal.description }}</textarea>
+  </div>
+
+  <div class="modal-foot event-foot">
+    <button type="submit" name="delete" value="1" class="btn-ghost btn-danger"
+            onclick="return confirm('Delete this goal?')">Delete</button>
+    <a class="btn-ghost" href="{% if next %}{{ next }}{% else %}{% url 'goal_list' %}{% endif %}">Cancel</a>
+    <button type="submit" class="action-btn">Save</button>
+  </div>
+</form>

@@ -3,9 +3,10 @@ from datetime import date
 from pathlib import Path
 
 from django.conf import settings as dj_settings
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
-from . import services
+from . import services, views
+from .forms import parse_years
 from .importer import import_data
 from .models import (
     Category,
@@ -13,6 +14,9 @@ from .models import (
     DayNote,
     Event,
     EventType,
+    Goal,
+    GoalStatus,
+    GoalYear,
     Settings,
 )
 
@@ -157,3 +161,52 @@ class DayNoteImportTests(TestCase):
         import_data(self._payload())
         import_data(self._payload())
         self.assertEqual(DayNote.objects.count(), 1)
+
+
+class GoalTests(TestCase):
+    def setUp(self):
+        self.rf = RequestFactory()
+
+    def test_parse_years(self):
+        self.assertEqual(parse_years("2026, 2027"), [2026, 2027])
+        self.assertEqual(parse_years("2027 2026 2026"), [2026, 2027])  # dedup + sort
+        self.assertEqual(parse_years("junk, 1800, 2026"), [2026])      # out-of-range dropped
+        self.assertEqual(parse_years(""), [])
+
+    def test_save_extras_syncs_years_and_links_journal(self):
+        goal = Goal.objects.create(
+            title="Run a marathon", status=GoalStatus.ACHIEVED, achieved_on=date(2026, 5, 1)
+        )
+        req = self.rf.post("/goals/add/", {"years": "2026, 2027", "journal_text": "Did it!"})
+        views._goal_save_extras(req, goal)
+
+        self.assertEqual(set(goal.years.values_list("year", flat=True)), {2026, 2027})
+        note = DayNote.objects.get(date=date(2026, 5, 1))
+        self.assertEqual(note.text, "Did it!")
+        goal.refresh_from_db()
+        self.assertEqual(goal.journal_id, note.id)
+
+    def test_achieve_without_note_uses_default_text(self):
+        goal = Goal.objects.create(
+            title="Learn piano", status=GoalStatus.ACHIEVED, achieved_on=date(2026, 3, 3)
+        )
+        views._goal_save_extras(self.rf.post("/", {"years": "", "journal_text": ""}), goal)
+        self.assertEqual(DayNote.objects.get(date=date(2026, 3, 3)).text, "Achieved: Learn piano")
+
+    def test_year_filter_in_goal_list(self):
+        g1 = Goal.objects.create(title="AlphaGoal")
+        GoalYear.objects.create(goal=g1, year=2026)
+        g2 = Goal.objects.create(title="BetaGoal")
+        GoalYear.objects.create(goal=g2, year=2027)
+
+        resp = views.goal_list(self.rf.get("/goals/", {"year": "2026"}))
+        self.assertContains(resp, "AlphaGoal")
+        self.assertNotContains(resp, "BetaGoal")
+
+    def test_achieved_goal_appears_in_years_view(self):
+        Settings.objects.update_or_create(pk=1, defaults={"birthday": date(1996, 7, 26)})
+        Goal.objects.create(
+            title="Climb Everest", status=GoalStatus.ACHIEVED, achieved_on=date(2026, 8, 1)
+        )
+        resp = views.years_view(self.rf.get("/years/"))
+        self.assertContains(resp, "Climb Everest")

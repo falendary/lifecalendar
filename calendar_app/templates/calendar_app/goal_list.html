@@ -1,0 +1,50 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Goals</h1>
+  <button type="button" class="action-btn" data-open-modal="modal-goal">+ Add Goal</button>
+</div>
+
+<div class="goal-filters">
+  <div class="cat-filter">
+    <span class="cat-filter-label">Year</span>
+    <a class="cat-chip{% if not selected_year %} active{% endif %}"
+       href="{% url 'goal_list' %}{% if selected_status %}?status={{ selected_status }}{% endif %}">All</a>
+    {% for y in all_years %}
+      <a class="cat-chip{% if y == selected_year %} active{% endif %}"
+         href="?year={{ y }}{% if selected_status %}&status={{ selected_status }}{% endif %}">{{ y }}</a>
+    {% endfor %}
+  </div>
+  <div class="cat-filter">
+    <span class="cat-filter-label">Status</span>
+    <a class="cat-chip{% if not selected_status %} active{% endif %}"
+       href="{% if selected_year %}?year={{ selected_year }}{% else %}{% url 'goal_list' %}{% endif %}">All</a>
+    {% for value, label in status_choices %}
+      <a class="cat-chip{% if value == selected_status %} active{% endif %}"
+         href="?status={{ value }}{% if selected_year %}&year={{ selected_year }}{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+{% for group in year_groups %}
+  <h2 class="goal-year-title">{{ group.year }}</h2>
+  {% for g in group.goals %}{% include "calendar_app/_goal_card.html" %}{% endfor %}
+{% endfor %}
+
+{% if backlog %}
+  <h2 class="goal-year-title">Backlog <span class="muted">· no year yet</span></h2>
+  {% for g in backlog %}{% include "calendar_app/_goal_card.html" %}{% endfor %}
+{% endif %}
+
+{% if not year_groups and not backlog %}
+  <p class="muted">No goals yet. Tap <strong>+ Add Goal</strong> to add one.</p>
+{% endif %}
+
+{% include "calendar_app/_goal_drawer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/modal.js' %}"></script>
+{% endblock %}

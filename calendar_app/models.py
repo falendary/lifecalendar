@@ -149,3 +149,48 @@ class DayNote(models.Model):
 
     def __str__(self):
         return f"Note {self.date}"
+
+
+class GoalStatus(models.TextChoices):
+    IDEA = "idea", "Idea"
+    ACTIVE = "active", "Active"
+    ACHIEVED = "achieved", "Achieved"
+    DROPPED = "dropped", "Dropped"
+
+
+class Goal(models.Model):
+    """A life goal/target/idea. Lives in a backlog until planned into one or
+    more years; when achieved, links to a journal (DayNote) for the day."""
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, default="")
+    status = models.CharField(
+        max_length=16, choices=GoalStatus.choices, default=GoalStatus.IDEA
+    )
+    color = models.CharField(max_length=16, blank=True, default="")
+    achieved_on = models.DateField(null=True, blank=True)
+    journal = models.ForeignKey(
+        DayNote, null=True, blank=True, on_delete=models.SET_NULL, related_name="goals"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["status", "-modified_at"]
+
+    def __str__(self):
+        return self.title
+
+
+class GoalYear(models.Model):
+    """A year a goal is planned for (a goal can span several years)."""
+
+    goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="years")
+    year = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ("goal", "year")
+        ordering = ["year"]
+
+    def __str__(self):
+        return f"{self.goal_id}:{self.year}"

@@ -126,6 +126,24 @@ input, select, textarea, button { font-size: 16px; }
 .filter-extra-body > div { flex: 1 1 160px; }
 .journal-date { max-width: 220px; }
 
+/* --- Goals --- */
+.goal-filters { margin-bottom: 12px; }
+.cat-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.goal-year-title { font-size: 16px; margin: 18px 0 8px; }
+.goal-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.goal-card-head a { text-decoration: none; color: var(--fg); }
+.goal-desc { margin: 6px 0; }
+.goal-card-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.goal-achieved { font-size: 12px; color: #2e7d32; }
+.badge {
+  display: inline-block; padding: 2px 9px; border-radius: 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+}
+.badge-idea { background: #eee; color: #666; }
+.badge-active { background: #dceefb; color: #1c6ea4; }
+.badge-achieved { background: #e3f6e3; color: #2e7d32; }
+.badge-dropped { background: #f1f1f1; color: #999; }
+
 /* Page header with a primary action (e.g. Journal + "Add Journal"). */
 .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
 .page-head h1 { margin: 0; }
