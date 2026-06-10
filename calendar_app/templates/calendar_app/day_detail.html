@@ -24,8 +24,15 @@
   <p class="muted">No events on this day.</p>
 {% endif %}
 
-{% if note %}
-  <h2>Note</h2>
-  <div class="card">{{ note.text|linebreaks }}</div>
+{% if notes %}
+  <h2>Notes</h2>
+  {% for note in notes %}
+    <div class="card">
+      {{ note.text|linebreaks }}
+      <div class="card-actions">
+        <a class="btn-ghost" href="{% url 'journal_edit' note.pk %}?next={{ request.path }}">Edit</a>
+      </div>
+    </div>
+  {% endfor %}
 {% endif %}
 {% endblock %}

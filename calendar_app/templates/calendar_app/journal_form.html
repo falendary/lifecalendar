@@ -1,0 +1,21 @@
+{% extends "calendar_app/base.html" %}
+{% load static %}
+
+{% block title %}Edit journal note{% endblock %}
+
+{% block content %}
+<div class="event-fullpage">
+  <div class="modal drawer" role="dialog" aria-modal="true" aria-label="Edit journal note">
+    <div class="modal-head">
+      <h3>Edit Journal</h3>
+      <a class="modal-close" href="{% if next %}{{ next }}{% else %}{% url 'journal_list' %}{% endif %}"
+         aria-label="Close">×</a>
+    </div>
+    {% include "calendar_app/_journal_edit_form.html" %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'calendar_app/modal.js' %}"></script>
+{% endblock %}

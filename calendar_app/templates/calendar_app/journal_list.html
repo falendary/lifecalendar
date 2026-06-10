@@ -21,6 +21,9 @@
       <strong>{{ note.date|date:"l, j F Y" }}</strong>
     </a>
     <p>{{ note.text|linebreaks }}</p>
+    <div class="card-actions">
+      <a class="btn-ghost" href="{% url 'journal_edit' note.pk %}?next={{ request.get_full_path|urlencode }}">Edit</a>
+    </div>
   </div>
 {% empty %}
   <p class="muted">

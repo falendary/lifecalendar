@@ -29,9 +29,14 @@
     {% else %}
       <p class="muted">No events.</p>
     {% endif %}
-    {% if row.note %}
-      <div class="day-note">{{ row.note.text|linebreaks }}</div>
-    {% endif %}
+    {% for note in row.notes %}
+      <div class="day-note">
+        {{ note.text|linebreaks }}
+        <div class="card-actions">
+          <a class="btn-ghost" href="{% url 'journal_edit' note.pk %}?next={{ request.path }}">Edit</a>
+        </div>
+      </div>
+    {% endfor %}
   </div>
 {% endfor %}
 {% endblock %}

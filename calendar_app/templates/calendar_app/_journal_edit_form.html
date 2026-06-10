@@ -1,0 +1,20 @@
+{# Edit Journal form — used by journal_form.html. #}
+<form method="post" action="{% url 'journal_edit' note.pk %}" class="drawer-form">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+
+  <div class="event-editor">
+    <div class="journal-date">
+      <label>Date</label>
+      <input type="date" name="date" value="{{ note.date|date:'Y-m-d' }}" required>
+    </div>
+    <textarea name="text" class="event-text" placeholder="Dear diary…" autofocus>{{ note.text }}</textarea>
+  </div>
+
+  <div class="modal-foot event-foot">
+    <button type="submit" name="delete" value="1" class="btn-ghost btn-danger"
+            onclick="return confirm('Delete this note?')">Delete</button>
+    <a class="btn-ghost" href="{% if next %}{{ next }}{% else %}{% url 'journal_list' %}{% endif %}">Cancel</a>
+    <button type="submit" class="action-btn">Save</button>
+  </div>
+</form>

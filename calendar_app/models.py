@@ -139,13 +139,17 @@ class Event(models.Model):
 
 
 class DayNote(models.Model):
-    """Free-form note attached to a specific calendar day."""
+    """Free-form note attached to a specific calendar day.
 
-    date = models.DateField(unique=True)
+    A day can hold several notes; they are ordered oldest-first within the day
+    by ``created_at``."""
+
+    date = models.DateField()
     text = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        ordering = ["-date"]
+        ordering = ["-date", "created_at"]
 
     def __str__(self):
         return f"Note {self.date}"

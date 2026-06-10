@@ -33,22 +33,12 @@ class EventForm(forms.ModelForm):
 
 
 class JournalForm(forms.ModelForm):
-    """Upserts a note by date (one note per day)."""
+    """A journal note for a given day. Several notes per day are allowed:
+    a bound form with no instance creates a new note, with an instance edits it."""
 
     class Meta:
         model = DayNote
         fields = ["date", "text"]
-
-    def validate_unique(self):
-        # We upsert by date in save(), so skip the unique-date check.
-        pass
-
-    def save(self, commit=True):
-        note, _ = DayNote.objects.update_or_create(
-            date=self.cleaned_data["date"],
-            defaults={"text": self.cleaned_data.get("text", "")},
-        )
-        return note
 
 
 class GoalForm(forms.ModelForm):

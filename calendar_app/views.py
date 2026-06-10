@@ -228,6 +228,26 @@ def journal_create(request):
     return redirect(request.POST.get("next") or "calendar")
 
 
+def journal_edit(request, pk):
+    note = get_object_or_404(DayNote, pk=pk)
+    next_url = request.POST.get("next") or request.GET.get("next") or ""
+
+    if request.method == "POST":
+        if request.POST.get("delete"):
+            note.delete()
+            messages.success(request, "Note deleted.")
+            return redirect(next_url or "journal_list")
+        form = JournalForm(request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Note updated.")
+            return redirect(next_url or "journal_list")
+        messages.error(request, f"Could not save: {form.errors.as_text()}")
+
+    context = {"note": note, "next": next_url}
+    return render(request, "calendar_app/journal_form.html", context)
+
+
 def birdview(request):
     """The classic "life in weeks" bird's-eye: every week as a tiny square,
     one year per row, colors retained and clickable."""
@@ -341,12 +361,14 @@ def week_detail(request, year, week):
     monday = date.fromisocalendar(year, week, 1)
     days = [monday + timedelta(days=i) for i in range(7)]
     all_events = list(Event.objects.prefetch_related("categories").all())
-    notes = {n.date: n for n in DayNote.objects.filter(date__in=days)}
+    notes_by_date: dict = {}
+    for n in DayNote.objects.filter(date__in=days):
+        notes_by_date.setdefault(n.date, []).append(n)
 
     rows = []
     for d in days:
         events = [e for e in all_events if services.event_occurs_on(e, d)]
-        rows.append({"date": d, "events": events, "note": notes.get(d)})
+        rows.append({"date": d, "events": events, "notes": notes_by_date.get(d, [])})
 
     context = {
         "year": year,
@@ -467,11 +489,11 @@ def day_detail(request, year, month, day):
         for e in Event.objects.prefetch_related("categories").all()
         if services.event_occurs_on(e, target)
     ]
-    note = DayNote.objects.filter(date=target).first()
+    notes = list(DayNote.objects.filter(date=target))
     context = {
         "date": target,
         "events": events,
-        "note": note,
+        "notes": notes,
     }
     return render(request, "calendar_app/day_detail.html", context)
 
@@ -512,7 +534,7 @@ def category_list(request):
 
 def journal_list(request):
     q = (request.GET.get("q") or "").strip()
-    notes = DayNote.objects.all().order_by("-date")
+    notes = DayNote.objects.all().order_by("-date", "created_at")
     if q:
         notes = notes.filter(text__icontains=q)
     page_obj = Paginator(notes, 10).get_page(request.GET.get("page"))
@@ -532,11 +554,18 @@ def _goal_save_extras(request, goal):
 
     if goal.status == GoalStatus.ACHIEVED and goal.achieved_on:
         note_text = (request.POST.get("journal_text") or "").strip() or f"Achieved: {goal.title}"
-        note, _ = DayNote.objects.update_or_create(
-            date=goal.achieved_on, defaults={"text": note_text}
-        )
-        goal.journal = note
-        goal.save(update_fields=["journal"])
+        # A day can hold several notes, so reuse this goal's own linked note if
+        # it has one (avoiding update_or_create's MultipleObjectsReturned);
+        # otherwise create a fresh note for the achieved day.
+        if goal.journal_id:
+            note = goal.journal
+            note.date = goal.achieved_on
+            note.text = note_text
+            note.save()
+        else:
+            note = DayNote.objects.create(date=goal.achieved_on, text=note_text)
+            goal.journal = note
+            goal.save(update_fields=["journal"])
 
 
 def goal_list(request):
